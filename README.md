@@ -36,16 +36,21 @@ JARVIS XR turns a dedicated iPhone into a focused assistant surface without rely
 
 <table>
   <tr>
-    <td align="center"><img src="assets/screenshots/ready.png" width="210" alt="JARVIS ready state"><br><sub><b>Ready</b></sub></td>
-    <td align="center"><img src="assets/screenshots/listening.png" width="210" alt="JARVIS listening state"><br><sub><b>Listening</b></sub></td>
-    <td align="center"><img src="assets/screenshots/inspection.png" width="210" alt="JARVIS inspection mode"><br><sub><b>Inspection</b></sub></td>
+    <td align="center" width="50%"><a href="assets/screenshots/ready.png"><img src="assets/screenshots/ready.png" width="300" alt="JARVIS ready state"></a><br><sub><b>Ready</b></sub></td>
+    <td align="center" width="50%"><a href="assets/screenshots/listening.png"><img src="assets/screenshots/listening.png" width="300" alt="JARVIS listening state"></a><br><sub><b>Listening</b></sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="assets/screenshots/control-mesh.png" width="210" alt="JARVIS Control Mesh"><br><sub><b>Control Mesh</b></sub></td>
-    <td align="center"><img src="assets/screenshots/settings.png" width="210" alt="JARVIS settings"><br><sub><b>Settings</b></sub></td>
-    <td valign="middle"><b>Designed for iPhone XR</b><br><br>Portrait-first UIKit layout, full-screen dark interface, accessible labels, local settings, and a restrained visual system built around one central control surface.</td>
+    <td align="center" width="50%"><a href="assets/screenshots/inspection.png"><img src="assets/screenshots/inspection.png" width="300" alt="JARVIS inspection mode"></a><br><sub><b>Inspection</b></sub></td>
+    <td align="center" width="50%"><a href="assets/screenshots/control-mesh.png"><img src="assets/screenshots/control-mesh.png" width="300" alt="JARVIS Control Mesh"></a><br><sub><b>Control Mesh</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><a href="assets/screenshots/settings.png"><img src="assets/screenshots/settings.png" width="300" alt="JARVIS settings"></a><br><sub><b>Settings</b></sub></td>
   </tr>
 </table>
+
+<p align="center"><sub>Each screen uses the same display scale. Select any image to open the full-resolution proof.</sub></p>
+
+Portrait-first UIKit layout, full-screen dark interface, accessible labels, local settings, and a restrained visual system built around one central control surface.
 
 ## Capabilities
 
