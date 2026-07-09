@@ -155,4 +155,10 @@ The app under `ios/JarvisXR` is the current product. Files under `native/` are p
 
 ## License
 
-Source code is available under the [MIT License](LICENSE). Apple, iPhone, iOS, Siri, Speech, Vision, Core ML, Xcode, and related marks belong to Apple Inc. JARVIS XR is an independent project and is not affiliated with or endorsed by Apple.
+Current software is licensed under [GNU GPLv3 or later](LICENSE), with permitted attribution and origin terms under [GPLv3 section 7](ADDITIONAL_TERMS.md). Distributed modifications must remain under the GPL, preserve copyright and legal notices, identify changes, and provide corresponding source as the license requires.
+
+Original branding, logo artwork, screenshots, and visual reference assets use separate [CC BY-NC-SA 4.0 terms](ASSET_LICENSE.md). Commercial use of those assets requires written permission. See [Attribution](ATTRIBUTION.md) and [CITATION.cff](CITATION.cff).
+
+The `v0.1.0-rc1` tag was originally published under MIT. Existing rights granted for that tagged release cannot be retroactively withdrawn. Later work on `main` uses the licenses described above.
+
+Apple, iPhone, iOS, Siri, Speech, Vision, Core ML, Xcode, and related marks belong to Apple Inc. JARVIS XR is an independent project and is not affiliated with or endorsed by Apple.

@@ -10,7 +10,9 @@ By downloading, building, sideloading, or using JARVIS XR, you accept these term
 
 ## License
 
-The source code is licensed under the [MIT License](LICENSE). These terms do not remove rights granted by that license.
+Current source code is licensed under [GNU GPLv3 or later](LICENSE), with permitted attribution and origin terms in [ADDITIONAL_TERMS.md](ADDITIONAL_TERMS.md). Original branding and visual assets are governed separately by [ASSET_LICENSE.md](ASSET_LICENSE.md). These terms do not remove rights granted by either license.
+
+The `v0.1.0-rc1` tag was originally published under MIT. Rights already granted for that tagged version remain governed by its original license.
 
 ## Prototype Status
 
@@ -39,7 +41,7 @@ App responses and repository documentation are not legal, medical, financial, se
 
 ## No Warranty
 
-The software is provided "as is" and "as available," without warranties of any kind, to the maximum extent permitted by law. The MIT License contains the controlling software warranty disclaimer.
+The software is provided "as is" and "as available," without warranties of any kind, to the maximum extent permitted by law. Sections 15 and 16 of GPLv3 contain the controlling software warranty and liability terms.
 
 ## Limitation of Liability
 

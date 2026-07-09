@@ -25,3 +25,6 @@
 - [Security Policy](../SECURITY.md)
 - [Disclaimer](../DISCLAIMER.md)
 - [Support](../SUPPORT.md)
+- [Attribution](../ATTRIBUTION.md)
+- [GPL additional terms](../ADDITIONAL_TERMS.md)
+- [Visual asset license](../ASSET_LICENSE.md)

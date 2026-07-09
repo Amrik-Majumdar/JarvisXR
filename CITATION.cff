@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use or discuss this software, please cite it using this metadata."
+title: "JARVIS XR"
+type: software
+authors:
+  - family-names: "Majumdar"
+    given-names: "Amrik"
+repository-code: "https://github.com/Amrik-Majumdar/JarvisXR"
+url: "https://github.com/Amrik-Majumdar/JarvisXR"
+license: "GPL-3.0-or-later"
+version: "0.1.0-rc1"
+date-released: "2026-07-08"

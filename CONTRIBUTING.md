@@ -21,3 +21,9 @@ Contributions that improve reliability, accessibility, privacy, documentation, t
 6. Open a pull request using the provided template.
 
 See [Building](docs/BUILDING.md) and [Testing](docs/TESTING.md).
+
+## Contribution License
+
+By submitting a contribution, you certify that you have the right to submit it and agree that it may be distributed under GPL-3.0-or-later. Contributions to separately licensed visual assets must be clearly identified and compatible with [ASSET_LICENSE.md](ASSET_LICENSE.md).
+
+Do not remove existing copyright, attribution, license, or modification notices.

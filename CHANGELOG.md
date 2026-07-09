@@ -6,6 +6,7 @@ All notable public releases are documented here.
 
 - Added publication-grade repository documentation, privacy and security policies, contribution guidance, issue templates, and a compact product README.
 - Added a documented build, test, installation, first-run, Control Mesh, and Vision path.
+- Adopted GPL-3.0-or-later for current software and CC BY-NC-SA 4.0 for original visual assets, with explicit attribution and citation metadata.
 
 ## [0.1.0-rc1] - 2026-07-08
 
