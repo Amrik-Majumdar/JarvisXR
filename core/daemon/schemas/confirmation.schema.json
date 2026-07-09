@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jarvis Confirmation Token",
+  "type": "object",
+  "required": ["token", "request", "created_at", "expires_at", "risk_level", "used"],
+  "properties": {
+    "token": { "type": "string" },
+    "request": { "type": "object" },
+    "created_at": { "type": "number" },
+    "expires_at": { "type": "number" },
+    "risk_level": { "type": "string" },
+    "used": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

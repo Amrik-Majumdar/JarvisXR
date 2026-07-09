@@ -1,0 +1,252 @@
+name: Build JarvisXR iOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "ios/JarvisXR/**"
+      - ".github/workflows/ios-build.yml"
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inspect runner and repository
+        run: |
+          mkdir -p ios/JarvisXR/build/logs
+          pwd
+          env | sort | tee ios/JarvisXR/build/logs/environment.txt
+          find ios/JarvisXR -maxdepth 3 -print | sort
+          xcodebuild -version | tee ios/JarvisXR/build/logs/xcode-version.txt
+          xcrun simctl list runtimes | tee ios/JarvisXR/build/logs/simulator-runtimes.log
+          xcrun simctl list devices available | tee ios/JarvisXR/build/logs/simulator-list-before.txt
+
+      - name: Install XcodeGen
+        run: |
+          brew update
+          brew install xcodegen
+          xcodegen --version
+
+      - name: Generate Xcode project
+        working-directory: ios/JarvisXR
+        run: |
+          set -o pipefail
+          mkdir -p build/logs
+          xcodegen generate 2>&1 | tee build/logs/xcodegen.log
+          find JarvisXR.xcodeproj -maxdepth 3 -print | sort | tee -a build/logs/xcodegen.log
+          xcodebuild -list -project JarvisXR.xcodeproj | tee build/logs/schemes.log
+
+      - name: Build JarvisXR for iPhoneOS
+        working-directory: ios/JarvisXR
+        run: |
+          set -o pipefail
+          mkdir -p build/logs
+          xcodebuild \
+            -project JarvisXR.xcodeproj \
+            -scheme JarvisXR \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            clean build | tee build/logs/xcodebuild-build.log
+
+      - name: Run JarvisXR unit tests on simulator
+        working-directory: ios/JarvisXR
+        run: |
+          set -o pipefail
+          SIM_ID="$(python3 ../../tools/select_ios_simulator.py || true)"
+          DESTINATION="$(python3 ../../tools/select_ios_simulator.py --destination || true)"
+          python3 ../../tools/select_ios_simulator.py --details | tee build/logs/selected-simulator.txt || true
+          if [ -z "$SIM_ID" ]; then
+            echo "No available iPhone simulator found. Failing because simulator verification is required." | tee build/logs/xcodebuild-unit-test.log
+            exit 1
+          fi
+          echo "Using simulator id: $SIM_ID" | tee build/logs/xcodebuild-unit-test.log
+          echo "Using xcodebuild destination: $DESTINATION" | tee -a build/logs/xcodebuild-unit-test.log
+          xcrun simctl list devices available | tee -a build/logs/xcodebuild-unit-test.log
+          xcrun simctl boot "$SIM_ID" || true
+          xcrun simctl bootstatus "$SIM_ID" -b
+          xcrun simctl list devices available | tee build/logs/simulator-list-after-boot.txt
+          xcodebuild \
+            -project JarvisXR.xcodeproj \
+            -scheme JarvisXR \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination "$DESTINATION" \
+            -derivedDataPath build/TestDerivedData \
+            -resultBundlePath build/logs/JarvisXRUnitTests.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            -only-testing:JarvisXRTests \
+            test | tee -a build/logs/xcodebuild-unit-test.log
+
+      - name: Package unsigned IPA
+        working-directory: ios/JarvisXR
+        run: |
+          set -e
+          APP_PATH="build/DerivedData/Build/Products/Release-iphoneos/JarvisXR.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "JarvisXR.app was not found at $APP_PATH" | tee BUILD_REAL_APP_STATUS.md
+            exit 1
+          fi
+          rm -rf build/Payload
+          mkdir -p build/Payload
+          cp -R "$APP_PATH" build/Payload/JarvisXR.app
+          (cd build && zip -qry JarvisXR-unsigned.ipa Payload)
+          if [ ! -s build/JarvisXR-unsigned.ipa ]; then
+            echo "Unsigned IPA packaging failed." | tee BUILD_REAL_APP_STATUS.md
+            exit 1
+          fi
+          {
+            echo "JarvisXR build summary"
+            echo "Runner: $(sw_vers -productVersion)"
+            echo "Xcode: $(xcodebuild -version | tr '\n' ' ')"
+            echo "Artifact: ios/JarvisXR/build/JarvisXR-unsigned.ipa"
+            echo "Size bytes: $(stat -f%z build/JarvisXR-unsigned.ipa)"
+            echo "Install with Sideloadly from Windows."
+          } | tee BUILD_REAL_APP_STATUS.md
+
+      - name: Audit unsigned IPA
+        run: |
+          set -o pipefail
+          mkdir -p ios/JarvisXR/build/logs
+          python3 tools/audit_ipa.py ios/JarvisXR/build/JarvisXR-unsigned.ipa | tee ios/JarvisXR/build/logs/ipa-audit.log
+
+      - name: Capture required iOS screenshots
+        timeout-minutes: 10
+        working-directory: ios/JarvisXR
+        run: |
+          set -euo pipefail
+          mkdir -p build/visual-proof build/logs
+          VISUAL_PROOF_DIR="$GITHUB_WORKSPACE/ios/JarvisXR/build/visual-proof"
+          export VISUAL_PROOF_DIR
+          echo "VISUAL_PROOF_DIR=$VISUAL_PROOF_DIR" | tee build/logs/xcodebuild-visual-proof.log
+          SIM_ID="$(python3 ../../tools/select_ios_simulator.py || true)"
+          DESTINATION="$(python3 ../../tools/select_ios_simulator.py --destination || true)"
+          python3 ../../tools/select_ios_simulator.py --details | tee build/logs/selected-simulator.txt || true
+          if [ -z "$SIM_ID" ]; then
+            echo "No available iPhone simulator found. Screenshot proof cannot be generated." | tee -a build/logs/xcodebuild-visual-proof.log
+            exit 1
+          fi
+          echo "Using simulator id for visual proof: $SIM_ID" | tee -a build/logs/xcodebuild-visual-proof.log
+          echo "Using xcodebuild destination for visual proof: $DESTINATION" | tee -a build/logs/xcodebuild-visual-proof.log
+          xcrun simctl list devices available | tee -a build/logs/xcodebuild-visual-proof.log
+          xcrun simctl boot "$SIM_ID" || true
+          xcrun simctl bootstatus "$SIM_ID" -b
+          xcrun simctl list devices available | tee build/logs/simulator-list-after-boot.txt
+
+          APP_PATH="build/TestDerivedData/Build/Products/Debug-iphonesimulator/JarvisXR.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "Simulator app missing after unit tests. Building simulator app for visual proof." | tee -a build/logs/xcodebuild-visual-proof.log
+            xcodebuild \
+              -project JarvisXR.xcodeproj \
+              -scheme JarvisXR \
+              -configuration Debug \
+              -sdk iphonesimulator \
+              -destination "$DESTINATION" \
+              -derivedDataPath build/VisualProofDerivedData \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              build | tee -a build/logs/xcodebuild-visual-proof.log
+            APP_PATH="build/VisualProofDerivedData/Build/Products/Debug-iphonesimulator/JarvisXR.app"
+          fi
+          if [ ! -d "$APP_PATH" ]; then
+            echo "Visual proof simulator app was not found." | tee -a build/logs/xcodebuild-visual-proof.log
+            exit 1
+          fi
+
+          xcrun simctl install "$SIM_ID" "$APP_PATH" | tee -a build/logs/xcodebuild-visual-proof.log
+
+          capture_state() {
+            state="$1"
+            file="$2"
+            delay="${3:-4}"
+            echo "Capturing $file from state $state" | tee -a build/logs/xcodebuild-visual-proof.log
+            xcrun simctl terminate "$SIM_ID" com.amrik.jarvisxr >/dev/null 2>&1 || true
+            xcrun simctl launch "$SIM_ID" com.amrik.jarvisxr --jarvis-ui-test --jarvis-state "$state" | tee -a build/logs/xcodebuild-visual-proof.log
+            sleep "$delay"
+            xcrun simctl io "$SIM_ID" screenshot "$VISUAL_PROOF_DIR/$file" | tee -a build/logs/xcodebuild-visual-proof.log
+            if [ ! -s "$VISUAL_PROOF_DIR/$file" ]; then
+              echo "Screenshot $file was not created or was empty." | tee -a build/logs/xcodebuild-visual-proof.log
+              exit 1
+            fi
+          }
+
+          capture_state standby standby.png 4
+          capture_state ready ready.png 4
+          capture_state listening listening.png 4
+          capture_state processing processing.png 4
+          capture_state no_speech no-speech.png 4
+          capture_state long_hold_standby long-hold-standby.png 4
+          capture_state keyboard keyboard.png 4
+          capture_state help help.png 4
+          capture_state mesh mesh.png 4
+          capture_state inspection inspection.png 5
+          capture_state object_model_missing object-model-missing.png 5
+          capture_state settings settings.png 4
+          capture_state diagnostics diagnostics.png 4
+
+          python3 ../../tools/verify_visual_proof.py "$VISUAL_PROOF_DIR" | tee -a build/logs/xcodebuild-visual-proof.log
+          ls -lh "$VISUAL_PROOF_DIR" | tee -a build/logs/xcodebuild-visual-proof.log
+
+      - name: Debug visual proof filesystem
+        if: always()
+        run: |
+          echo "workspace=$GITHUB_WORKSPACE"
+          pwd
+          ls -la
+          mkdir -p ios/JarvisXR/build/logs
+          {
+            echo "Repository root:"
+            pwd
+            echo ""
+            echo "ios/JarvisXR/build files:"
+            find ios/JarvisXR/build -maxdepth 5 -type f -print 2>/dev/null || true
+            echo ""
+            echo "visual-proof paths:"
+            find "$GITHUB_WORKSPACE" -path '*visual-proof*' -print 2>/dev/null || true
+            echo ""
+            echo "xcresult paths:"
+            find ios/JarvisXR/build -name '*.xcresult' -print 2>/dev/null || true
+            echo ""
+            echo "DerivedData logs:"
+            find ios/JarvisXR/build -path '*Logs*' -type f -print 2>/dev/null || true
+          } | tee ios/JarvisXR/build/logs/visual-proof-filesystem-debug.log
+          find ios/JarvisXR/build -maxdepth 8 -print 2>/dev/null | sort | tee ios/JarvisXR/build/logs/artifact-tree.txt
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JarvisXR-unsigned-ipa
+          path: ios/JarvisXR/build/JarvisXR-unsigned.ipa
+
+      - name: Upload iOS screenshot proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: JarvisXR-ios-screenshot-proof
+          if-no-files-found: error
+          path: ios/JarvisXR/build/visual-proof/*.png
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: JarvisXR-build-output
+          if-no-files-found: warn
+          path: |
+            ios/JarvisXR/build/build.log
+            ios/JarvisXR/build/test.log
+            ios/JarvisXR/build/schemes.log
+            ios/JarvisXR/build/ipa-audit.log
+            ios/JarvisXR/build/logs/**
+            ios/JarvisXR/build/DerivedData/Logs/**
+            ios/JarvisXR/build/TestDerivedData/Logs/**
+            ios/JarvisXR/build/VisualProofDerivedData/Logs/**
+            ios/JarvisXR/build/visual-proof/**
+            ios/JarvisXR/BUILD_REAL_APP_STATUS.md

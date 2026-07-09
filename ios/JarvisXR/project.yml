@@ -1,0 +1,61 @@
+name: JarvisXR
+options:
+  bundleIdPrefix: com.amrik
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: 5.9
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    TARGETED_DEVICE_FAMILY: "1"
+targets:
+  JarvisXR:
+    type: application
+    platform: iOS
+    sources:
+      - path: JarvisXR
+        excludes:
+          - Models/README.md
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.amrik.jarvisxr
+        PRODUCT_NAME: JarvisXR
+        INFOPLIST_FILE: JarvisXR/Info.plist
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""
+        SUPPORTED_INTERFACE_ORIENTATIONS: UIInterfaceOrientationPortrait
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  JarvisXRTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - JarvisXRTests
+    dependencies:
+      - target: JarvisXR
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.amrik.jarvisxr.tests
+        INFOPLIST_FILE: JarvisXRTests/Info.plist
+  JarvisXRUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - JarvisXRUITests
+    dependencies:
+      - target: JarvisXR
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.amrik.jarvisxr.uitests
+        INFOPLIST_FILE: JarvisXRUITests/Info.plist
+        TEST_TARGET_NAME: JarvisXR
+schemes:
+  JarvisXR:
+    build:
+      targets:
+        JarvisXR: all
+    test:
+      config: Debug
+      targets:
+        - JarvisXRTests
+        - JarvisXRUITests

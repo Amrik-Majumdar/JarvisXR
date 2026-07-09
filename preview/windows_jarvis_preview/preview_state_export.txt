@@ -1,0 +1,11 @@
+JARVIS preview state
+
+Status: Status: ok. Speech: on. Voice: Formal.
+
+Response:
+Normal mode restored. Speech output is enabled.
+
+Memory:
+Notes: 0
+Command history: 11
+Last response: Normal mode restored. Speech output is enabled.

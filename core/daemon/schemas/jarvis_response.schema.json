@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jarvis Daemon Response",
+  "type": "object",
+  "required": [
+    "request_id",
+    "status",
+    "mode",
+    "spoken_response",
+    "display_response",
+    "data",
+    "risk_level",
+    "requires_confirmation",
+    "unavailable_reason",
+    "candidate_capabilities",
+    "logs_written"
+  ],
+  "properties": {
+    "request_id": { "type": "string" },
+    "status": { "enum": ["ok", "refused", "confirmation_required", "error", "unavailable"] },
+    "mode": { "type": "string" },
+    "spoken_response": { "type": "string" },
+    "display_response": { "type": "string" },
+    "data": { "type": "object" },
+    "risk_level": { "type": "string" },
+    "requires_confirmation": { "type": "boolean" },
+    "unavailable_reason": { "type": ["string", "null"] },
+    "candidate_capabilities": { "type": "array" },
+    "logs_written": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jarvis Mock Phone State",
+  "type": "object",
+  "required": ["profile", "network", "battery", "storage", "camera", "microphone", "speaker", "sensors", "privacy", "jailbreak"],
+  "properties": {
+    "profile": { "type": "string" },
+    "network": { "type": "object" },
+    "battery": { "type": "object" },
+    "storage": { "type": "object" },
+    "camera": { "type": "object" },
+    "microphone": { "type": "object" },
+    "speaker": { "type": "object" },
+    "sensors": { "type": "object" },
+    "privacy": { "type": "object" },
+    "jailbreak": { "type": "object" }
+  },
+  "additionalProperties": false
+}

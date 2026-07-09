@@ -1,0 +1,6532 @@
+{
+  "capabilities": [
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_001",
+      "name": "Scan This",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_002",
+      "name": "Turn On Inspection Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_003",
+      "name": "Freeze Frame",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_004",
+      "name": "Save Visual Observation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_005",
+      "name": "Toggle Flashlight",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_006",
+      "name": "Inspect Surface",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_007",
+      "name": "Capture Evidence",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_008",
+      "name": "Compare Before Photo",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_009",
+      "name": "Detect Document Edges",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_010",
+      "name": "Estimate Scene Brightness",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_011",
+      "name": "Inspect Close Detail",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_012",
+      "name": "Save Inspection Photo",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_013",
+      "name": "Show Camera Grid",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_014",
+      "name": "Mark Observation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_015",
+      "name": "Speak Visual Summary",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_016",
+      "name": "Start Low Light Scan",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_017",
+      "name": "Start Macro Inspection",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_018",
+      "name": "Capture Serial Plate",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_019",
+      "name": "Inspect Package",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Camera and Inspection",
+      "id": "camera_inspection_020",
+      "name": "Scan Work Area",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_001",
+      "name": "Read This Label",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_002",
+      "name": "Scan For Text",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_003",
+      "name": "Read This Sign",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_004",
+      "name": "Extract Printed Text",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_005",
+      "name": "Copy Text From Image",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_006",
+      "name": "Read Medicine Label",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_007",
+      "name": "Read Serial Number",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_008",
+      "name": "Read Receipt Total",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_009",
+      "name": "Read Document Title",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_010",
+      "name": "Read Warning Label",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_011",
+      "name": "Find Date On Label",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_012",
+      "name": "Find Phone Number",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_013",
+      "name": "Find Model Number",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_014",
+      "name": "Save Searchable Text",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_015",
+      "name": "Read Handwritten Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_016",
+      "name": "Read Menu Item",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_017",
+      "name": "Read Address Label",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_018",
+      "name": "Read Product Label",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_019",
+      "name": "Summarize Visible Text",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "OCR and Text",
+      "id": "ocr_text_020",
+      "name": "Speak Text Aloud",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_001",
+      "name": "Identify This Object",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_002",
+      "name": "What Am I Looking At",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_003",
+      "name": "Detect Common Objects",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_004",
+      "name": "Count Visible Items",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_005",
+      "name": "Find Bottle",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_006",
+      "name": "Find Tool",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_007",
+      "name": "Find Cable",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_008",
+      "name": "Find Door",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_009",
+      "name": "Find Chair",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_010",
+      "name": "Find Person Silhouette",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_011",
+      "name": "Tag Photo Objects",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_012",
+      "name": "Detect Obstacle",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_013",
+      "name": "Find Package",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_014",
+      "name": "Find Appliance",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_015",
+      "name": "Find Label Area",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_016",
+      "name": "Detect Vehicle Class",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_017",
+      "name": "Detect Food Item",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_018",
+      "name": "Detect Electronics",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_019",
+      "name": "Detect Safety Gear",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Object Detection",
+      "id": "object_detection_020",
+      "name": "List Visible Objects",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "local vision model"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_001",
+      "name": "Scan Qr Code",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_002",
+      "name": "Scan Barcode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_003",
+      "name": "Read Product Code",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_004",
+      "name": "Decode Qr Offline",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_005",
+      "name": "Save Barcode Result",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_006",
+      "name": "Open Encoded Text",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_007",
+      "name": "Copy Qr Payload",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_008",
+      "name": "Inspect Inventory Code",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_009",
+      "name": "Read Isbn",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_010",
+      "name": "Read Tracking Code",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_011",
+      "name": "Scan Serial Barcode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_012",
+      "name": "Validate Code Format",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_013",
+      "name": "Scan Wifi Qr Without Joining",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_014",
+      "name": "Scan Contact Qr",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_015",
+      "name": "Scan Url Qr Safely",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_016",
+      "name": "Log Barcode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_017",
+      "name": "Scan Asset Tag",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_018",
+      "name": "Scan Shelf Label",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_019",
+      "name": "Scan Package Code",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "QR and Barcode",
+      "id": "qr_barcode_020",
+      "name": "Read Data Matrix Code",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_001",
+      "name": "Start Push To Talk",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_002",
+      "name": "Read This Back To Me",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_003",
+      "name": "Record Voice Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_004",
+      "name": "Measure Sound Level",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_005",
+      "name": "Detect Loud Noise",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_006",
+      "name": "Play Alert Tone",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_007",
+      "name": "Speak Last Result",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_008",
+      "name": "Repeat Response",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_009",
+      "name": "Transcribe Short Command",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_010",
+      "name": "Save Audio Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_011",
+      "name": "Start Quiet Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_012",
+      "name": "Start Voice Command",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_013",
+      "name": "Stop Speaking",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_014",
+      "name": "Test Microphone",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_015",
+      "name": "Test Speaker",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_016",
+      "name": "Read Command History",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_017",
+      "name": "Dictate Note Offline",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_018",
+      "name": "Listen For Timer End",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_019",
+      "name": "Analyze This Sound",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Audio and Voice",
+      "id": "audio_voice_020",
+      "name": "Show Audio Diagnostics",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "microphone",
+        "speaker"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_001",
+      "name": "Start Field Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_002",
+      "name": "Save This Observation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_003",
+      "name": "Start Inspection Checklist",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_004",
+      "name": "Mark Hazard",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_005",
+      "name": "Log Equipment Status",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_006",
+      "name": "Create Field Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_007",
+      "name": "Stamp Photo With Location",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_008",
+      "name": "Stamp Note With Time",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_009",
+      "name": "Start Patrol Log",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_010",
+      "name": "End Patrol Log",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_011",
+      "name": "Create Incident Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_012",
+      "name": "Capture Before After Pair",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_013",
+      "name": "Log Temperature Note Manually",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_014",
+      "name": "Create Numbered Observation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_015",
+      "name": "Export Field Packet",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_016",
+      "name": "Start Maintenance Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_017",
+      "name": "Mark Task Complete",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_018",
+      "name": "Show Field Summary",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_019",
+      "name": "Create Site Snapshot",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Field Tools",
+      "id": "field_tools_020",
+      "name": "Resume Field Session",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "camera",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_001",
+      "name": "Log My Location",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_002",
+      "name": "Show Compass",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_003",
+      "name": "Save Waypoint",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_004",
+      "name": "Show Coordinates",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_005",
+      "name": "Start Breadcrumb Trail",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_006",
+      "name": "Stop Breadcrumb Trail",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_007",
+      "name": "Show Distance To Saved Point",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_008",
+      "name": "Mark Home Base",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_009",
+      "name": "Show Heading",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_010",
+      "name": "Estimate Speed",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_011",
+      "name": "Show Gps Accuracy",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_012",
+      "name": "Save Map Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_013",
+      "name": "Prepare Offline Waypoint Export",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_014",
+      "name": "List Saved Locations",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_015",
+      "name": "Navigate To Saved Waypoint",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_016",
+      "name": "Show Altitude Estimate",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_017",
+      "name": "Record Route Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_018",
+      "name": "Tag Observation With Gps",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_019",
+      "name": "Show Last Known Location",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Navigation and Location",
+      "id": "navigation_location_020",
+      "name": "Clear Mock Route",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "gps",
+        "compass"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_001",
+      "name": "Check Sensors",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_002",
+      "name": "Measure This Angle",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_003",
+      "name": "Show Level",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_004",
+      "name": "Show Motion",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_005",
+      "name": "Show Barometer",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_006",
+      "name": "Show Altitude Trend",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_007",
+      "name": "Show Light Reading",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_008",
+      "name": "Show Proximity State",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_009",
+      "name": "Start Vibration Monitor",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_010",
+      "name": "Calibrate Level",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_011",
+      "name": "Show Sensor Diagnostics",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_012",
+      "name": "Detect Movement",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_013",
+      "name": "Start Stability Check",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_014",
+      "name": "Measure Tilt",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_015",
+      "name": "Show Compass Diagnostics",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_016",
+      "name": "Log Pressure Trend",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_017",
+      "name": "Show Orientation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_018",
+      "name": "Test Accelerometer",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_019",
+      "name": "Test Gyroscope",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Sensor Tools",
+      "id": "sensor_tools_020",
+      "name": "Show Environmental Summary",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "accelerometer",
+        "gyroscope",
+        "barometer",
+        "proximity",
+        "ambient light"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_001",
+      "name": "Open Camera",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_002",
+      "name": "Show Battery Diagnostics",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_003",
+      "name": "Show Storage",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_004",
+      "name": "Toggle Flashlight",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_005",
+      "name": "Show Wifi State",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_006",
+      "name": "Show Bluetooth State",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_007",
+      "name": "Open Settings Bridge",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_008",
+      "name": "Show Device Identity",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_009",
+      "name": "Show Ios Version",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_010",
+      "name": "Show Jailbreak Status",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_011",
+      "name": "Open Jarvis Home",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_012",
+      "name": "Return To Jarvis",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_013",
+      "name": "Dim Display",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_014",
+      "name": "Increase Display Brightness",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_015",
+      "name": "Start Do Not Disturb Plan",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_016",
+      "name": "Show Installed Packages",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_017",
+      "name": "Show Running Jarvis Services",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_018",
+      "name": "Restart Jarvis Shell",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_019",
+      "name": "Check Daemon Status",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Phone Control",
+      "id": "phone_control_020",
+      "name": "Show Phone Diagnostics",
+      "notes": [
+        "System-wide control, SpringBoard behavior, launchd, root, or button remap work is blocked until a verified XR iOS 18.7.9 jailbreak lane exists.",
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "jailbreak optional",
+        "iOS APIs"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_until_jailbreak"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_001",
+      "name": "Make This Note Searchable",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_002",
+      "name": "Save Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_003",
+      "name": "Search Memory",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_004",
+      "name": "Show Command History",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_005",
+      "name": "Show Observations",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_006",
+      "name": "Delete Last Note With Confirmation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_007",
+      "name": "Export Notes",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_008",
+      "name": "Import Dock Package",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_009",
+      "name": "List Local Files",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_010",
+      "name": "Summarize Today Offline",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_011",
+      "name": "Tag Memory Item",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_012",
+      "name": "Pin Important Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_013",
+      "name": "Save Photo Metadata",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_014",
+      "name": "Show Memory Size",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_015",
+      "name": "Archive Old Logs",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_016",
+      "name": "Restore Local Backup",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_017",
+      "name": "Create Encrypted Note Plan",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_018",
+      "name": "Show Recent Photos",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_019",
+      "name": "Find Observation By Tag",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Files and Memory",
+      "id": "files_memory_020",
+      "name": "Clear Test Data With Confirmation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_001",
+      "name": "Start A Timer",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_002",
+      "name": "Start Stopwatch",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_003",
+      "name": "Set Offline Reminder",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_004",
+      "name": "Show Time",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_005",
+      "name": "Show Date",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_006",
+      "name": "Convert Units",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_007",
+      "name": "Calculate",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_008",
+      "name": "Roll Checklist Counter",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_009",
+      "name": "Create Packing List",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_010",
+      "name": "Read Saved Checklist",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_011",
+      "name": "Start Focus Session",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_012",
+      "name": "Show Quick Tools",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_013",
+      "name": "Create Simple Alarm Plan",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_014",
+      "name": "Count Items Manually",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_015",
+      "name": "Generate Inspection Id",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_016",
+      "name": "Format Serial Number",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_017",
+      "name": "Create Timestamp",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_018",
+      "name": "Show Local Calendar Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_019",
+      "name": "Show Measurements",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Utilities",
+      "id": "utilities_020",
+      "name": "Reset Timer",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "speaker",
+        "local clock"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_001",
+      "name": "Show Phone Diagnostics",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_002",
+      "name": "Run Self Test",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_003",
+      "name": "Show Battery State",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_004",
+      "name": "Show Storage State",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_005",
+      "name": "Show Memory Health",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_006",
+      "name": "Show Model Versions",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_007",
+      "name": "Show Registry Count",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_008",
+      "name": "Validate Registry",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_009",
+      "name": "Show Router Status",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_010",
+      "name": "Test Camera Mock",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_011",
+      "name": "Test Microphone Mock",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_012",
+      "name": "Test Sensor Mock",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_013",
+      "name": "Show Log Size",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_014",
+      "name": "Show Crash Notes",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_015",
+      "name": "Show Thermal Warning Plan",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_016",
+      "name": "Show Performance Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_017",
+      "name": "Run Offline Readiness Check",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_018",
+      "name": "Show Unavailable Features",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_019",
+      "name": "Show Dependency Checklist",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Diagnostics",
+      "id": "diagnostics_020",
+      "name": "Export Diagnostic Bundle",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "battery",
+        "storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_001",
+      "name": "Show Permissions",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_002",
+      "name": "Lock Private Notes",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_003",
+      "name": "Unlock Private Notes",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_004",
+      "name": "Wipe Private Note With Confirmation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_005",
+      "name": "Show Privacy Report",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_006",
+      "name": "Disable Online Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_007",
+      "name": "Enable Online Mode With Confirmation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_008",
+      "name": "Show Data Retained",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_009",
+      "name": "Show Camera Permission",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_010",
+      "name": "Show Microphone Permission",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_011",
+      "name": "Show Location Permission",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_012",
+      "name": "Start Private Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_013",
+      "name": "Stop Private Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_014",
+      "name": "Encrypt Export Plan",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_015",
+      "name": "Verify Local Only Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_016",
+      "name": "Clear Command Transcript With Confirmation",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_017",
+      "name": "Show Risky Actions",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_018",
+      "name": "Require Confirmation Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_019",
+      "name": "Show Jailbreak Risk Notes",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Security and Privacy",
+      "id": "security_privacy_020",
+      "name": "Audit Capability Permissions",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "Touch ID optional"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_001",
+      "name": "Validate Build",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_002",
+      "name": "Run Tests",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_003",
+      "name": "Sync Source Tree",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_004",
+      "name": "Package Tweak Skeleton",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_005",
+      "name": "Package Daemon Skeleton",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_006",
+      "name": "Export Logs To Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_007",
+      "name": "Import Capability Update",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_008",
+      "name": "Generate Registry Report",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_009",
+      "name": "Run Static Checks",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_010",
+      "name": "Show Git Status Plan",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_011",
+      "name": "Prepare Theos Build",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_012",
+      "name": "Prepare Xcode Notes",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_013",
+      "name": "Run Cli Demo",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_014",
+      "name": "Capture Test Transcript",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_015",
+      "name": "Compare Registry Versions",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_016",
+      "name": "Create Mock Hardware Report",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_017",
+      "name": "Build Documentation Bundle",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_018",
+      "name": "Show Failing Tests",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_019",
+      "name": "Prepare Device Test Checklist",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Developer Tools",
+      "id": "developer_tools_020",
+      "name": "Archive Release Candidate",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc or raspberry pi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_001",
+      "name": "Show First Aid Notes",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_002",
+      "name": "Show Device Manual Note",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_003",
+      "name": "Search Offline Reference",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_004",
+      "name": "Show Knots Reference",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_005",
+      "name": "Show Measurement Reference",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_006",
+      "name": "Show Battery Care Notes",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_007",
+      "name": "Show Field Protocol",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_008",
+      "name": "Show Inspection Checklist",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_009",
+      "name": "Show Safety Checklist",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_010",
+      "name": "Show Maintenance Reference",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_011",
+      "name": "Search Local Wiki",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_012",
+      "name": "Read Saved Article",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_013",
+      "name": "Show Emergency Contacts Local",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_014",
+      "name": "Show Offline Glossary",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_015",
+      "name": "Show Command Examples",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_016",
+      "name": "Show Troubleshooting Guide",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_017",
+      "name": "Show Model Limitations",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_018",
+      "name": "Show Jailbreak Glossary",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_019",
+      "name": "Show Sensor Glossary",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Offline Knowledge",
+      "id": "offline_knowledge_020",
+      "name": "Show Dock Instructions",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local files"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_001",
+      "name": "Start Emergency Light",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_002",
+      "name": "Flash Sos",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_003",
+      "name": "Play Loud Alert",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_004",
+      "name": "Show Medical Note",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_005",
+      "name": "Show Emergency Contacts",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_006",
+      "name": "Save Emergency Location",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_007",
+      "name": "Show Last Known Location Emergency",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_008",
+      "name": "Start Low Battery Survival Mode",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_009",
+      "name": "Show Offline Survival Checklist",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_010",
+      "name": "Create Incident Timeline",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_011",
+      "name": "Record Emergency Audio Note",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_012",
+      "name": "Show Safe Exit Checklist",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_013",
+      "name": "Show Signal Mirror Instructions",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_014",
+      "name": "Prepare Sms Draft When Online",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_015",
+      "name": "Prepare Call Prompt",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_016",
+      "name": "Show Flashlight Status",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_017",
+      "name": "Mark Emergency Resolved",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_018",
+      "name": "Export Emergency Packet",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_019",
+      "name": "Show Privacy Safe Emergency Mode",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Emergency Tools",
+      "id": "emergency_tools_020",
+      "name": "Read Emergency Instructions Aloud",
+      "notes": [
+        "Hybrid behavior can improve when Wi-Fi is available."
+      ],
+      "registry_mode": "hybrid",
+      "required_hardware": [
+        "speaker",
+        "flashlight",
+        "gps"
+      ],
+      "xr_classifications": [
+        "available_online_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_001",
+      "name": "Start Field Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_002",
+      "name": "Start Inspection Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_003",
+      "name": "Start Quiet Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_004",
+      "name": "Start Dock Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_005",
+      "name": "Start Offline Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_006",
+      "name": "Start Diagnostics Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_007",
+      "name": "Start Night Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_008",
+      "name": "Start Battery Saver Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_009",
+      "name": "Start Privacy Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_010",
+      "name": "Start Camera Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_011",
+      "name": "Start Sensor Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_012",
+      "name": "Start Memory Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_013",
+      "name": "Start Capability Browser",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native",
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_014",
+      "name": "Start Voice Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_015",
+      "name": "Start Recovery Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_016",
+      "name": "Start Presentation Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_017",
+      "name": "Start Maintenance Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_018",
+      "name": "Start Travel Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_019",
+      "name": "Start Lab Mode",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Jarvis Modes",
+      "id": "jarvis_modes_020",
+      "name": "Return To Home State",
+      "notes": [
+        "Native XR public APIs or local storage can plausibly support this family, subject to device permissions and tests."
+      ],
+      "registry_mode": "offline",
+      "required_hardware": [
+        "local storage",
+        "sensors"
+      ],
+      "xr_classifications": [
+        "available_offline_native"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_001",
+      "name": "Sync Logs To Raspberry Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_002",
+      "name": "Backup To Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_003",
+      "name": "Restore From Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_004",
+      "name": "Check Pi Dock",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_005",
+      "name": "Install Package From Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_006",
+      "name": "Update Models From Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_007",
+      "name": "Send Photos To Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_008",
+      "name": "Receive Offline Wiki From Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_009",
+      "name": "Run Heavy Ocr On Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_010",
+      "name": "Run Model Conversion On Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_011",
+      "name": "Show Pi Sync Status",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_012",
+      "name": "Pair Pi Dock",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_013",
+      "name": "Unpair Pi Dock",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_014",
+      "name": "Verify Pi Package Signature",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_015",
+      "name": "Pull Pi Recovery Bundle",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_016",
+      "name": "Push Diagnostics To Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_017",
+      "name": "Start Pi Maintenance Window",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_018",
+      "name": "Check Pi Storage",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_019",
+      "name": "Sync Encrypted Notes To Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Raspberry Pi Dock",
+      "id": "raspberry_pi_dock_020",
+      "name": "Rebuild Search Index On Pi",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity.",
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "raspberry pi",
+        "wifi or usb"
+      ],
+      "xr_classifications": [
+        "available_dock",
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_001",
+      "name": "Sync Logs To Windows Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_002",
+      "name": "Backup To Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_003",
+      "name": "Restore From Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_004",
+      "name": "Check Pc Dock",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_005",
+      "name": "Export Diagnostics To Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_006",
+      "name": "Import Registry From Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_007",
+      "name": "Run Windows Tests",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_008",
+      "name": "Package Repo On Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_009",
+      "name": "Receive Model From Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_010",
+      "name": "Send Photos To Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_011",
+      "name": "Show Codex Workflow",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_012",
+      "name": "Open Build Checklist",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_013",
+      "name": "Verify Pc Package",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_014",
+      "name": "Pull Pc Recovery Bundle",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_015",
+      "name": "Push Command Transcript To Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_016",
+      "name": "Compare Pc Backup",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_017",
+      "name": "Sync Documentation To Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_018",
+      "name": "Prepare Jailbreak Notes On Pc",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_019",
+      "name": "Receive Native Build Artifact",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Windows PC Dock",
+      "id": "windows_pc_dock_020",
+      "name": "Show Pc Sync Status",
+      "notes": [
+        "Dock behavior remains Raspberry Pi or Windows PC enhanced and is not the product identity."
+      ],
+      "registry_mode": "dock",
+      "required_hardware": [
+        "windows pc",
+        "usb or wifi"
+      ],
+      "xr_classifications": [
+        "available_dock"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_001",
+      "name": "Search Current Weather Online",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_002",
+      "name": "Look Up Current Fact",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_003",
+      "name": "Download Offline Article",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_004",
+      "name": "Update Package Index",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_005",
+      "name": "Check Model Release Notes",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_006",
+      "name": "Translate Online With Confirmation",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_007",
+      "name": "Send Report When Online",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_008",
+      "name": "Sync Cloud Only With Confirmation",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_009",
+      "name": "Fetch Map Tile Pack",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_010",
+      "name": "Check Security Advisory",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_011",
+      "name": "Download Voice Pack",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_012",
+      "name": "Download Object Labels",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_013",
+      "name": "Check Jailbreak Compatibility Notes",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_014",
+      "name": "Pull Documentation Update",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_015",
+      "name": "Send Email Draft",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_016",
+      "name": "Look Up Product Code Online",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_017",
+      "name": "Check Time Server",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_018",
+      "name": "Download Offline Manual",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_019",
+      "name": "Online Summarize With Confirmation",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    },
+    {
+      "family": "Online Enhancement",
+      "id": "online_enhancement_020",
+      "name": "Verify Current Package Hash",
+      "notes": [
+        "Online behavior requires Wi-Fi and must stay behind controlled Jarvis flows.",
+        "External handoff is blocked in supervised hard lockdown unless an in-app or allowed integration is proven."
+      ],
+      "registry_mode": "online",
+      "required_hardware": [
+        "wifi"
+      ],
+      "xr_classifications": [
+        "available_online_native",
+        "blocked_in_hard_lockdown"
+      ]
+    }
+  ],
+  "classification_labels": [
+    "available_offline_native",
+    "available_online_native",
+    "available_dock",
+    "available_soft_ownership",
+    "blocked_in_hard_lockdown",
+    "blocked_until_jailbreak",
+    "uncertain_needs_device_test"
+  ],
+  "ios_version": "18.7.9",
+  "strategy": "Jarvis Device Mode",
+  "summary_counts": {
+    "available_dock": 60,
+    "available_offline_native": 280,
+    "available_online_native": 87,
+    "blocked_in_hard_lockdown": 27,
+    "blocked_until_jailbreak": 20
+  },
+  "target_device": "iPhone XR",
+  "version": "0.5"
+}

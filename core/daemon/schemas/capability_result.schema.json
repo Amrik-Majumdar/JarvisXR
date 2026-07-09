@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jarvis Capability Handler Result",
+  "type": "object",
+  "required": [
+    "status",
+    "spoken_response",
+    "display_response",
+    "data",
+    "side_effects",
+    "memory_writes",
+    "logs",
+    "requires_confirmation",
+    "unavailable_reason",
+    "confirmation_token"
+  ],
+  "properties": {
+    "status": { "enum": ["ok", "refused", "confirmation_required", "error", "unavailable"] },
+    "spoken_response": { "type": "string" },
+    "display_response": { "type": "string" },
+    "data": { "type": "object" },
+    "side_effects": { "type": "array" },
+    "memory_writes": { "type": "array" },
+    "logs": { "type": "array" },
+    "requires_confirmation": { "type": "boolean" },
+    "unavailable_reason": { "type": ["string", "null"] },
+    "confirmation_token": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

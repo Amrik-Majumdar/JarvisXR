@@ -1,0 +1,12 @@
+{
+  "registry_version": "0.1.0",
+  "capability_count": 400,
+  "schemas": [
+    "capability_result.schema.json",
+    "confirmation.schema.json",
+    "jarvis_request.schema.json",
+    "jarvis_response.schema.json",
+    "phone_state.schema.json"
+  ],
+  "note": "Generated Objective-C skeletons for future native UIKit bridge."
+}
