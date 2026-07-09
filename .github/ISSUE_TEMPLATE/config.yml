@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Setup and support
+    url: https://github.com/Amrik-Majumdar/JarvisXR/blob/main/SUPPORT.md
+    about: Read the support and troubleshooting guidance before opening an issue.
+  - name: Security report
+    url: https://github.com/Amrik-Majumdar/JarvisXR/security/advisories/new
+    about: Report security vulnerabilities privately.

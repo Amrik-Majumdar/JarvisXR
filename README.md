@@ -1,81 +1,153 @@
-# JARVIS XR
+<div align="center">
+  <img src="assets/visual_reference/jarvis_orb_clean_icon_reference.png" width="132" alt="JARVIS orb logo">
 
-A native iOS assistant prototype for iPhone XR combining voice commands, typed commands, visual scanning, Control Mesh actions, configurable speech output, and CI-based visual proof.
+  # JARVIS XR
 
-## Overview
+  **A native, offline-first assistant interface for iPhone XR**
 
-JARVIS XR is a Swift and UIKit application designed as a focused assistant interface for a dedicated iPhone XR. It uses public iOS APIs and keeps its core command, speech, memory, and inspection workflows on the device.
+  Voice and typed commands, visual inspection, local memory, configurable speech,
+  and public-API iOS automation guidance in one focused UIKit experience.
 
-![JARVIS ready state](assets/screenshots/ready.png)
+  [![iOS 18+](https://img.shields.io/badge/iOS-18%2B-111827?style=for-the-badge&logo=apple)](ios/JarvisXR/project.yml)
+  [![Swift 5.9](https://img.shields.io/badge/Swift-5.9-F05138?style=for-the-badge&logo=swift&logoColor=white)](ios/JarvisXR/JarvisXR)
+  [![Build](https://img.shields.io/github/actions/workflow/status/Amrik-Majumdar/JarvisXR/ios-build.yml?branch=main&style=for-the-badge&label=Build)](https://github.com/Amrik-Majumdar/JarvisXR/actions/workflows/ios-build.yml)
+  [![Release](https://img.shields.io/github/v/release/Amrik-Majumdar/JarvisXR?include_prereleases&style=for-the-badge&label=RC)](https://github.com/Amrik-Majumdar/JarvisXR/releases)
+  [![License](https://img.shields.io/github/license/Amrik-Majumdar/JarvisXR?style=for-the-badge)](LICENSE)
 
-## Features
+  [Download RC](https://github.com/Amrik-Majumdar/JarvisXR/releases) |
+  [Install Guide](docs/INSTALLING_ON_IPHONE.md) |
+  [Build From Source](docs/BUILDING.md) |
+  [Documentation](docs/README.md)
+</div>
 
-- Voice-first interaction with distinct standby, listening, processing, and speaking states
-- Reliable typed-command fallback
-- Local speech output with selectable voice profiles
-- Camera inspection with Apple Vision OCR and barcode recognition
-- Built-in Vision fallback when no external object-detection model is bundled
-- Local notes and command memory
-- Control Mesh guidance for supported iOS accessibility and automation paths
-- Native diagnostics and settings
-- Guided Access compatible appliance-style operation
+> [!IMPORTANT]
+> JARVIS XR is a native iOS prototype built exclusively with public APIs. It is not a jailbreak, firmware replacement, hidden system service, or unrestricted phone-control layer.
 
-## Architecture
+## Product Overview
 
-The production app is a native Swift and UIKit project under `ios/JarvisXR`. Supporting Python modules provide registry validation, daemon contracts, adapter prototypes, model generation, and Windows preview checks. The iOS app does not use a browser-based product shell.
+JARVIS XR turns a dedicated iPhone into a focused assistant surface without relying on a browser UI or paid cloud APIs. The app centers interaction on a reactive orb, push-to-talk speech recognition, typed commands, local speech output, and camera-based visual inspection.
 
-The app uses public iOS frameworks including UIKit, AVFoundation, Speech, Vision, CoreMotion, CoreLocation, and App Intents where applicable.
+| Native interaction | Local intelligence | Device integration |
+|---|---|---|
+| Distinct standby, listening, processing, speaking, and inspection states | Local command routing, notes, history, and configurable responses | Camera, microphone, speech, Vision, App Intents, deep links, and Guided Access guidance |
+| Voice-first interface with dependable typed fallback | OCR, barcode recognition, and built-in Vision image classification | Control Mesh routes supported actions through public iOS mechanisms |
 
-## Reproducible Build
+## Interface
 
-Native iOS builds require macOS and Xcode. The project uses XcodeGen to produce the Xcode project from `ios/JarvisXR/project.yml`.
+<table>
+  <tr>
+    <td align="center"><img src="assets/screenshots/ready.png" width="210" alt="JARVIS ready state"><br><sub><b>Ready</b></sub></td>
+    <td align="center"><img src="assets/screenshots/listening.png" width="210" alt="JARVIS listening state"><br><sub><b>Listening</b></sub></td>
+    <td align="center"><img src="assets/screenshots/inspection.png" width="210" alt="JARVIS inspection mode"><br><sub><b>Inspection</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/screenshots/control-mesh.png" width="210" alt="JARVIS Control Mesh"><br><sub><b>Control Mesh</b></sub></td>
+    <td align="center"><img src="assets/screenshots/settings.png" width="210" alt="JARVIS settings"><br><sub><b>Settings</b></sub></td>
+    <td valign="middle"><b>Designed for iPhone XR</b><br><br>Portrait-first UIKit layout, full-screen dark interface, accessible labels, local settings, and a restrained visual system built around one central control surface.</td>
+  </tr>
+</table>
+
+## Capabilities
+
+| Area | Current implementation | Boundary |
+|---|---|---|
+| Voice input | In-app push-to-talk using Apple's Speech framework | Recognition availability and on-device processing vary by device, language, and Apple service state |
+| Voice output | `AVSpeechSynthesizer` with persistent voice profiles | Installed system voices determine final sound |
+| Visual inspection | AVFoundation capture, Vision OCR, QR/barcode recognition, and image classification | External object detection requires a compatible bundled Core ML model |
+| Memory | Local notes, command history, search, and clear controls | Stored in the app container; removing the app can remove local data |
+| Control Mesh | Deep links, App Intents, Shortcuts guidance, Voice Control phrases, and public app URL routes | No injected taps, hidden screen reading, global overlay, or private system hooks |
+| Appliance use | Guided Access setup and dedicated-device workflow | iOS remains the operating system and security authority |
+
+## Start Here
+
+### Install the release candidate
+
+1. Read the [iPhone installation guide](docs/INSTALLING_ON_IPHONE.md).
+2. Download `JarvisXR-unsigned.ipa` from the [latest prerelease](https://github.com/Amrik-Majumdar/JarvisXR/releases).
+3. Sign and sideload it with AltServer, Sideloadly, or another tool you trust.
+4. Complete the [first-run checklist](docs/FIRST_RUN_CHECKLIST.md) before enabling Guided Access.
+
+### Build it yourself
 
 ```bash
+git clone https://github.com/Amrik-Majumdar/JarvisXR.git
+cd JarvisXR/ios/JarvisXR
 brew install xcodegen
-cd ios/JarvisXR
 xcodegen generate
-xcodebuild -project JarvisXR.xcodeproj -scheme JarvisXR -sdk iphoneos \
-  -configuration Release CODE_SIGNING_ALLOWED=NO build
+xcodebuild -project JarvisXR.xcodeproj \
+  -scheme JarvisXR \
+  -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  CODE_SIGNING_ALLOWED=NO test
 ```
 
-## Local Validation
+Native builds require macOS and Xcode. Windows and Linux can run the Python validation suite, while the included GitHub Actions workflow performs the macOS build, simulator tests, visual proof capture, IPA audit, and unsigned IPA packaging.
 
-Windows can run the Python validation gates:
+See [Building](docs/BUILDING.md) for the complete reproducible path.
 
-```powershell
-python core/registry/validate_registry.py
-python native/ios/JarvisShell/scripts/generate_models.py
-python tests/run_all_tests.py
-python preview/windows_jarvis_preview/jarvis_preview.py --self-test
+## Verification
+
+Every app-affecting push runs the following gates:
+
+```text
+Registry validation -> Python tests -> XcodeGen -> iPhoneOS build
+-> Swift unit tests -> simulator visual proof -> IPA audit -> artifacts
 ```
 
-## GitHub Actions Pipeline
+The workflow uploads:
 
-The iOS workflow generates the Xcode project, runs Swift unit tests and visual proof checks, audits the built application, packages an unsigned IPA, and uploads build artifacts. Review `.github/workflows/ios-build.yml` for the exact commands.
+- `JarvisXR-unsigned-ipa`
+- `JarvisXR-ios-screenshot-proof`
+- `JarvisXR-build-output`
 
-GitHub Actions produces unsigned IPA artifacts intended for sideload testing. It does not sign or publish an App Store build.
+The build is reproducible from source through a documented CI process. It is not claimed to be bit-for-bit deterministic across changing Xcode or macOS toolchains.
 
-## iPhone Sideloading Note
+## Privacy and Safety
 
-An unsigned IPA must be signed during installation with an appropriate Apple ID and sideloading tool. Free Apple ID signing commonly requires periodic refresh. Test the app before enabling Guided Access.
+JARVIS XR has no developer-operated analytics, advertising, account, or cloud backend. Notes and command history remain in the app container. Camera analysis runs through Apple frameworks in the app. Speech recognition may be processed on-device or by Apple depending on device and language support.
 
-## Limitations
+Read the full [Privacy Policy](PRIVACY.md), [Terms](TERMS.md), [Security Policy](SECURITY.md), and [Disclaimer](DISCLAIMER.md) before installation.
 
-JARVIS XR is not a jailbreak, firmware replacement, or private system service. Non-jailbroken iOS limits background control, arbitrary global overlays, private system hooks, and system-wide automation. Control Mesh coordinates supported public mechanisms such as app links, App Intents, Shortcuts, Voice Control guidance, and Guided Access. Real-device permissions and hardware behavior must be verified on the target phone.
+## Public API Limits
 
-Cloud AI and paid APIs are not required by the core application.
+Stock iOS does not permit this app to:
 
-## Repository Structure
+- replace SpringBoard or the lock screen
+- install a root or launchd daemon
+- read arbitrary content from other apps
+- inject taps into other apps
+- remap system buttons globally
+- display arbitrary floating UI over other apps
+- provide unrestricted background listening
 
-- `ios/JarvisXR`: Native Swift and UIKit application
-- `core`: Command, registry, daemon, adapter, and device-profile prototypes
-- `native`: Earlier native contracts and generated Objective-C model skeletons
-- `preview`: Windows preview and self-test
-- `tests`: Python validation suite
-- `tools`: Asset and verification utilities
-- `assets`: Visual references and selected product screenshots
-- `.github/workflows`: Reproducible iOS CI pipeline
+JARVIS coordinates supported actions through public APIs and accessibility features. See [Features and Limits](docs/FEATURES_AND_LIMITS.md).
+
+## Repository Map
+
+```text
+ios/JarvisXR/       Shipping Swift and UIKit app
+core/               Tested command, registry, adapter, and device contracts
+mock/               Mock phone state and CLI helpers required by router tests
+native/             Preserved legacy native and jailbreak-era prototypes
+preview/            Optional Windows interaction preview
+tests/              Python validation entry point
+tools/              Build, asset, IPA, and visual-proof utilities
+assets/             Logo references and curated screenshots
+docs/               Public build, install, architecture, and usage guides
+.github/             CI workflow and contribution templates
+```
+
+The app under `ios/JarvisXR` is the current product. Files under `native/` are preserved prototypes and are not part of the shipping iOS target.
+
+## Project Documents
+
+| Build and install | Product and internals | Trust and support |
+|---|---|---|
+| [Building](docs/BUILDING.md) | [Architecture](docs/ARCHITECTURE.md) | [Privacy](PRIVACY.md) |
+| [Install on iPhone](docs/INSTALLING_ON_IPHONE.md) | [Features and limits](docs/FEATURES_AND_LIMITS.md) | [Security](SECURITY.md) |
+| [First run](docs/FIRST_RUN_CHECKLIST.md) | [Vision pipeline](docs/VISION.md) | [Support](SUPPORT.md) |
+| [Troubleshooting](docs/TROUBLESHOOTING.md) | [Control Mesh](docs/CONTROL_MESH.md) | [Contributing](CONTRIBUTING.md) |
 
 ## License
 
-This project is available under the MIT License. See [LICENSE](LICENSE).
+Source code is available under the [MIT License](LICENSE). Apple, iPhone, iOS, Siri, Speech, Vision, Core ML, Xcode, and related marks belong to Apple Inc. JARVIS XR is an independent project and is not affiliated with or endorsed by Apple.

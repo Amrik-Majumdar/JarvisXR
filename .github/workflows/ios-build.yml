@@ -5,11 +5,55 @@ on:
   push:
     paths:
       - "ios/JarvisXR/**"
+      - "core/**"
+      - "mock/**"
+      - "native/**"
+      - "tests/**"
+      - "tools/**"
+      - ".github/workflows/ios-build.yml"
+  pull_request:
+    paths:
+      - "ios/JarvisXR/**"
+      - "core/**"
+      - "mock/**"
+      - "native/**"
+      - "tests/**"
+      - "tools/**"
       - ".github/workflows/ios-build.yml"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: jarvisxr-ios-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  validate-python:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependency
+        run: python -m pip install pytest
+
+      - name: Run repository validation
+        run: python tests/run_all_tests.py
+
+      - name: Run Windows preview self-test
+        run: python preview/windows_jarvis_preview/jarvis_preview.py --self-test
+
   build-ios:
+    needs: validate-python
     runs-on: macos-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
