@@ -12,7 +12,7 @@
   [![Swift 5.9](https://img.shields.io/badge/Swift-5.9-F05138?style=for-the-badge&logo=swift&logoColor=white)](ios/JarvisXR/JarvisXR)
   [![Build](https://img.shields.io/github/actions/workflow/status/Amrik-Majumdar/JarvisXR/ios-build.yml?branch=main&style=for-the-badge&label=Build)](https://github.com/Amrik-Majumdar/JarvisXR/actions/workflows/ios-build.yml)
   [![Release](https://img.shields.io/github/v/release/Amrik-Majumdar/JarvisXR?include_prereleases&style=for-the-badge&label=RC)](https://github.com/Amrik-Majumdar/JarvisXR/releases)
-  [![License](https://img.shields.io/github/license/Amrik-Majumdar/JarvisXR?style=for-the-badge)](LICENSE)
+  [![License: GPLv3+](https://img.shields.io/badge/License-GPLv3%2B-2C8EBB?style=for-the-badge&logo=gnu)](LICENSE)
 
   [Download RC](https://github.com/Amrik-Majumdar/JarvisXR/releases) |
   [Install Guide](docs/INSTALLING_ON_IPHONE.md) |
@@ -158,7 +158,5 @@ The app under `ios/JarvisXR` is the current product. Files under `native/` are p
 Current software is licensed under [GNU GPLv3 or later](LICENSE), with permitted attribution and origin terms under [GPLv3 section 7](ADDITIONAL_TERMS.md). Distributed modifications must remain under the GPL, preserve copyright and legal notices, identify changes, and provide corresponding source as the license requires.
 
 Original branding, logo artwork, screenshots, and visual reference assets use separate [CC BY-NC-SA 4.0 terms](ASSET_LICENSE.md). Commercial use of those assets requires written permission. See [Attribution](ATTRIBUTION.md) and [CITATION.cff](CITATION.cff).
-
-The `v0.1.0-rc1` tag was originally published under MIT. Existing rights granted for that tagged release cannot be retroactively withdrawn. Later work on `main` uses the licenses described above.
 
 Apple, iPhone, iOS, Siri, Speech, Vision, Core ML, Xcode, and related marks belong to Apple Inc. JARVIS XR is an independent project and is not affiliated with or endorsed by Apple.
