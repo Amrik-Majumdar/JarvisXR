@@ -34,10 +34,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -52,11 +52,13 @@ jobs:
 
   build-ios:
     needs: validate-python
-    runs-on: macos-latest
+    runs-on: macos-26
     timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Inspect runner and repository
         run: |
@@ -70,7 +72,6 @@ jobs:
 
       - name: Install XcodeGen
         run: |
-          brew update
           brew install xcodegen
           xcodegen --version
 
@@ -264,14 +265,14 @@ jobs:
           find ios/JarvisXR/build -maxdepth 8 -print 2>/dev/null | sort | tee ios/JarvisXR/build/logs/artifact-tree.txt
 
       - name: Upload IPA artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: JarvisXR-unsigned-ipa
           path: ios/JarvisXR/build/JarvisXR-unsigned.ipa
 
       - name: Upload iOS screenshot proof
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: JarvisXR-ios-screenshot-proof
           if-no-files-found: error
@@ -279,7 +280,7 @@ jobs:
 
       - name: Upload build logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: JarvisXR-build-output
           if-no-files-found: warn

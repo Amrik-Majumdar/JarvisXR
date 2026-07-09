@@ -82,3 +82,5 @@ Artifacts expire according to GitHub retention policy. Release assets remain ava
 ## Reproducibility Scope
 
 The repository contains the complete source and configuration needed to regenerate the Xcode project and run the build workflow. Builds are not claimed to be bit-for-bit identical because GitHub runner images, Xcode, SDKs, Homebrew packages, and Apple tooling can change.
+
+The current workflow pins the hosted macOS 26 runner label and Xcode 26.5 path used by the verified publication build. GitHub may eventually retire hosted images or action versions; future updates must be validated by a complete workflow run before merge.
