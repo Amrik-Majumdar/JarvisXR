@@ -10,7 +10,11 @@ final class JarvisXRVisualProofTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        if let app, app.state != .notRunning {
+            app.terminate()
+        }
         app = nil
+        try super.tearDownWithError()
     }
 
     func testProofStandby() throws {
@@ -114,9 +118,14 @@ final class JarvisXRVisualProofTests: XCTestCase {
     func testPrimaryActionsReachableAtCurrentSize() {
         launch(state: "ready")
         waitForOrb()
-        let identifiers = ["jarvis.orb", "jarvis.commandInput", "jarvis.send", "jarvis.meshMenu", "jarvis.help"]
-        for identifier in identifiers {
-            let element = app.descendants(matching: .any)[identifier]
+        let elements: [(String, XCUIElement)] = [
+            ("jarvis.orb", app.otherElements["jarvis.orb"]),
+            ("jarvis.commandInput", app.textFields["jarvis.commandInput"]),
+            ("jarvis.send", app.buttons["jarvis.send"]),
+            ("jarvis.meshMenu", app.buttons["jarvis.meshMenu"]),
+            ("jarvis.help", app.buttons["jarvis.help"]),
+        ]
+        for (identifier, element) in elements {
             waitFor(element, named: identifier)
             XCTAssertTrue(element.isHittable, "\(identifier) must remain reachable at the current simulator size")
             XCTAssertTrue(app.frame.contains(element.frame), "\(identifier) must remain inside the visible application frame")
