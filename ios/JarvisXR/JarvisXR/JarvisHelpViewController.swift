@@ -101,7 +101,13 @@ final class JarvisHelpViewController: UIViewController {
         ])
         addSection("Use the flashlight", [
             "Select Flashlight, or say “Turn on the flashlight” and “Turn off the flashlight.”",
+            "Ask “Is the flashlight on?” to hear the current Vision flashlight state.",
             "The flashlight turns off when Vision stops or the app leaves the foreground.",
+        ])
+        addSection("Prepare a message", [
+            "Say “Message Alex” or “Tell Alex I will arrive soon,” then select the intended contact and phone number in the accessible system contact picker.",
+            "Jarvis reads the selected recipient and draft back. Say “Open the message composer” only when you are ready to review it in the standard iOS composer.",
+            "Sending or cancelling happens in the system composer. Jarvis does not silently send messages or upload contacts and message contents.",
         ])
         addSection("Stop, repeat, and speech", [
             "The red Stop control stays visible at the bottom of Vision. It stops camera analysis, speech, haptics, and voice input.",

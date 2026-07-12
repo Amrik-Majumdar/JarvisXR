@@ -4,6 +4,7 @@ enum JarvisCapabilityRoute: String {
     case inAppVision
     case inAppSpeech
     case inAppMemory
+    case inAppMessage
     case inAppSettings
     case inAppDiagnostics
     case appOpenURL
@@ -32,6 +33,7 @@ enum JarvisPlannedAction: String {
     case guideShortcut
     case memory
     case speech
+    case composeMessage
 }
 
 struct JarvisCommandPlan {
@@ -53,6 +55,29 @@ struct JarvisCommandPlan {
 final class JarvisCommandPlanner {
     func plan(_ rawCommand: String) -> JarvisCommandPlan {
         let text = normalize(rawCommand)
+
+        if let message = JarvisMessageCommandParser.parse(text, raw: rawCommand) {
+            var data = [
+                "action": "message",
+                "message_action": message.action.rawValue,
+            ]
+            if let recipientHint = message.recipientHint { data["message_recipient_hint"] = recipientHint }
+            if let body = message.body { data["message_body"] = body }
+            return plan(
+                text,
+                intent: "message composition",
+                route: .inAppMessage,
+                action: .composeMessage,
+                display: "Preparing an accessible system message draft.",
+                spoken: "Preparing a message draft.",
+                state: .processing,
+                routeLabel: "System message composer",
+                confidence: 0.98,
+                requiresUserAction: true,
+                data: data,
+                shouldPersistGeneralHistory: false
+            )
+        }
 
         if text.isEmpty || matches(text, ["ready", "jarvis ready"]) {
             return plan(
@@ -271,6 +296,19 @@ final class JarvisCommandPlanner {
                 display: "Turning off the Vision flashlight.",
                 spoken: "Turning off the flashlight.",
                 request: JarvisVisionLaunchRequest(mode: .describe, command: .flashlightOff, source: "command"),
+                confidence: 0.98,
+                legacyVision: "flashlight"
+            )
+        }
+
+        if matches(text, ["is the flashlight on", "flashlight status", "is the light on"]) {
+            return visionPlan(
+                text,
+                intent: "flashlight status",
+                action: .visionControl,
+                display: "Checking the Vision flashlight state.",
+                spoken: "Checking the flashlight.",
+                request: JarvisVisionLaunchRequest(mode: .describe, command: .flashlightStatus, source: "command"),
                 confidence: 0.98,
                 legacyVision: "flashlight"
             )

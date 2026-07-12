@@ -111,6 +111,18 @@ final class JarvisXRVisualProofTests: XCTestCase {
         saveScreenshot("keyboard")
     }
 
+    func testPrimaryActionsReachableAtCurrentSize() {
+        launch(state: "ready")
+        waitForOrb()
+        let identifiers = ["jarvis.orb", "jarvis.commandInput", "jarvis.send", "jarvis.meshMenu", "jarvis.help"]
+        for identifier in identifiers {
+            let element = app.descendants(matching: .any)[identifier]
+            waitFor(element, named: identifier)
+            XCTAssertTrue(element.isHittable, "\(identifier) must remain reachable at the current simulator size")
+            XCTAssertTrue(app.frame.contains(element.frame), "\(identifier) must remain inside the visible application frame")
+        }
+    }
+
     func testProofVisionIdle() throws {
         try printVisualProofStart()
         launch(state: "vision_idle")
@@ -400,24 +412,11 @@ final class JarvisXRVisualProofTests: XCTestCase {
 
     private func visualProofDirectory() throws -> URL {
         let environment = ProcessInfo.processInfo.environment
-        let rawDirectory = environment["VISUAL_PROOF_DIR"] ?? environment["JARVIS_SCREENSHOT_DIR"] ?? derivedVisualProofDirectory()
-        guard let rawDirectory, !rawDirectory.isEmpty else {
-            throw NSError(
-                domain: "JarvisXRVisualProof",
-                code: 1,
-                userInfo: [NSLocalizedDescriptionKey: "VISUAL_PROOF_DIR or JARVIS_SCREENSHOT_DIR must be set for screenshot proof."]
-            )
-        }
-        let directory = URL(fileURLWithPath: rawDirectory, isDirectory: true)
+        let rawDirectory = environment["VISUAL_PROOF_DIR"] ?? environment["JARVIS_SCREENSHOT_DIR"]
+        let directory = rawDirectory.flatMap { $0.isEmpty ? nil : URL(fileURLWithPath: $0, isDirectory: true) }
+            ?? FileManager.default.temporaryDirectory.appendingPathComponent("JarvisXRVisualProof", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
-    }
-
-    private func derivedVisualProofDirectory(filePath: String = #filePath) -> String? {
-        let marker = "/ios/JarvisXR/"
-        guard let range = filePath.range(of: marker) else { return nil }
-        let projectRoot = String(filePath[..<range.upperBound])
-        return projectRoot + "build/visual-proof"
     }
 
     private func printVisualProofEnvironment() {
@@ -443,15 +442,11 @@ final class JarvisXRVisualProofTests: XCTestCase {
     }
 
     private func saveFailureScreenshot() {
-        let environment = ProcessInfo.processInfo.environment
-        guard let rawDirectory = environment["VISUAL_PROOF_DIR"] ?? environment["JARVIS_SCREENSHOT_DIR"] ?? derivedVisualProofDirectory(),
-              !rawDirectory.isEmpty else {
-            print("JARVIS could not write failure screenshot because VISUAL_PROOF_DIR was missing.")
+        guard let directory = try? visualProofDirectory() else {
+            print("JARVIS could not create the failure screenshot directory.")
             return
         }
         do {
-            let directory = URL(fileURLWithPath: rawDirectory, isDirectory: true)
-            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
             let url = directory.appendingPathComponent("failure-current-screen.png")
             try XCUIScreen.main.screenshot().pngRepresentation.write(to: url)
             print("JARVIS saved failure screenshot: \(url.path)")

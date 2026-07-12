@@ -155,13 +155,11 @@ jobs:
       - name: Run JarvisXR UI tests on simulator
         timeout-minutes: 20
         working-directory: ios/JarvisXR
-        env:
-          VISUAL_PROOF_DIR: ${{ github.workspace }}/ios/JarvisXR/build/visual-proof
         run: |
           set -o pipefail
           mkdir -p build/logs build/visual-proof
-          SIM_ID="$(python3 ../../tools/select_ios_simulator.py || true)"
-          DESTINATION="$(python3 ../../tools/select_ios_simulator.py --destination || true)"
+          SIM_ID="$(python3 ../../tools/select_ios_simulator.py --profile large || true)"
+          DESTINATION="$(python3 ../../tools/select_ios_simulator.py --profile large --destination || true)"
           if [ -z "$SIM_ID" ]; then
             echo "No available iPhone simulator found. Failing because UI verification is required." | tee build/logs/xcodebuild-ui-test.log
             exit 1
@@ -180,6 +178,35 @@ jobs:
             -resultBundlePath build/logs/JarvisXRUITests.xcresult \
             -only-testing:JarvisXRUITests \
             test | tee -a build/logs/xcodebuild-ui-test.log
+
+      - name: Verify primary layout on compact iPhone simulator
+        timeout-minutes: 10
+        working-directory: ios/JarvisXR
+        run: |
+          set -o pipefail
+          COMPACT_SIM_ID="$(python3 ../../tools/select_ios_simulator.py --profile compact || true)"
+          COMPACT_DESTINATION="$(python3 ../../tools/select_ios_simulator.py --profile compact --destination || true)"
+          python3 ../../tools/select_ios_simulator.py --profile compact --details | tee build/logs/selected-compact-simulator.txt || true
+          if [ -z "$COMPACT_SIM_ID" ]; then
+            echo "No compact iPhone simulator is available on this runner." | tee build/logs/xcodebuild-compact-layout.log
+            exit 1
+          fi
+          echo "Using compact simulator id: $COMPACT_SIM_ID" | tee build/logs/xcodebuild-compact-layout.log
+          echo "Using xcodebuild destination: $COMPACT_DESTINATION" | tee -a build/logs/xcodebuild-compact-layout.log
+          xcrun simctl boot "$COMPACT_SIM_ID" || true
+          xcrun simctl bootstatus "$COMPACT_SIM_ID" -b
+          xcodebuild \
+            -project JarvisXR.xcodeproj \
+            -scheme JarvisXR \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination "$COMPACT_DESTINATION" \
+            -derivedDataPath build/CompactTestDerivedData \
+            -resultBundlePath build/logs/JarvisXRCompactLayoutTests.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testPrimaryActionsReachableAtCurrentSize \
+            test | tee -a build/logs/xcodebuild-compact-layout.log
 
       - name: Run vision fixture and policy evaluation
         run: |

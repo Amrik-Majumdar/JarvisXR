@@ -273,8 +273,42 @@ final class JarvisXRTests: XCTestCase {
         XCTAssertEqual(planner.plan("is the camera blocked").visionLaunchRequest?.command, .checkQuality)
         XCTAssertEqual(planner.plan("turn on the flashlight").visionLaunchRequest?.command, .flashlightOn)
         XCTAssertEqual(planner.plan("turn off the flashlight").visionLaunchRequest?.command, .flashlightOff)
+        XCTAssertEqual(planner.plan("is the flashlight on?").visionLaunchRequest?.command, .flashlightStatus)
         XCTAssertEqual(planner.plan("give me more detail").visionLaunchRequest?.command, .moreDetail)
         XCTAssertEqual(planner.plan("repeat that").visionLaunchRequest?.command, .repeatLast)
+    }
+
+    func testMessageCommandsUsePrivateNonHistorySystemComposerRoute() {
+        let planner = JarvisCommandPlanner()
+        let begin = planner.plan("Message Alex")
+        XCTAssertEqual(begin.route, .inAppMessage)
+        XCTAssertEqual(begin.action, .composeMessage)
+        XCTAssertEqual(begin.data["message_action"], JarvisMessageAction.begin.rawValue)
+        XCTAssertEqual(begin.data["message_recipient_hint"], "alex")
+        XCTAssertFalse(begin.shouldPersistGeneralHistory)
+
+        let tell = planner.plan("Tell Alex I will arrive soon")
+        XCTAssertEqual(tell.data["message_recipient_hint"], "alex")
+        XCTAssertEqual(tell.data["message_body"], "I will arrive soon")
+        XCTAssertFalse(tell.shouldPersistGeneralHistory)
+
+        XCTAssertEqual(planner.plan("read the message back").data["message_action"], JarvisMessageAction.readBack.rawValue)
+        XCTAssertEqual(planner.plan("change the recipient").data["message_action"], JarvisMessageAction.changeRecipient.rawValue)
+        XCTAssertEqual(planner.plan("cancel the message").data["message_action"], JarvisMessageAction.cancel.rawValue)
+        XCTAssertEqual(planner.plan("open the message composer").data["message_action"], JarvisMessageAction.openComposer.rawValue)
+    }
+
+    func testMessageDraftRequiresRecipientAndBodyAndClearsOnCancel() {
+        var draft = JarvisMessageDraft()
+        draft.begin(body: "Meet me outside")
+        XCTAssertFalse(draft.isReadyForComposer)
+        draft.selectRecipient(displayName: "Alex", address: "+1 555 0100")
+        XCTAssertTrue(draft.isReadyForComposer)
+        XCTAssertEqual(draft.readback, "Message to Alex: Meet me outside")
+        draft.cancel()
+        XCTAssertFalse(draft.isReadyForComposer)
+        XCTAssertNil(draft.recipientAddress)
+        XCTAssertNil(draft.body)
     }
 
     func testVisionDeepLinksParseTypedRequests() throws {

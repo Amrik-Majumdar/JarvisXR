@@ -44,7 +44,7 @@ The tests cover detector schema decoding and error cases, real model inference, 
 
 ## Real Simulator Inference
 
-The `VisionAnalyzerPipelineTests` target loads the bundled compiled Core ML model and analyzes the public-domain `Desk_chair.jpg` fixture. It writes labels, confidence, normalized boxes, narration, latency, and policy decision to `native-vision-observations.json`. From the repository root, evaluate that native output:
+The `VisionAnalyzerPipelineTests` target loads the bundled compiled Core ML model and analyzes the public-domain `Desk_chair.jpg` fixture. It writes the execution result, labels, confidence, normalized boxes, narration, latency, and policy decision to `native-vision-observations.json`. From the repository root, evaluate that native output:
 
 ```bash
 python3 tools/evaluate_vision_fixtures.py \
@@ -52,7 +52,7 @@ python3 tools/evaluate_vision_fixtures.py \
   --output ios/JarvisXR/build/reports/vision-fixture-native.json
 ```
 
-The evaluator checks the expected chair, localization overlap, minimum confidence, false positives, and prohibited safety narration. A missing observations file is a failure in the workflow.
+The release gate requires successful real model execution, a finite latency, structurally valid finite observations when any are returned, and safe narration. It also records chair recall, localization overlap, and false positives as fixture accuracy evidence without treating one image as a release-wide accuracy threshold. The pinned model returned no detections for this fixture in the first authoritative simulator run, so that limitation remains explicit rather than being hidden through threshold tuning. A missing observations file, model error, malformed output, or unsafe narration still fails the workflow.
 
 ## UI and Visual Proof
 

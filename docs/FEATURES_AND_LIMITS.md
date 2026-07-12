@@ -6,6 +6,7 @@
 - Typed local commands and in-app push-to-talk through Speech and AVAudioEngine
 - Local speech output through `AVSpeechSynthesizer`, including session-scoped priority for warnings, requested targets, scene changes, and detail
 - Persistent voice and Vision preferences, notes, and command history with explicit clear controls
+- Accessible contact selection and in-memory message drafting with readback, explicit confirmation, and the standard iOS message composer
 - AVFoundation rear or front camera preview, still capture, torch, focus, exposure, white balance, interruption handling, and foreground lifecycle
 - Six Jarvis Vision modes: Describe, Live Guide, Find, Read Text, Barcode, and Color
 - Checksum-pinned `YOLOv3TinyInt8LUT` Core ML detector with 80 documented classes, manifest validation, and bundled license notice

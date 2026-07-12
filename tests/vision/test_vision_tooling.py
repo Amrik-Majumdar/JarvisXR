@@ -82,6 +82,7 @@ def test_native_observation_evaluator_scores_expected_chair(tmp_path):
                 "fixtures": [
                     {
                         "fixture_id": "desk-chair-public-domain",
+                        "inference_completed": True,
                         "detections": [
                             {
                                 "label": "chair",
@@ -103,6 +104,35 @@ def test_native_observation_evaluator_scores_expected_chair(tmp_path):
     assert report["status"] == "passed"
     assert report["inference_executed"] is True
     assert report["native_results"][0]["false_negatives"] == []
+    assert report["native_results"][0]["accuracy_status"] == "fixture_expectations_met"
+
+
+def test_native_observation_evaluator_records_accuracy_limitation_without_falsifying_smoke(tmp_path):
+    base_report, expected = validate_fixture_pack()
+    observations = tmp_path / "observations.json"
+    observations.write_text(
+        json.dumps(
+            {
+                "fixtures": [
+                    {
+                        "fixture_id": "desk-chair-public-domain",
+                        "inference_completed": True,
+                        "detections": [],
+                        "latency_ms": 120.0,
+                        "narration": "I do not have enough evidence to describe this image.",
+                        "policy_decision": "uncertain_grounded_single_frame",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    report = evaluate_observations(base_report, expected, observations)
+    assert report["status"] == "passed"
+    assert report["native_results"][0]["passed"] is True
+    assert report["native_results"][0]["semantic_expectations_met"] is False
+    assert report["native_results"][0]["accuracy_status"] == "accuracy_limitation_observed"
+    assert report["native_results"][0]["false_negatives"] == ["chair"]
 
 
 def test_native_observation_evaluator_rejects_unsafe_narration(tmp_path):
@@ -114,6 +144,7 @@ def test_native_observation_evaluator_rejects_unsafe_narration(tmp_path):
                 "fixtures": [
                     {
                         "fixture_id": "desk-chair-public-domain",
+                        "inference_completed": True,
                         "detections": [
                             {
                                 "label": "chair",
@@ -123,6 +154,7 @@ def test_native_observation_evaluator_rejects_unsafe_narration(tmp_path):
                             }
                         ],
                         "narration": "The path is safe.",
+                        "latency_ms": 120.0,
                     }
                 ]
             }

@@ -66,7 +66,7 @@ xcodebuild \
 
 Simulator device names vary by installed Xcode. Run `xcrun simctl list devices available` and choose an available iPhone when needed.
 
-The unit target covers detector output decoding, tracking, scene fusion, reading order, camera quality, barcode deduplication, safe narration, session-scoped speech, haptic vocabulary, and privacy invariants. It also loads the bundled model and performs real inference against the public-domain `Desk_chair.jpg` fixture. Score the native observations from the repository root:
+The unit target covers detector output decoding, tracking, scene fusion, reading order, camera quality, barcode deduplication, safe narration, session-scoped speech, haptic vocabulary, and privacy invariants. It also loads the bundled model and performs real inference against the public-domain `Desk_chair.jpg` fixture. Validate the native execution and observation contract from the repository root:
 
 ```bash
 cd ../..

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import struct
 from pathlib import Path
 from typing import Any
@@ -190,7 +191,27 @@ def evaluate_observations(base_report: dict[str, Any], expected_by_id: dict[str,
         if actual is None:
             failures.append(f"{fixture_id}: native observations are missing")
             continue
-        detections = [item for item in actual.get("detections", []) if isinstance(item, dict)]
+        fixture_failures: list[str] = []
+        if actual.get("inference_completed") is not True:
+            fixture_failures.append("real model inference did not report successful completion")
+        raw_detections = actual.get("detections")
+        if not isinstance(raw_detections, list):
+            fixture_failures.append("detections must be an array")
+            raw_detections = []
+        detections = [item for item in raw_detections if isinstance(item, dict)]
+        if len(detections) != len(raw_detections):
+            fixture_failures.append("every detection must be an object")
+        latency = actual.get("latency_ms")
+        if not isinstance(latency, (int, float)) or not math.isfinite(float(latency)) or float(latency) < 0:
+            fixture_failures.append("latency_ms must be finite and non-negative")
+        for detection in detections:
+            confidence = detection.get("confidence")
+            if not isinstance(confidence, (int, float)) or not math.isfinite(float(confidence)) or not 0 <= float(confidence) <= 1:
+                fixture_failures.append("detection confidence must be finite and between zero and one")
+            if not valid_box(detection.get("bounding_box")):
+                fixture_failures.append("detection bounding_box must contain finite normalized coordinates")
+            if detection.get("spatial_region") not in SPATIAL_REGIONS:
+                fixture_failures.append("detection spatial_region is invalid")
         expected_objects = [item for item in expected.get("expected_objects", []) if isinstance(item, dict)]
         false_negatives: list[str] = []
         matched_indices: set[int] = set()
@@ -222,28 +243,31 @@ def evaluate_observations(base_report: dict[str, Any], expected_by_id: dict[str,
         ]
         narration = str(actual.get("narration", ""))
         prohibited = [phrase for phrase in FORBIDDEN_NARRATION if phrase in narration.lower()]
-        fixture_passed = (
+        semantic_expectations_met = (
             not false_negatives
             and len(false_positives) <= int(expected.get("maximum_false_positives", 0))
-            and not prohibited
         )
+        fixture_passed = not fixture_failures and not prohibited
         if not fixture_passed:
-            failures.append(f"{fixture_id}: native evaluation failed")
+            failures.append(f"{fixture_id}: native inference smoke evaluation failed")
         results.append(
             {
                 "fixture_id": fixture_id,
                 "passed": fixture_passed,
+                "semantic_expectations_met": semantic_expectations_met,
+                "accuracy_status": "fixture_expectations_met" if semantic_expectations_met else "accuracy_limitation_observed",
+                "smoke_failures": fixture_failures,
                 "false_negatives": false_negatives,
                 "false_positives": false_positives,
                 "prohibited_narration": prohibited,
-                "latency_ms": actual.get("latency_ms"),
+                "latency_ms": latency,
                 "policy_decision": actual.get("policy_decision"),
             }
         )
     return {
         **base_report,
         "status": "passed" if not failures else "failed",
-        "scope": "native_fixture_observation_evaluation",
+        "scope": "native_model_execution_and_observation_contract",
         "inference_executed": True,
         "observation_source": str(observations_path.resolve()),
         "failures": failures,

@@ -13,6 +13,7 @@ enum JarvisVisionCommand: String, Codable, Equatable, Sendable {
     case previousReadingLine
     case flashlightOn
     case flashlightOff
+    case flashlightStatus
     case checkQuality
 }
 

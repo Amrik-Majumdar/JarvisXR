@@ -59,6 +59,7 @@ Portrait-first UIKit layout, full-screen dark interface, accessible labels, loca
 | Voice input | In-app push-to-talk using Apple's Speech framework | Recognition availability and on-device processing vary by device, language, and Apple service state |
 | Voice output | `AVSpeechSynthesizer` with persistent voice profiles and a priority queue for vision warnings, targets, and scene changes | Installed system voices and the selected audio route determine final sound |
 | Jarvis Vision | Describe, Live Guide, Find, Read Text, Barcode, and Color modes with object tracking, scene fusion, safe narration, camera-quality guidance, and directional haptics | Results can be incomplete or wrong and are never permission to cross or proceed |
+| Messages | Accessible system contact picker, private in-memory draft readback, explicit confirmation, and the standard iOS message composer | The user sends or cancels in Apple's composer; Jarvis never claims a silent send |
 | Memory | Local notes, command history, search, and clear controls | Stored in the app container; removing the app can remove local data |
 | Control Mesh | Deep links, App Intents, Shortcuts guidance, Voice Control phrases, and public app URL routes | No injected taps, hidden screen reading, global overlay, or private system hooks |
 | Appliance use | Guided Access setup and dedicated-device workflow | iOS remains the operating system and security authority |
@@ -113,8 +114,8 @@ The workflow defines the following gates for app-affecting pull requests, main-b
 ```text
 Registry and policy validation -> pinned model fetch and checksum audit
 -> XcodeGen -> unsigned iPhoneOS build -> Swift unit tests
--> real Desk_chair simulator inference -> UI tests and 28 screenshots
--> native fixture evaluation -> privacy, safety, and IPA audits -> artifacts
+-> real Core ML simulator execution and output-contract validation
+-> UI tests and 28 screenshots -> privacy, safety, and IPA audits -> artifacts
 ```
 
 The workflow uploads:
@@ -130,7 +131,7 @@ The build is reproducible from source through a documented CI process. It is not
 
 ## Privacy and Safety
 
-JARVIS XR has no developer-operated analytics, advertising, account, or cloud backend. Vision frames, recognized text, and barcode values are not automatically persisted or sent to a vision service. Temporary scene memory is bounded to the active session and is cleared when the session stops. Notes and command history remain in the app container. Speech recognition may be processed on-device or by Apple depending on device and language support.
+JARVIS XR has no developer-operated analytics, advertising, account, or cloud backend. Vision frames, recognized text, barcode values, message recipients, and message bodies are not automatically persisted or sent to a developer service. Message commands are excluded from general command history; drafts stay in memory and are handed to Apple's standard composer only after confirmation. Temporary scene memory is bounded to the active session and is cleared when the session stops. Notes and non-sensitive command history remain in the app container. Speech recognition may be processed on-device or by Apple depending on device and language support.
 
 Read the full [Privacy Policy](PRIVACY.md), [Terms](TERMS.md), [Security Policy](SECURITY.md), and [Disclaimer](DISCLAIMER.md) before installation.
 

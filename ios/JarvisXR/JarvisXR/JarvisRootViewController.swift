@@ -5,6 +5,9 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
     private let memory = JarvisMemoryStore.shared
     private let speech = JarvisSpeechService.shared
     private let voiceInput = JarvisVoiceInputService.shared
+    private lazy var messageComposition = JarvisMessageCompositionService(presenter: self) { [weak self] response in
+        self?.render(response: response)
+    }
 
     private let backgroundLayer = CAGradientLayer()
     private let wordmarkLabel = UILabel()
@@ -281,6 +284,7 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
             },
             UIAction(title: "Read Text") { [weak self] _ in self?.execute("read this", source: "menu") },
             UIAction(title: "Scan Barcode") { [weak self] _ in self?.execute("scan barcode", source: "menu") },
+            UIAction(title: "Message a Contact") { [weak self] _ in self?.execute("message a contact", source: "menu") },
             UIAction(title: "Control Mesh") { [weak self] _ in self?.controlMeshTapped() },
             UIAction(title: "Settings") { [weak self] _ in self?.settingsTapped() },
             UIAction(title: "Diagnostics") { [weak self] _ in self?.diagnosticsTapped() },
@@ -344,6 +348,17 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
         }
         var visionRequest = decision.plan?.visionLaunchRequest
         visionRequest?.source = source
+        if let plan = decision.plan,
+           plan.route == .inAppMessage,
+           let rawAction = plan.data["message_action"],
+           let action = JarvisMessageAction(rawValue: rawAction) {
+            messageComposition.handle(JarvisMessageCommandDetails(
+                action: action,
+                recipientHint: plan.data["message_recipient_hint"],
+                body: plan.data["message_body"]
+            ))
+            return
+        }
         render(response: response, visionRequest: visionRequest)
     }
 

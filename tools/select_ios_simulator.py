@@ -6,7 +6,7 @@ import subprocess
 import sys
 
 
-PREFERRED_NAMES = [
+DEFAULT_NAMES = [
     "iPhone XR",
     "iPhone 11",
     "iPhone 11 Pro Max",
@@ -15,11 +15,26 @@ PREFERRED_NAMES = [
     "iPhone 16 Plus",
 ]
 
+COMPACT_NAMES = [
+    "iPhone 17e",
+    "iPhone 16e",
+    "iPhone SE (3rd generation)",
+]
+
+LARGE_NAMES = [
+    "iPhone 17 Pro Max",
+    "iPhone 16 Pro Max",
+    "iPhone 16 Plus",
+    "iPhone 15 Pro Max",
+    "iPhone 15 Plus",
+]
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Select an iPhone Simulator for JARVIS CI.")
     parser.add_argument("--destination", action="store_true", help="Print xcodebuild destination string instead of raw UDID.")
     parser.add_argument("--details", action="store_true", help="Print JSON details for the selected simulator.")
+    parser.add_argument("--profile", choices=("default", "compact", "large"), default="default")
     args = parser.parse_args()
 
     try:
@@ -37,11 +52,18 @@ def main() -> int:
         for device in runtime_devices:
             if device.get("isAvailable") and "iPhone" in device.get("name", ""):
                 devices.append({**device, "runtime": runtime})
-    for preferred in PREFERRED_NAMES:
+    preferred_names = {
+        "default": DEFAULT_NAMES,
+        "compact": COMPACT_NAMES,
+        "large": LARGE_NAMES,
+    }[args.profile]
+    for preferred in preferred_names:
         for device in devices:
             if device.get("name") == preferred:
                 print(format_output(device, args.destination, args.details))
                 return 0
+    if args.profile != "default":
+        return 1
     if devices:
         print(format_output(devices[0], args.destination, args.details))
         return 0

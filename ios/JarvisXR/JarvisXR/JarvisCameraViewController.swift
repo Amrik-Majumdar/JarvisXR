@@ -172,6 +172,11 @@ final class JarvisCameraViewController: UIViewController {
             setFlashlight(true)
         case .flashlightOff:
             setFlashlight(false)
+        case .flashlightStatus:
+            let enabled = camera.isTorchEnabled
+            lightButton.setTitle(enabled ? "Flashlight On" : "Flashlight Off", for: .normal)
+            lightButton.accessibilityValue = enabled ? "On" : "Off"
+            showResult(enabled ? "The Vision flashlight is on." : "The Vision flashlight is off.", announce: true)
         case .checkQuality:
             setMode(.describe, announce: true)
             beginCurrentMode()
@@ -305,7 +310,7 @@ final class JarvisCameraViewController: UIViewController {
             button.layer.cornerRadius = 12
             button.contentEdgeInsets = UIEdgeInsets(top: 11, left: 15, bottom: 11, right: 15)
             button.heightAnchor.constraint(greaterThanOrEqualToConstant: 48).isActive = true
-            button.accessibilityLabel = "(mode.visionDisplayName) mode"
+            button.accessibilityLabel = "\(mode.visionDisplayName) mode"
             button.accessibilityHint = mode.visionReadyGuidance
             button.accessibilityIdentifier = "jarvis.vision.mode.\(mode.rawValue)"
             button.addAction(UIAction { [weak self] _ in self?.modeSelected(mode) }, for: .touchUpInside)
