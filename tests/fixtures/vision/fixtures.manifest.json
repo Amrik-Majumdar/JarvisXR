@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "pack_id": "jarvis-vision-public-domain-baseline-v1",
+  "description": "Small legal baseline pack for deterministic object-detector integration checks.",
+  "fixtures": [
+    {
+      "id": "desk-chair-public-domain",
+      "file": "images/Desk_chair.jpg",
+      "media_type": "image/jpeg",
+      "width": 500,
+      "height": 750,
+      "size_bytes": 338347,
+      "sha256": "982519763c6b2a9569b780088101f5b4cc7c2803836319c60a982b39648e38f9",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Desk_chair.jpg",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Desk_chair.jpg",
+      "author": "Emiellaiendiay",
+      "original_upload_date": "2006-11-22",
+      "license": {
+        "name": "Public domain dedication",
+        "spdx_expression": "LicenseRef-Public-Domain",
+        "url": "https://commons.wikimedia.org/wiki/File:Desk_chair.jpg#Licensing",
+        "attribution_required": false
+      },
+      "expected_annotation": "expected/Desk_chair.expected.json"
+    }
+  ]
+}

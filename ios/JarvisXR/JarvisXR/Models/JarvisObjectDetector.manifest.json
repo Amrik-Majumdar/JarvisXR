@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "model_id": "jarvis-object-detector-yolov3-tiny-int8lut",
+  "display_name": "JARVIS Object Detector",
+  "upstream_name": "YOLOv3TinyInt8LUT",
+  "bundle_resource_name": "JarvisObjectDetector",
+  "source_artifact_filename": "JarvisObjectDetector.mlmodel",
+  "compiled_resource_name": "JarvisObjectDetector.mlmodelc",
+  "source": {
+    "publisher": "Apple Inc.",
+    "catalog_url": "https://developer.apple.com/machine-learning/models/",
+    "download_url": "https://ml-assets.apple.com/coreml/models/Image/ObjectDetection/YOLOv3Tiny/YOLOv3TinyInt8LUT.mlmodel",
+    "upstream_filename": "YOLOv3TinyInt8LUT.mlmodel",
+    "observed_last_modified_utc": "2019-11-07T18:08:57Z"
+  },
+  "artifact": {
+    "size_bytes": 8913366,
+    "sha256": "cde8af2528d6eca1d1580fdd0f0147cb6613d40ba962656b5f683c65f571870e",
+    "coreml_specification_version": 3,
+    "precision": "int8 lookup-table weights",
+    "format": "com.apple.CoreML.mlmodel"
+  },
+  "interface": {
+    "primary_input": {
+      "name": "image",
+      "type": "image",
+      "width": 416,
+      "height": 416,
+      "color_space": "RGB"
+    },
+    "threshold_inputs": [
+      {
+        "name": "iouThreshold",
+        "type": "double",
+        "purpose": "non-maximum-suppression intersection-over-union threshold"
+      },
+      {
+        "name": "confidenceThreshold",
+        "type": "double",
+        "purpose": "minimum confidence retained by non-maximum suppression"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "confidence",
+        "type": "multiArray",
+        "purpose": "class confidence for each retained bounding box"
+      },
+      {
+        "name": "coordinates",
+        "type": "multiArray",
+        "coordinate_format": "normalized_center_x_center_y_width_height",
+        "purpose": "normalized bounding boxes retained by non-maximum suppression"
+      }
+    ],
+    "non_maximum_suppression": true,
+    "class_count": 80
+  },
+  "classes": [
+    "person",
+    "bicycle",
+    "car",
+    "motorbike",
+    "aeroplane",
+    "bus",
+    "train",
+    "truck",
+    "boat",
+    "traffic light",
+    "fire hydrant",
+    "stop sign",
+    "parking meter",
+    "bench",
+    "bird",
+    "cat",
+    "dog",
+    "horse",
+    "sheep",
+    "cow",
+    "elephant",
+    "bear",
+    "zebra",
+    "giraffe",
+    "backpack",
+    "umbrella",
+    "handbag",
+    "tie",
+    "suitcase",
+    "frisbee",
+    "skis",
+    "snowboard",
+    "sports ball",
+    "kite",
+    "baseball bat",
+    "baseball glove",
+    "skateboard",
+    "surfboard",
+    "tennis racket",
+    "bottle",
+    "wine glass",
+    "cup",
+    "fork",
+    "knife",
+    "spoon",
+    "bowl",
+    "banana",
+    "apple",
+    "sandwich",
+    "orange",
+    "broccoli",
+    "carrot",
+    "hot dog",
+    "pizza",
+    "donut",
+    "cake",
+    "chair",
+    "sofa",
+    "pottedplant",
+    "bed",
+    "diningtable",
+    "toilet",
+    "tvmonitor",
+    "laptop",
+    "mouse",
+    "remote",
+    "keyboard",
+    "cell phone",
+    "microwave",
+    "oven",
+    "toaster",
+    "sink",
+    "refrigerator",
+    "book",
+    "clock",
+    "vase",
+    "scissors",
+    "teddy bear",
+    "hair drier",
+    "toothbrush"
+  ],
+  "user_facing_label_overrides": {
+    "aeroplane": "airplane",
+    "diningtable": "dining table",
+    "motorbike": "motorcycle",
+    "pottedplant": "potted plant",
+    "sofa": "couch",
+    "tvmonitor": "television"
+  },
+  "known_unsupported_requested_targets": [
+    "curb",
+    "door",
+    "exit sign",
+    "stairs",
+    "step"
+  ],
+  "license": {
+    "name": "YOLO License",
+    "spdx_expression": "LicenseRef-YOLO-Public-Domain",
+    "license_url": "https://github.com/pjreddie/darknet/blob/master/LICENSE",
+    "source_code_url": "https://github.com/pjreddie/darknet",
+    "authors": [
+      "Joseph Redmon",
+      "Ali Farhadi"
+    ],
+    "summary": "The upstream Darknet license dedicates Darknet to the public domain and permits use for any purpose.",
+    "notice_resource": "JarvisObjectDetector.NOTICE.txt"
+  },
+  "compatibility": {
+    "target_device": "iPhone XR",
+    "target_chip": "A12 Bionic",
+    "project_minimum_ios": "18.0",
+    "processing": "on-device",
+    "network_required_at_runtime": false,
+    "physical_device_validation_required": true
+  }
+}
