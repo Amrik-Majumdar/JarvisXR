@@ -317,7 +317,7 @@ final class CameraSessionService: NSObject {
         sessionQueue.setSpecific(key: sessionQueueKey, value: sessionQueueValue)
         let center = NotificationCenter.default
         observers.append(center.addObserver(
-            forName: .AVCaptureSessionWasInterrupted,
+            forName: AVCaptureSession.wasInterruptedNotification,
             object: session,
             queue: nil
         ) { [weak self] note in
@@ -328,7 +328,7 @@ final class CameraSessionService: NSObject {
             self?.transition(to: .interrupted(reason))
         })
         observers.append(center.addObserver(
-            forName: .AVCaptureSessionInterruptionEnded,
+            forName: AVCaptureSession.interruptionEndedNotification,
             object: session,
             queue: nil
         ) { [weak self] _ in
@@ -336,7 +336,7 @@ final class CameraSessionService: NSObject {
             self.start(position: self.activePosition ?? .rear)
         })
         observers.append(center.addObserver(
-            forName: .AVCaptureSessionRuntimeError,
+            forName: AVCaptureSession.runtimeErrorNotification,
             object: session,
             queue: nil
         ) { [weak self] note in
@@ -406,6 +406,8 @@ final class CameraSessionService: NSObject {
             return "Audio was interrupted by another app."
         case .videoDeviceNotAvailableInBackground:
             return "Vision paused because the app is in the background."
+        case .sensitiveContentMitigationActivated:
+            return "The camera paused because sensitive content mitigation is active."
         @unknown default:
             return "Camera interrupted."
         }

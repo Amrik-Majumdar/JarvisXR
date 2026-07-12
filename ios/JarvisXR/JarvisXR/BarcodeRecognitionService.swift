@@ -134,12 +134,13 @@ final class BarcodeRecognitionService: @unchecked Sendable {
                 }
                 try handler.perform([request])
             } catch {
-                requestResult = request.isCancelled ? .failure(.cancelled) : .failure(.invalidModelOutput)
+                let wasCancelled = self.withLock { self.generation != requestGeneration }
+                requestResult = wasCancelled ? .failure(.cancelled) : .failure(.invalidModelOutput)
             }
             self.withLock {
                 if self.currentRequest === request { self.currentRequest = nil }
             }
-            guard self.withLock({ self.generation == requestGeneration }), !request.isCancelled else {
+            guard self.withLock({ self.generation == requestGeneration }) else {
                 completion(.failure(.cancelled))
                 return
             }

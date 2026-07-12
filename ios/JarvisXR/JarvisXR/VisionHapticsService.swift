@@ -129,13 +129,13 @@ final class VisionHapticsService {
         guard activeSessionID == sessionID else { return }
         activeSessionID = nil
         lastPlayedAt = nil
-        try? engine?.stop()
+        engine?.stop()
     }
 
     func stopAll() {
         activeSessionID = nil
         lastPlayedAt = nil
-        try? engine?.stop()
+        engine?.stop()
     }
 
     private func configureBackend() {

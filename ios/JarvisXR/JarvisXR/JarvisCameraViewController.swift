@@ -581,10 +581,8 @@ final class JarvisCameraViewController: UIViewController {
         voiceInput.onStateChange = { [weak self] state in
             guard let self else { return }
             switch state {
-            case .idle:
+            case .standby:
                 self.voiceButton.setTitle("Voice", for: .normal)
-            case .requestingPermission:
-                self.renderState(self.currentState, guidance: "Requesting microphone and Speech access.", announce: false)
             case .listening:
                 self.voiceButton.setTitle("Finish", for: .normal)
                 self.renderState(self.currentState, guidance: "Listening for a Vision command.", announce: true)

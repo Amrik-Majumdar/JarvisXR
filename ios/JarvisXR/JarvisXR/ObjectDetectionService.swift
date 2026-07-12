@@ -325,7 +325,8 @@ final class ObjectDetectionService: VisionDetecting, @unchecked Sendable {
             }
             try handler.perform([request])
         } catch {
-            callbackResult = request.isCancelled
+            let wasCancelled = stateQueue.sync { cancellationGeneration != generation }
+            callbackResult = wasCancelled
                 ? .failure(.cancelled)
                 : .failure(.modelLoadFailed("Vision inference failed: \(error.localizedDescription)"))
         }
@@ -335,7 +336,7 @@ final class ObjectDetectionService: VisionDetecting, @unchecked Sendable {
                 currentRequest = nil
             }
         }
-        guard stateQueue.sync(execute: { cancellationGeneration == generation }), !request.isCancelled else {
+        guard stateQueue.sync(execute: { cancellationGeneration == generation }) else {
             completion(.failure(.cancelled))
             return
         }

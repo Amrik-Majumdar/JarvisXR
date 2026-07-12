@@ -109,12 +109,11 @@ final class FaceAndPersonService: @unchecked Sendable {
                 }
                 try handler.perform([peopleRequest, faceRequest])
             } catch {
-                requestError = peopleRequest.isCancelled || faceRequest.isCancelled ? .cancelled : .invalidModelOutput
+                let wasCancelled = self.withLock { self.generation != requestGeneration }
+                requestError = wasCancelled ? .cancelled : .invalidModelOutput
             }
             self.withLock { self.currentRequests.removeAll(keepingCapacity: false) }
-            guard self.withLock({ self.generation == requestGeneration }),
-                  !peopleRequest.isCancelled,
-                  !faceRequest.isCancelled else {
+            guard self.withLock({ self.generation == requestGeneration }) else {
                 completion(.failure(.cancelled))
                 return
             }

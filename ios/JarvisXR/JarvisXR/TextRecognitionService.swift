@@ -142,12 +142,13 @@ final class TextRecognitionService: @unchecked Sendable {
                 }
                 try handler.perform([request])
             } catch {
-                recognitionResult = request.isCancelled ? .failure(.cancelled) : .failure(.textRecognitionFailed)
+                let wasCancelled = self.withLock { self.generation != requestGeneration }
+                recognitionResult = wasCancelled ? .failure(.cancelled) : .failure(.textRecognitionFailed)
             }
             self.withLock {
                 if self.currentRequest === request { self.currentRequest = nil }
             }
-            guard self.withLock({ self.generation == requestGeneration }), !request.isCancelled else {
+            guard self.withLock({ self.generation == requestGeneration }) else {
                 completion(.failure(.cancelled))
                 return
             }
