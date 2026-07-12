@@ -18,6 +18,21 @@ REQUIRED_SCREENSHOTS = [
     "object-model-missing.png",
     "settings.png",
     "diagnostics.png",
+    "vision-idle.png",
+    "vision-describe-listening.png",
+    "vision-describe-analyzing.png",
+    "vision-describe-result.png",
+    "vision-live-active.png",
+    "vision-find-searching.png",
+    "vision-find-centered.png",
+    "vision-reading.png",
+    "vision-scan-result.png",
+    "vision-permission-denied.png",
+    "vision-model-unavailable.png",
+    "vision-settings.png",
+    "vision-help.png",
+    "vision-self-test.png",
+    "vision-onboarding.png",
 ]
 
 

@@ -25,6 +25,12 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate {
     private let profileKey = "JarvisXR.voiceProfile"
     private let personalVoiceKey = "JarvisXR.preferPersonalVoice"
     private var suppressNextCallbacks = false
+    private var visionQueue = VisionSpeechPriorityQueue()
+    private var activeVisionItem: VisionSpeechQueueItem?
+    private var activeVisionUtterance: AVSpeechUtterance?
+    private var visionQueuePaused = false
+    private var visionWasPausedByAudioInterruption = false
+    private var quietVisionGuideEnabled = false
     var onSpeechStart: (() -> Void)?
     var onSpeechFinish: (() -> Void)?
 
@@ -104,19 +110,138 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate {
     private override init() {
         super.init()
         synthesizer.delegate = self
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAudioSessionInterruption(_:)),
+            name: AVAudioSession.interruptionNotification,
+            object: AVAudioSession.sharedInstance()
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAudioRouteChange(_:)),
+            name: AVAudioSession.routeChangeNotification,
+            object: AVAudioSession.sharedInstance()
+        )
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Begins a new vision narration scope. Starting another scope invalidates queued
+    /// results from the previous mode so an old frame cannot speak after a mode change.
+    @MainActor
+    func beginVisionNarrationSession() -> UUID {
+        let sessionID = UUID()
+        let wasSpeakingVision = activeVisionItem != nil
+        activeVisionItem = nil
+        activeVisionUtterance = nil
+        visionQueue.beginSession(sessionID)
+        visionQueuePaused = false
+        if wasSpeakingVision {
+            synthesizer.stopSpeaking(at: .immediate)
+        }
+        return sessionID
+    }
+
+    @MainActor
+    func setQuietVisionGuideEnabled(_ enabled: Bool) {
+        quietVisionGuideEnabled = enabled
+        if enabled {
+            // Preserve only target and warning results already waiting to speak.
+            let sessionID = visionQueue.activeSessionID
+            visionQueue.cancelAll()
+            if let sessionID {
+                visionQueue.beginSession(sessionID)
+            }
+        }
+    }
+
+    @MainActor
+    @discardableResult
+    func enqueueVisionNarration(
+        _ narration: SceneNarration,
+        sessionID: UUID,
+        at date: Date = Date()
+    ) -> VisionSpeechEnqueueDisposition {
+        guard isEnabled else { return .rejectedExpired }
+        if quietVisionGuideEnabled && narration.priority < .target {
+            return .suppressedQuietMode
+        }
+
+        let item = VisionSpeechQueueItem(sessionID: sessionID, narration: narration)
+        let disposition = visionQueue.enqueue(item, current: activeVisionItem, at: date)
+        switch disposition {
+        case .queued:
+            speakNextVisionItemIfPossible()
+        case .interruptCurrent:
+            activeVisionItem = nil
+            activeVisionUtterance = nil
+            if synthesizer.stopSpeaking(at: .immediate) {
+                DispatchQueue.main.async { [weak self] in
+                    self?.speakNextVisionItemIfPossible()
+                }
+            } else {
+                speakNextVisionItemIfPossible()
+            }
+        case .suppressedDuplicate, .suppressedQuietMode, .rejectedStaleSession, .rejectedExpired:
+            break
+        }
+        return disposition
+    }
+
+    @MainActor
+    func pauseVisionNarration() {
+        visionQueuePaused = true
+        if activeVisionItem != nil, synthesizer.isSpeaking {
+            synthesizer.pauseSpeaking(at: .word)
+        }
+    }
+
+    @MainActor
+    func resumeVisionNarration() {
+        visionQueuePaused = false
+        if activeVisionItem != nil, synthesizer.isPaused {
+            synthesizer.continueSpeaking()
+        } else {
+            speakNextVisionItemIfPossible()
+        }
+    }
+
+    @MainActor
+    func cancelVisionNarrationSession(_ sessionID: UUID) {
+        visionQueue.cancelSession(sessionID)
+        guard activeVisionItem?.sessionID == sessionID else { return }
+        activeVisionItem = nil
+        activeVisionUtterance = nil
+        synthesizer.stopSpeaking(at: .immediate)
+        deactivateAudioSessionIfIdle()
+    }
+
+    @MainActor
+    var lastCompletedVisionNarrationText: String? {
+        visionQueue.lastCompletedText
     }
 
     func speak(_ text: String, notifyState: Bool = true) {
         guard isEnabled else { return }
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        activeVisionItem = nil
+        activeVisionUtterance = nil
         synthesizer.stopSpeaking(at: .immediate)
         let utterance = makeUtterance(text, profile: profile)
         suppressNextCallbacks = !notifyState
+        activateAudioSession()
         synthesizer.speak(utterance)
     }
 
     func stop() {
+        visionQueue.cancelAll()
+        activeVisionItem = nil
+        activeVisionUtterance = nil
+        visionQueuePaused = false
         synthesizer.stopSpeaking(at: .immediate)
+        deactivateAudioSessionIfIdle()
     }
 
     func testPhrase() -> String {
@@ -248,24 +373,132 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate {
         }
     }
 
+    private func speakNextVisionItemIfPossible() {
+        guard isEnabled, !visionQueuePaused else { return }
+        guard activeVisionItem == nil else { return }
+        guard !synthesizer.isSpeaking, !synthesizer.isPaused else { return }
+        guard let item = visionQueue.next() else {
+            deactivateAudioSessionIfIdle()
+            return
+        }
+
+        let utterance = makeUtterance(item.narration.text, profile: profile)
+        activeVisionItem = item
+        activeVisionUtterance = utterance
+        let delay = max(0, Date().timeIntervalSince(item.narration.createdAt))
+        VisionDiagnosticsStore.shared.recordNarrationDelay(delay)
+        activateAudioSession()
+        synthesizer.speak(utterance)
+    }
+
+    private func activateAudioSession() {
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(
+                .playback,
+                mode: .spokenAudio,
+                options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers, .allowBluetoothA2DP]
+            )
+            try audioSession.setActive(true)
+        } catch {
+            // AVSpeechSynthesizer can still use the system route when explicit session
+            // activation is unavailable, so this remains a recoverable degradation.
+        }
+    }
+
+    private func deactivateAudioSessionIfIdle() {
+        guard activeVisionItem == nil, !synthesizer.isSpeaking, !synthesizer.isPaused else { return }
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+    }
+
+    @objc private func handleAudioSessionInterruption(_ notification: Notification) {
+        guard let rawType = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: rawType) else {
+            return
+        }
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            switch type {
+            case .began:
+                self.visionWasPausedByAudioInterruption = self.activeVisionItem != nil
+                if self.visionWasPausedByAudioInterruption {
+                    self.visionQueuePaused = true
+                    self.synthesizer.pauseSpeaking(at: .word)
+                }
+            case .ended:
+                let rawOptions = notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
+                let shouldResume = AVAudioSession.InterruptionOptions(rawValue: rawOptions).contains(.shouldResume)
+                if self.visionWasPausedByAudioInterruption {
+                    self.visionWasPausedByAudioInterruption = false
+                    self.visionQueuePaused = false
+                    if shouldResume, self.synthesizer.isPaused {
+                        self.activateAudioSession()
+                        self.synthesizer.continueSpeaking()
+                    } else if shouldResume {
+                        self.speakNextVisionItemIfPossible()
+                    }
+                }
+            @unknown default:
+                break
+            }
+        }
+    }
+
+    @objc private func handleAudioRouteChange(_ notification: Notification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.activeVisionItem != nil else { return }
+            self.activateAudioSession()
+            if !self.visionQueuePaused {
+                self.speakNextVisionItemIfPossible()
+            }
+        }
+    }
+
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
         guard !suppressNextCallbacks else { return }
         onSpeechStart?()
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        if activeVisionUtterance === utterance, let completed = activeVisionItem {
+            visionQueue.markCompleted(completed)
+            activeVisionItem = nil
+            activeVisionUtterance = nil
+            speakNextVisionItemIfPossible()
+            if activeVisionItem == nil {
+                onSpeechFinish?()
+                deactivateAudioSessionIfIdle()
+            }
+            return
+        }
         if suppressNextCallbacks {
             suppressNextCallbacks = false
+            deactivateAudioSessionIfIdle()
             return
         }
         onSpeechFinish?()
+        speakNextVisionItemIfPossible()
+        deactivateAudioSessionIfIdle()
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        if activeVisionUtterance === utterance {
+            activeVisionItem = nil
+            activeVisionUtterance = nil
+            speakNextVisionItemIfPossible()
+            if activeVisionItem == nil {
+                onSpeechFinish?()
+                deactivateAudioSessionIfIdle()
+            }
+            return
+        }
         if suppressNextCallbacks {
             suppressNextCallbacks = false
+            deactivateAudioSessionIfIdle()
             return
         }
         onSpeechFinish?()
+        speakNextVisionItemIfPossible()
+        deactivateAudioSessionIfIdle()
     }
 }

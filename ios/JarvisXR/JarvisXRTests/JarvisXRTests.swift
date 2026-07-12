@@ -227,6 +227,114 @@ final class JarvisXRTests: XCTestCase {
         XCTAssertEqual(response.data["vision"], "visual_classification")
         XCTAssertTrue(response.shouldSpeak)
     }
+
+    func testNaturalSceneCommandPreservesTypedVisionLaunch() {
+        let plan = JarvisCommandPlanner().plan("Jarvis, what is in front of me?")
+        XCTAssertEqual(plan.route, .inAppVision)
+        XCTAssertEqual(plan.visionLaunchRequest?.mode, .describe)
+        XCTAssertEqual(plan.visionLaunchRequest?.command, .run)
+        XCTAssertTrue(plan.visionLaunchRequest?.startsImmediately == true)
+    }
+
+    func testRegionalSceneCommandsPreserveRegion() {
+        let planner = JarvisCommandPlanner()
+        XCTAssertEqual(planner.plan("describe the left side").visionLaunchRequest?.region, .left)
+        XCTAssertEqual(planner.plan("describe the center").visionLaunchRequest?.region, .center)
+        XCTAssertEqual(planner.plan("what is on the right?").visionLaunchRequest?.region, .right)
+    }
+
+    func testLiveGuideLifecycleCommandsAreTyped() {
+        let planner = JarvisCommandPlanner()
+        XCTAssertEqual(planner.plan("start live guide").visionLaunchRequest?.command, .run)
+        XCTAssertEqual(planner.plan("pause live guide").visionLaunchRequest?.command, .pause)
+        XCTAssertEqual(planner.plan("resume live guide").visionLaunchRequest?.command, .resume)
+        XCTAssertEqual(planner.plan("stop live guide").visionLaunchRequest?.command, .stop)
+        XCTAssertEqual(planner.plan("start live guide").visionLaunchRequest?.mode, .liveGuide)
+    }
+
+    func testFindCommandPreservesTarget() {
+        let plan = JarvisCommandPlanner().plan("Jarvis, find the chair")
+        XCTAssertEqual(plan.action, .findObject)
+        XCTAssertEqual(plan.visionLaunchRequest?.mode, .find)
+        XCTAssertEqual(plan.visionLaunchRequest?.target, "chair")
+    }
+
+    func testSensitiveVisionModesDoNotEnterGeneralHistoryPolicy() {
+        let planner = JarvisCommandPlanner()
+        XCTAssertFalse(planner.plan("read this").shouldPersistGeneralHistory)
+        XCTAssertFalse(planner.plan("scan this barcode").shouldPersistGeneralHistory)
+        XCTAssertFalse(planner.plan("repeat that").shouldPersistGeneralHistory)
+        XCTAssertTrue(planner.plan("describe this room").shouldPersistGeneralHistory)
+    }
+
+    func testVisionUtilityCommandsAreTyped() {
+        let planner = JarvisCommandPlanner()
+        XCTAssertEqual(planner.plan("what color is this").visionLaunchRequest?.mode, .identifyColor)
+        XCTAssertEqual(planner.plan("is the camera blocked").visionLaunchRequest?.command, .checkQuality)
+        XCTAssertEqual(planner.plan("turn on the flashlight").visionLaunchRequest?.command, .flashlightOn)
+        XCTAssertEqual(planner.plan("turn off the flashlight").visionLaunchRequest?.command, .flashlightOff)
+        XCTAssertEqual(planner.plan("give me more detail").visionLaunchRequest?.command, .moreDetail)
+        XCTAssertEqual(planner.plan("repeat that").visionLaunchRequest?.command, .repeatLast)
+    }
+
+    func testVisionDeepLinksParseTypedRequests() throws {
+        let describe = JarvisDeepLinkRouter.action(from: try XCTUnwrap(URL(string: "jarvis://vision/describe?region=left")))
+        guard case .vision(let describeRequest) = describe else { return XCTFail("Expected typed Describe request") }
+        XCTAssertEqual(describeRequest.mode, .describe)
+        XCTAssertEqual(describeRequest.region, .left)
+
+        let liveStop = JarvisDeepLinkRouter.action(from: try XCTUnwrap(URL(string: "jarvis://vision/live/stop")))
+        guard case .vision(let liveRequest) = liveStop else { return XCTFail("Expected typed Live request") }
+        XCTAssertEqual(liveRequest.mode, .liveGuide)
+        XCTAssertEqual(liveRequest.command, .stop)
+
+        let find = JarvisDeepLinkRouter.action(from: try XCTUnwrap(URL(string: "jarvis://vision/find?target=door")))
+        guard case .vision(let findRequest) = find else { return XCTFail("Expected typed Find request") }
+        XCTAssertEqual(findRequest.target, "door")
+    }
+
+    func testVisionDeepLinksCoverRequiredRoutesAndPreserveOldInspect() throws {
+        let routes: [(String, VisionMode, JarvisVisionCommand)] = [
+            ("jarvis://vision/describe", .describe, .run),
+            ("jarvis://vision/live/start", .liveGuide, .run),
+            ("jarvis://vision/read", .readText, .run),
+            ("jarvis://vision/barcode", .scanBarcode, .run),
+            ("jarvis://vision/color", .identifyColor, .run),
+            ("jarvis://vision/repeat", .describe, .repeatLast),
+        ]
+        for route in routes {
+            let action = JarvisDeepLinkRouter.action(from: try XCTUnwrap(URL(string: route.0)))
+            guard case .vision(let request) = action else { return XCTFail("Expected Vision request for \(route.0)") }
+            XCTAssertEqual(request.mode, route.1)
+            XCTAssertEqual(request.command, route.2)
+        }
+        guard case .inspect = JarvisDeepLinkRouter.action(from: try XCTUnwrap(URL(string: "jarvis://inspect"))) else {
+            return XCTFail("Legacy inspect link must remain supported")
+        }
+    }
+
+    func testVisionPreferencesPersistAndPrivacyInvariantsStayOff() {
+        let suiteName = "VisionPreferencesTests.\(UUID().uuidString)"
+        let suite = UserDefaults(suiteName: suiteName)!
+        defer { suite.removePersistentDomain(forName: suiteName) }
+        let store = VisionPreferencesStore(defaults: suite)
+        store.update {
+            $0.importantChangesOnly = false
+            $0.keepScreenAwakeDuringLiveGuide = false
+            $0.hapticsEnabled = false
+            $0.cameraChoice = .front
+        }
+        let reloaded = VisionPreferencesStore(defaults: suite).value
+        XCTAssertFalse(reloaded.importantChangesOnly)
+        XCTAssertFalse(reloaded.keepScreenAwakeDuringLiveGuide)
+        XCTAssertFalse(reloaded.hapticsEnabled)
+        XCTAssertEqual(reloaded.cameraChoice, .front)
+        XCTAssertFalse(reloaded.storesCapturedImages)
+        XCTAssertFalse(reloaded.storesCapturedVideo)
+        XCTAssertFalse(reloaded.persistsRecognizedText)
+        XCTAssertFalse(reloaded.allowsNetworkVisionProcessing)
+    }
+
     func testProductionLayoutUsesSafeAreaAndKeyboardGuides() {
         XCTAssertNotNil(JarvisRootViewController.self)
     }
