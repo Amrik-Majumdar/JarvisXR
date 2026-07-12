@@ -130,7 +130,9 @@ final class JarvisHelpViewController: UIViewController {
             "No speech: confirm Speech Output in Settings and check the current audio route.",
         ])
         addSection("Main JARVIS and Control Mesh", [
-            "On the main screen, tap the orb to wake, listen, or process. Tap while speaking to stop. Long hold to return to standby.",
+            "Tap once from standby to wake JARVIS.",
+            "Tap again to listen. Tap while listening to process what you said.",
+            "Tap while JARVIS is speaking to stop speech. Long hold to return to standby.",
             "Try: scan this, read this, detect objects, or open Control Mesh.",
             "Control Mesh explains supported Voice Control, Shortcuts, and phone-level routes without claiming hidden system control.",
         ])
