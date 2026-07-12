@@ -1,4 +1,4 @@
-# iPhone XR Setup Checklist
+# Compatible iPhone Setup Checklist (XR Capability Baseline)
 
 Use this only on a device you own or are authorized to configure.
 

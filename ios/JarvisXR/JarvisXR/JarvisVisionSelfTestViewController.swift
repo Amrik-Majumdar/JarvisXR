@@ -45,7 +45,7 @@ final class JarvisVisionSelfTestViewController: UIViewController {
         heading.accessibilityTraits.insert(.header)
         heading.accessibilityIdentifier = "jarvis.vision.selfTest.header"
         let explanation = label(
-            "This checks software readiness, privacy invariants, safety wording, speech, haptics, and permission state. It does not prove physical camera accuracy or replace the iPhone XR device checklist.",
+            "This checks software readiness, privacy invariants, safety wording, speech, haptics, and permission state. It does not prove physical camera accuracy or replace the compatible-iPhone device checklist.",
             style: .body,
             color: JarvisTheme.mutedText
         )
@@ -219,7 +219,7 @@ final class JarvisVisionSelfTestViewController: UIViewController {
         Speech: \(speech)
         Haptics: \(haptics)
 
-        This in-app check confirms software state only. Camera orientation, focus, real scenes, heat, battery, Bluetooth audio, and physical haptic feel require a human test on the iPhone XR.
+        This in-app check confirms software state only. Camera orientation, focus, real scenes, heat, battery, Bluetooth audio, and physical haptic feel require a human test on the target iPhone.
         """
         runButton.isEnabled = true
         runButton.setTitle("Run Again", for: .normal)

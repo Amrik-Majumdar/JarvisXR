@@ -3,39 +3,14 @@ from __future__ import annotations
 import json
 import argparse
 import subprocess
+import re
 import sys
-
-
-DEFAULT_NAMES = [
-    "iPhone XR",
-    "iPhone 11",
-    "iPhone 11 Pro Max",
-    "iPhone 14 Plus",
-    "iPhone 15 Plus",
-    "iPhone 16 Plus",
-]
-
-COMPACT_NAMES = [
-    "iPhone 17e",
-    "iPhone 16e",
-    "iPhone SE (3rd generation)",
-]
-
-LARGE_NAMES = [
-    "iPhone 17 Pro",
-    "iPhone 17 Pro Max",
-    "iPhone 16 Pro Max",
-    "iPhone 16 Plus",
-    "iPhone 15 Pro Max",
-    "iPhone 15 Plus",
-]
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Select an iPhone Simulator for JARVIS CI.")
     parser.add_argument("--destination", action="store_true", help="Print xcodebuild destination string instead of raw UDID.")
     parser.add_argument("--details", action="store_true", help="Print JSON details for the selected simulator.")
-    parser.add_argument("--profile", choices=("default", "compact", "large"), default="default")
     args = parser.parse_args()
 
     try:
@@ -51,24 +26,21 @@ def main() -> int:
     devices = []
     for runtime, runtime_devices in data.get("devices", {}).items():
         for device in runtime_devices:
-            if device.get("isAvailable") and "iPhone" in device.get("name", ""):
+            device_type = str(device.get("deviceTypeIdentifier", ""))
+            if device.get("isAvailable") and ".SimDeviceType.iPhone-" in device_type:
                 devices.append({**device, "runtime": runtime})
-    preferred_names = {
-        "default": DEFAULT_NAMES,
-        "compact": COMPACT_NAMES,
-        "large": LARGE_NAMES,
-    }[args.profile]
-    for preferred in preferred_names:
-        for device in devices:
-            if device.get("name") == preferred:
-                print(format_output(device, args.destination, args.details))
-                return 0
-    if args.profile != "default":
-        return 1
+    devices.sort(key=selection_key, reverse=True)
     if devices:
         print(format_output(devices[0], args.destination, args.details))
         return 0
     return 1
+
+
+def selection_key(device: dict) -> tuple[int, tuple[int, ...], str]:
+    runtime = str(device.get("runtime", ""))
+    version_match = re.search(r"iOS-(\d+)(?:-(\d+))?(?:-(\d+))?", runtime)
+    version = tuple(int(value or 0) for value in version_match.groups()) if version_match else (0, 0, 0)
+    return (1 if device.get("state") == "Booted" else 0, version, str(device.get("udid", "")))
 
 
 def format_output(device: dict, destination: bool, details: bool) -> str:

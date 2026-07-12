@@ -1,6 +1,6 @@
 # First-Run and Physical-Device Checklist
 
-Complete this on the actual target phone before enabling Guided Access or relying on Jarvis Vision. Simulator and CI results do not count as physical iPhone XR testing. Until a person completes and records this checklist on the device, every item in this document is pending.
+Complete this on the actual target phone before enabling Guided Access or relying on Jarvis Vision. Simulator and CI results do not count as physical iPhone testing. Until a person completes and records this checklist on the device, every item in this document is pending.
 
 ## Installation and Recovery
 

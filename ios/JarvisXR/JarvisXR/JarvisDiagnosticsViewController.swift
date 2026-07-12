@@ -156,7 +156,7 @@ final class JarvisDiagnosticsViewController: UIViewController {
         Notes: \(JarvisMemoryStore.shared.loadNotes().count)
         General command history: \(JarvisMemoryStore.shared.loadHistory().count)
 
-        Diagnostics does not prove physical iPhone XR camera accuracy, orientation, heat, battery life, Bluetooth routing, or haptic feel. Those checks require a human on the device.
+        Diagnostics does not prove physical iPhone camera accuracy, orientation, heat, battery life, Bluetooth routing, or haptic feel. Those checks require a human on the device.
         """
     }
 

@@ -53,6 +53,8 @@ def main() -> int:
     launch_screen = read(IOS_ROOT / "LaunchScreen.storyboard")
     orb_imageset = IOS_ROOT / "Assets.xcassets" / "JarvisOrb.imageset"
     app_icon_set = IOS_ROOT / "Assets.xcassets" / "AppIcon.appiconset"
+    production_swift = "\n".join(read(path) for path in IOS_ROOT.glob("*.swift"))
+    simulator_selector = read(ROOT / "tools" / "select_ios_simulator.py")
 
     failures: list[str] = []
 
@@ -151,6 +153,20 @@ def main() -> int:
     check("Ready state label matches UI proof", 'case ready = "Ready"' in state and 'waitForState("Ready")' in ui_test)
     check("Real UIKit layout uses keyboardLayoutGuide", "keyboardLayoutGuide.topAnchor" in root and "keyboardWillChangeFrameNotification" not in root)
     check("Real UIKit source avoids copied preview layout model", "JarvisXRLayoutModel" not in root + state)
+    check(
+        "iPhone support is capability based without hardware model gates",
+        all(marker not in production_swift for marker in ["hw.machine", "utsname(", "machineIdentifier", "deviceModelAllowlist"])
+        and "TARGETED_DEVICE_FAMILY: \"1\"" in project_yml
+        and 'iOS: "18.0"' in project_yml,
+    )
+    check(
+        "CI simulator discovery has no fixed iPhone model allowlist",
+        "PREFERRED_NAMES" not in simulator_selector
+        and "DEFAULT_NAMES" not in simulator_selector
+        and "COMPACT_NAMES" not in simulator_selector
+        and "LARGE_NAMES" not in simulator_selector
+        and ".SimDeviceType.iPhone-" in simulator_selector,
+    )
     check("Launch screen configured", "UILaunchStoryboardName" in info_plist and "LaunchScreen" in info_plist and "path: JarvisXR" in project_yml and "LaunchScreen.storyboard" not in project_yml)
     check("Markdown model notes excluded from app bundle", "Models/README.md" in project_yml)
     check("No primary Spotify music example", "Try: open Spotify" not in root + help_swift + preview_text and "play music" not in help_swift)

@@ -106,7 +106,9 @@ def validate_manifest(manifest: dict[str, Any]) -> list[str]:
     compatibility = manifest.get("compatibility")
     require(isinstance(compatibility, dict), "compatibility must be an object")
     if isinstance(compatibility, dict):
-        require(compatibility.get("target_device") == "iPhone XR", "unexpected target device")
+        require(compatibility.get("device_family") == "iPhone", "unexpected target device family")
+        require(compatibility.get("minimum_hardware_baseline") == "A12 Bionic", "unexpected hardware baseline")
+        require(compatibility.get("model_name_allowlist_required") is False, "device compatibility must not require a model-name allowlist")
         require(compatibility.get("network_required_at_runtime") is False, "runtime network requirement must be false")
         require(compatibility.get("physical_device_validation_required") is True, "physical-device validation must remain required")
 

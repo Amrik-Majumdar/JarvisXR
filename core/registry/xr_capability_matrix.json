@@ -6527,6 +6527,6 @@
     "blocked_in_hard_lockdown": 27,
     "blocked_until_jailbreak": 20
   },
-  "target_device": "iPhone XR",
+  "target_device": "compatible iPhone with an iPhone XR capability baseline",
   "version": "0.5"
 }

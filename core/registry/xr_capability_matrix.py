@@ -104,7 +104,7 @@ def build_matrix() -> dict:
         counter.update(item["xr_classifications"])
     return {
         "version": "0.5",
-        "target_device": "iPhone XR",
+        "target_device": "compatible iPhone with an iPhone XR capability baseline",
         "ios_version": "18.7.9",
         "strategy": "Jarvis Device Mode",
         "classification_labels": [

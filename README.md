@@ -3,7 +3,7 @@
 
   # JARVIS XR
 
-  **A native, offline-first assistant interface for iPhone XR**
+  **A native, offline-first assistant interface for compatible iPhones**
 
   Voice and typed commands, six on-device vision modes, local memory, accessible
   speech and haptics, and public-API iOS automation guidance in one UIKit experience.
@@ -104,6 +104,8 @@ xcodebuild -project JarvisXR.xcodeproj \
 ```
 
 Native builds require macOS and Xcode. Windows and Linux can run the Python validation suite, while the included GitHub Actions workflow performs the macOS build, simulator tests, visual proof capture, IPA audit, and unsigned IPA packaging.
+
+The iPhone XR is the minimum hardware capability baseline, not a model allowlist. The app targets the iPhone device family and uses runtime camera, torch, haptic, thermal, accessibility, and API-availability checks. Any standard, mini, Plus, Pro, Pro Max, SE, or “e” iPhone that can run the preserved iOS 18 deployment target is supported without matching a hard-coded device name.
 
 See [Building](docs/BUILDING.md) for the complete reproducible path.
 

@@ -166,8 +166,9 @@
     "notice_resource": "JarvisObjectDetector.NOTICE.txt"
   },
   "compatibility": {
-    "target_device": "iPhone XR",
-    "target_chip": "A12 Bionic",
+    "device_family": "iPhone",
+    "minimum_hardware_baseline": "A12 Bionic",
+    "model_name_allowlist_required": false,
     "project_minimum_ios": "18.0",
     "processing": "on-device",
     "network_required_at_runtime": false,
