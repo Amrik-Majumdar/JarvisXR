@@ -205,8 +205,15 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
             .joined(separator: ", ")
         print("VISION_FIXTURE_DETECTIONS: \(summary.isEmpty ? "none" : summary)")
 
+        let evaluationData = try nativeEvaluationData(result: result, chair: chair)
+        print("VISION_NATIVE_OBSERVATIONS_BASE64:\(evaluationData.base64EncodedString())")
         if let output = ProcessInfo.processInfo.environment["VISION_EVALUATION_OUTPUT"], !output.isEmpty {
-            try writeNativeEvaluation(result: result, chair: chair, to: URL(fileURLWithPath: output))
+            let outputURL = URL(fileURLWithPath: output)
+            try FileManager.default.createDirectory(
+                at: outputURL.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            try evaluationData.write(to: outputURL, options: .atomic)
         }
 
         XCTAssertTrue(result.latency.isFinite)
@@ -224,11 +231,10 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
         }
     }
 
-    private func writeNativeEvaluation(
+    private func nativeEvaluationData(
         result: ObjectDetectionResult,
-        chair: ObjectObservation?,
-        to outputURL: URL
-    ) throws {
+        chair: ObjectObservation?
+    ) throws -> Data {
         let detections: [[String: Any]] = result.observations.map { observation in
             [
                 "label": observation.classIdentifier,
@@ -259,12 +265,7 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
         ]
         let validation = VisionSafetyPolicy().validateNarration(narration)
         XCTAssertTrue(validation.isAllowed, "Fixture narration must pass the production safety policy")
-        let data = try JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys])
-        try FileManager.default.createDirectory(
-            at: outputURL.deletingLastPathComponent(),
-            withIntermediateDirectories: true
-        )
-        try data.write(to: outputURL, options: .atomic)
+        return try JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys])
     }
 
     private func set(_ array: MLMultiArray, _ indices: [Int], _ value: Double) {
