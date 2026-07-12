@@ -22,6 +22,7 @@ COMPACT_NAMES = [
 ]
 
 LARGE_NAMES = [
+    "iPhone 17 Pro",
     "iPhone 17 Pro Max",
     "iPhone 16 Pro Max",
     "iPhone 16 Plus",

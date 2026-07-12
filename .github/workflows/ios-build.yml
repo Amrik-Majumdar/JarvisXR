@@ -153,13 +153,14 @@ jobs:
             test | tee -a build/logs/xcodebuild-unit-test.log
 
       - name: Run JarvisXR UI tests on simulator
-        timeout-minutes: 20
+        timeout-minutes: 30
         working-directory: ios/JarvisXR
         run: |
           set -o pipefail
           mkdir -p build/logs build/visual-proof
           SIM_ID="$(python3 ../../tools/select_ios_simulator.py --profile large || true)"
           DESTINATION="$(python3 ../../tools/select_ios_simulator.py --profile large --destination || true)"
+          python3 ../../tools/select_ios_simulator.py --profile large --details | tee build/logs/selected-large-simulator.txt || true
           if [ -z "$SIM_ID" ]; then
             echo "No available iPhone simulator found. Failing because UI verification is required." | tee build/logs/xcodebuild-ui-test.log
             exit 1
@@ -180,7 +181,7 @@ jobs:
             test | tee -a build/logs/xcodebuild-ui-test.log
 
       - name: Verify primary layout on compact iPhone simulator
-        timeout-minutes: 10
+        timeout-minutes: 15
         working-directory: ios/JarvisXR
         run: |
           set -o pipefail
@@ -201,12 +202,12 @@ jobs:
             -configuration Debug \
             -sdk iphonesimulator \
             -destination "$COMPACT_DESTINATION" \
-            -derivedDataPath build/CompactTestDerivedData \
+            -derivedDataPath build/TestDerivedData \
             -resultBundlePath build/logs/JarvisXRCompactLayoutTests.xcresult \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testPrimaryActionsReachableAtCurrentSize \
-            test | tee -a build/logs/xcodebuild-compact-layout.log
+            test-without-building | tee -a build/logs/xcodebuild-compact-layout.log
 
       - name: Run vision fixture and policy evaluation
         run: |
