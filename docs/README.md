@@ -12,11 +12,13 @@
 - [Build from source](BUILDING.md)
 - [Testing](TESTING.md)
 - [Architecture](ARCHITECTURE.md)
+- [Jarvis Vision completion ledger](JARVIS_VISION_COMPLETION_LEDGER.md)
 
 ## Capabilities and Limits
 
 - [Features and limits](FEATURES_AND_LIMITS.md)
 - [Vision pipeline](VISION.md)
+- [Vision model decision](JARVIS_VISION_MODEL_DECISION.md)
 
 ## Trust
 

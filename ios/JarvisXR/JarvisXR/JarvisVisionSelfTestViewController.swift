@@ -86,7 +86,7 @@ final class JarvisVisionSelfTestViewController: UIViewController {
         UIAccessibility.post(notification: .announcement, argument: "Vision self-test started.")
 
         guard let ocrImage = makeOCRFixture(), let barcodeImage = makeBarcodeFixture() else {
-            resultLabel.text = "FAIL — Jarvis could not generate the local self-test fixtures."
+            resultLabel.text = "FAIL: Jarvis could not generate the local self-test fixtures."
             runButton.isEnabled = true
             runButton.setTitle("Run Again", for: .normal)
             return
@@ -94,9 +94,9 @@ final class JarvisVisionSelfTestViewController: UIViewController {
 
         let group = DispatchGroup()
         let lock = NSLock()
-        var modelResult = "FAIL — model validation did not return"
-        var ocrResult = "FAIL — OCR did not return"
-        var barcodeResult = "FAIL — barcode recognition did not return"
+        var modelResult = "FAIL: model validation did not return"
+        var ocrResult = "FAIL: OCR did not return"
+        var barcodeResult = "FAIL: barcode recognition did not return"
 
         let detector = ObjectDetectionService()
         let textRecognizer = TextRecognitionService()
@@ -125,10 +125,10 @@ final class JarvisVisionSelfTestViewController: UIViewController {
             switch result {
             case .success(let metadata):
                 modelResult = metadata.checksumVerified
-                    ? "PASS — \(metadata.name) version \(metadata.version), checksum verified"
-                    : "FAIL — model metadata loaded without a verified checksum"
+                    ? "PASS: \(metadata.name) version \(metadata.version), checksum verified"
+                    : "FAIL: model metadata loaded without a verified checksum"
             case .failure(let error):
-                modelResult = "FAIL — \(Self.userFacing(error))"
+                modelResult = "FAIL: \(Self.userFacing(error))"
             }
             lock.unlock()
             group.leave()
@@ -143,10 +143,10 @@ final class JarvisVisionSelfTestViewController: UIViewController {
                     .components(separatedBy: .whitespacesAndNewlines)
                     .joined(separator: " ")
                 ocrResult = normalized.contains("JARVIS") && normalized.contains("VISION") && normalized.contains("TEST")
-                    ? "PASS — generated text fixture matched"
-                    : "FAIL — generated text fixture did not match the expected words"
+                    ? "PASS: generated text fixture matched"
+                    : "FAIL: generated text fixture did not match the expected words"
             case .failure(let error):
-                ocrResult = "FAIL — \(Self.userFacing(error))"
+                ocrResult = "FAIL: \(Self.userFacing(error))"
             }
             lock.unlock()
             group.leave()
@@ -159,10 +159,10 @@ final class JarvisVisionSelfTestViewController: UIViewController {
             case .success(let value):
                 let matched = value.observations.contains { $0.payload == "JARVIS-BARCODE-TEST" }
                 barcodeResult = matched
-                    ? "PASS — generated QR fixture matched and no URL was opened"
-                    : "FAIL — generated QR fixture did not match"
+                    ? "PASS: generated QR fixture matched and no URL was opened"
+                    : "FAIL: generated QR fixture did not match"
             case .failure(let error):
-                barcodeResult = "FAIL — \(Self.userFacing(error))"
+                barcodeResult = "FAIL: \(Self.userFacing(error))"
             }
             lock.unlock()
             group.leave()
@@ -176,8 +176,8 @@ final class JarvisVisionSelfTestViewController: UIViewController {
                 modelResult: modelResult,
                 ocrResult: ocrResult,
                 barcodeResult: barcodeResult,
-                qualityResult: quality.isUsable ? "PASS — generated image accepted" : "NOTICE — generated image produced quality guidance",
-                colorResult: color.name.isEmpty ? "FAIL — no color name" : "PASS — center color analyzer returned a bounded name"
+                qualityResult: quality.isUsable ? "PASS: generated image accepted" : "NOTICE: generated image produced quality guidance",
+                colorResult: color.name.isEmpty ? "FAIL: no color name" : "PASS: center color analyzer returned a bounded name"
             )
         }
     }
@@ -202,10 +202,10 @@ final class JarvisVisionSelfTestViewController: UIViewController {
             !preferences.persistsRecognizedText &&
             !preferences.allowsNetworkVisionProcessing
 
-        let speech = JarvisSpeechService.shared.isEnabled ? "PASS — speech output enabled" : "NOTICE — speech output disabled"
+        let speech = JarvisSpeechService.shared.isEnabled ? "PASS: speech output enabled" : "NOTICE: speech output disabled"
         let haptics = VisionHapticsService.shared.backend == .unavailable
-            ? "NOTICE — haptics unavailable; speech fallback is required"
-            : "PASS — \(VisionHapticsService.shared.backend.rawValue)"
+            ? "NOTICE: haptics unavailable; speech fallback is required"
+            : "PASS: \(VisionHapticsService.shared.backend.rawValue)"
 
         resultLabel.text = """
         Camera permission: \(camera)
@@ -295,7 +295,7 @@ final class JarvisVisionSelfTestViewController: UIViewController {
               let index = arguments.firstIndex(of: "--jarvis-state"),
               arguments.indices.contains(index + 1),
               arguments[index + 1] == "vision_self_test" else { return }
-        resultLabel.text = "DEMO FIXTURE — Model ready; OCR ready; barcode ready; safety wording passed; privacy defaults passed. No physical camera test was performed."
+        resultLabel.text = "DEMO FIXTURE: Model ready; OCR ready; barcode ready; safety wording passed; privacy defaults passed. No physical camera test was performed."
         runButton.setTitle("Run Self-Test", for: .normal)
     }
 }

@@ -14,7 +14,9 @@ enum JarvisVoiceProfile: String {
     }
 }
 
-final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate {
+/// UIKit-owned speech adapter. Production callers and notification recovery enter
+/// through the main thread; AVSpeechSynthesizer remains encapsulated here.
+final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate, @unchecked Sendable {
     static let shared = JarvisSpeechService()
 
     private let synthesizer = AVSpeechSynthesizer()

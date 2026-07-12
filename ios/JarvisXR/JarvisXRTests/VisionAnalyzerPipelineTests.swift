@@ -1,6 +1,5 @@
 import CoreML
 import ImageIO
-import Vision
 import XCTest
 @testable import JarvisXR
 
@@ -100,16 +99,20 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
         XCTAssertTrue(blur.warnings.contains(.poorFraming))
 
         let motionAnalyzer = CameraQualityAnalyzer()
-        let checkerboard = (0..<64).map { index in UInt8(((index + index / 8) % 2) * 255) }
+        let checkerboard: [UInt8] = (0..<64).map { index in
+            ((index + index / 8) % 2) == 0 ? 0 : 255
+        }
         _ = motionAnalyzer.evaluate(luminanceSamples: checkerboard, width: 8, height: 8)
-        let inverted = checkerboard.map { 255 - $0 }
+        let inverted: [UInt8] = checkerboard.map { 255 - $0 }
         let motion = motionAnalyzer.evaluate(luminanceSamples: inverted, width: 8, height: 8)
-        XCTAssertTrue(motion.warnings.contains(.excessiveMotion))
+        XCTAssertTrue(motion.warnings.contains(VisionWarning.excessiveMotion))
     }
 
     func testCameraQualityAcceptsDetailedBalancedFrame() {
         let analyzer = CameraQualityAnalyzer()
-        let checkerboard = (0..<256).map { index in UInt8(((index + index / 16) % 2) == 0 ? 70 : 190) }
+        let checkerboard: [UInt8] = (0..<256).map { index in
+            ((index + index / 16) % 2) == 0 ? 70 : 190
+        }
         let report = analyzer.evaluate(luminanceSamples: checkerboard, width: 16, height: 16)
         XCTAssertTrue(report.isUsable)
         XCTAssertGreaterThan(report.sharpness, 0.2)

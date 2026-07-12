@@ -3,6 +3,8 @@ name: Build JarvisXR iOS IPA
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
       - "ios/JarvisXR/**"
       - "core/**"
@@ -349,7 +351,7 @@ jobs:
           path: ios/JarvisXR/build/JarvisXR-unsigned.ipa
 
       - name: Upload iOS screenshot proof
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v7
         with:
           name: JarvisXR-ios-screenshot-proof

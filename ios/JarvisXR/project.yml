@@ -22,6 +22,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.amrik.jarvisxr
         PRODUCT_NAME: JarvisXR
+        TARGETED_DEVICE_FAMILY: "1"
         INFOPLIST_FILE: JarvisXR/Info.plist
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: ""

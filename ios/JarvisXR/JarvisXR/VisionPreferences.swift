@@ -73,6 +73,24 @@ struct VisionPreferences: Codable, Equatable, Sendable {
     let persistsRecognizedText = false
     let allowsNetworkVisionProcessing = false
 
+    private enum CodingKeys: String, CodingKey {
+        case defaultMode
+        case narrationVerbosity
+        case importantChangesOnly
+        case speechRate
+        case automaticFlashlightSuggestion
+        case hapticsEnabled
+        case hapticIntensity
+        case directionSpeechEnabled
+        case earconsEnabled
+        case detectionSensitivity
+        case processingPreference
+        case keepScreenAwakeDuringLiveGuide
+        case cameraChoice
+        case temporarySessionMemoryEnabled
+        case debugOverlayEnabled
+    }
+
     static let `default` = VisionPreferences()
 
     init(
