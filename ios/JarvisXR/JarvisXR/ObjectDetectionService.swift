@@ -229,6 +229,15 @@ final class ObjectDetectionService: VisionDetecting, @unchecked Sendable {
             let coreMLModel = try MLModel(contentsOf: modelURL, configuration: modelConfiguration)
             try validate(modelDescription: coreMLModel.modelDescription)
             let preparedVisionModel = try VNCoreMLModel(for: coreMLModel)
+            preparedVisionModel.inputImageFeatureName = PinnedContract.imageInputName
+            preparedVisionModel.featureProvider = try MLDictionaryFeatureProvider(dictionary: [
+                PinnedContract.iouInputName: MLFeatureValue(
+                    double: configuration.duplicateIntersectionOverUnion
+                ),
+                PinnedContract.confidenceInputName: MLFeatureValue(
+                    double: configuration.minimumConfidence
+                ),
+            ])
 
             let metadata = ModelMetadata(
                 name: manifest.displayName,

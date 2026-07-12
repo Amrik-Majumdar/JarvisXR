@@ -1,12 +1,13 @@
 import CoreML
+import Foundation
 import ImageIO
 import XCTest
 @testable import JarvisXR
 
 final class VisionAnalyzerPipelineTests: XCTestCase {
     func testMultiArrayDecoderMapsExactLabelCoordinatesAndRequestedTarget() throws {
-        let confidence = try MLMultiArray(shape: [2, 80], dataType: .double)
-        let coordinates = try MLMultiArray(shape: [2, 4], dataType: .double)
+        let confidence = try makeMultiArray(shape: [2, 80], dataType: .double)
+        let coordinates = try makeMultiArray(shape: [2, 4], dataType: .double)
         set(confidence, [0, 56], 0.91) // chair
         set(confidence, [1, 39], 0.72) // bottle
         [0.50, 0.55, 0.40, 0.50].enumerated().forEach { set(coordinates, [0, $0.offset], $0.element) }
@@ -34,8 +35,8 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
     }
 
     func testMultiArrayDecoderHandlesTransposedStridedSchemaAndSuppressesDuplicates() throws {
-        let confidence = try MLMultiArray(shape: [80, 2], dataType: .float32)
-        let coordinates = try MLMultiArray(shape: [4, 2], dataType: .float32)
+        let confidence = try makeMultiArray(shape: [80, 2], dataType: .float32)
+        let coordinates = try makeMultiArray(shape: [4, 2], dataType: .float32)
         set(confidence, [56, 0], 0.85)
         set(confidence, [56, 1], 0.75)
         let boxes = [
@@ -59,8 +60,8 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
     }
 
     func testMultiArrayDecoderRejectsMalformedCoordinatesExplicitly() throws {
-        let confidence = try MLMultiArray(shape: [1, 80], dataType: .double)
-        let coordinates = try MLMultiArray(shape: [1, 5], dataType: .double)
+        let confidence = try makeMultiArray(shape: [1, 80], dataType: .double)
+        let coordinates = try makeMultiArray(shape: [1, 5], dataType: .double)
         XCTAssertThrowsError(try ObjectDetectionDecoder.decode(
             confidence: confidence,
             coordinates: coordinates,
@@ -198,19 +199,25 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
         wait(for: [inference], timeout: 45)
 
         let result = try XCTUnwrap(nativeResult)
-        let chair = try XCTUnwrap(result.observations.first(where: { $0.classIdentifier == "chair" }))
-        XCTAssertGreaterThanOrEqual(chair.confidence, 0.20)
-        XCTAssertEqual(chair.horizontalRegion, .center)
-        XCTAssertFalse(result.observations.contains(where: { $0.classIdentifier == "person" && $0.confidence >= 0.20 }))
+        let chair = result.observations.first(where: { $0.classIdentifier == "chair" })
+        let summary = result.observations
+            .map { "\($0.classIdentifier)=\(String(format: "%.3f", $0.confidence))" }
+            .joined(separator: ", ")
+        print("VISION_FIXTURE_DETECTIONS: \(summary.isEmpty ? "none" : summary)")
 
         if let output = ProcessInfo.processInfo.environment["VISION_EVALUATION_OUTPUT"], !output.isEmpty {
             try writeNativeEvaluation(result: result, chair: chair, to: URL(fileURLWithPath: output))
         }
+
+        let verifiedChair = try XCTUnwrap(chair)
+        XCTAssertGreaterThanOrEqual(verifiedChair.confidence, 0.20)
+        XCTAssertEqual(verifiedChair.horizontalRegion, .center)
+        XCTAssertFalse(result.observations.contains(where: { $0.classIdentifier == "person" && $0.confidence >= 0.20 }))
     }
 
     private func writeNativeEvaluation(
         result: ObjectDetectionResult,
-        chair: ObjectObservation,
+        chair: ObjectObservation?,
         to outputURL: URL
     ) throws {
         let detections: [[String: Any]] = result.observations.map { observation in
@@ -227,7 +234,9 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
                 ]
             ]
         }
-        let narration = "I may be seeing a \(chair.name) \(chair.horizontalRegion.spokenLocation)."
+        let narration = chair.map {
+            "I may be seeing a \($0.name) \($0.horizontalRegion.spokenLocation)."
+        } ?? "I do not have enough evidence to describe this image."
         let payload: [String: Any] = [
             "schema_version": 1,
             "fixtures": [[
@@ -250,5 +259,16 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
 
     private func set(_ array: MLMultiArray, _ indices: [Int], _ value: Double) {
         array[indices.map { NSNumber(value: $0) }] = NSNumber(value: value)
+    }
+
+    private func makeMultiArray(
+        shape: [NSNumber],
+        dataType: MLMultiArrayDataType
+    ) throws -> MLMultiArray {
+        let array = try MLMultiArray(shape: shape, dataType: dataType)
+        for index in 0..<array.count {
+            array[index] = NSNumber(value: 0)
+        }
+        return array
     }
 }
