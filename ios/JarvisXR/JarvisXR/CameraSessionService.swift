@@ -70,8 +70,10 @@ final class CameraSessionService: NSObject {
     private let videoQueue = DispatchQueue(label: "com.amrik.jarvisxr.camera.video", qos: .userInitiated)
     private let videoOutput = AVCaptureVideoDataOutput()
     private let photoOutput = AVCapturePhotoOutput()
+    private let orientationLock = NSLock()
     private var activeDevice: AVCaptureDevice?
     private var configuredPosition: CameraPosition?
+    private var cachedOrientation: CGImagePropertyOrientation = .right
     private var currentState: State = .idle
     private var shouldResumeAfterInterruption = false
     private var photoCompletion: ((Result<CapturedPhoto, Error>) -> Void)?
@@ -85,7 +87,8 @@ final class CameraSessionService: NSObject {
 
     deinit {
         observers.forEach(NotificationCenter.default.removeObserver)
-        stop()
+        videoOutput.setSampleBufferDelegate(nil, queue: nil)
+        shutdown()
     }
 
     static var authorizationStatus: AVAuthorizationStatus {
@@ -93,19 +96,19 @@ final class CameraSessionService: NSObject {
     }
 
     var state: State {
-        sessionQueue.sync { currentState }
+        withSessionQueue { currentState }
     }
 
     var activePosition: CameraPosition? {
-        sessionQueue.sync { configuredPosition }
+        withSessionQueue { configuredPosition }
     }
 
     var isTorchAvailable: Bool {
-        sessionQueue.sync { activeDevice?.hasTorch == true }
+        withSessionQueue { activeDevice?.hasTorch == true }
     }
 
     var isTorchEnabled: Bool {
-        sessionQueue.sync { activeDevice?.torchMode == .on }
+        withSessionQueue { activeDevice?.torchMode == .on }
     }
 
     func requestAccessAndStart(
@@ -166,12 +169,17 @@ final class CameraSessionService: NSObject {
     func stop() {
         sessionQueue.async { [weak self] in
             guard let self else { return }
-            self.shouldResumeAfterInterruption = false
-            self.disableTorchIfNeeded()
-            if self.session.isRunning {
-                self.session.stopRunning()
-            }
+            self.stopSessionOnQueue()
             self.transition(to: .stopped)
+        }
+    }
+
+    /// Completes capture cleanup before the owner is released. Unlike `stop()`, this
+    /// method is synchronous and intentionally emits no callback during teardown.
+    func shutdown() {
+        withSessionQueue {
+            stopSessionOnQueue()
+            currentState = .stopped
         }
     }
 
@@ -291,22 +299,55 @@ final class CameraSessionService: NSObject {
 
         activeDevice = camera
         configuredPosition = position
+        setCachedOrientation(orientation(for: position))
     }
 
     private func orientation(for position: CameraPosition?) -> CGImagePropertyOrientation {
         position == .front ? .leftMirrored : .right
     }
 
+    private func setCachedOrientation(_ orientation: CGImagePropertyOrientation) {
+        orientationLock.lock()
+        cachedOrientation = orientation
+        orientationLock.unlock()
+    }
+
+    private func currentOrientation() -> CGImagePropertyOrientation {
+        orientationLock.lock()
+        defer { orientationLock.unlock() }
+        return cachedOrientation
+    }
+
+    @discardableResult
+    private func withSessionQueue<T>(_ work: () -> T) -> T {
+        if DispatchQueue.getSpecific(key: sessionQueueKey) == sessionQueueValue {
+            return work()
+        }
+        return sessionQueue.sync(execute: work)
+    }
+
+    private func stopSessionOnQueue() {
+        shouldResumeAfterInterruption = false
+        disableTorchIfNeeded()
+        if session.isRunning {
+            session.stopRunning()
+        }
+    }
+
     private func transition(to state: State) {
         if DispatchQueue.getSpecific(key: sessionQueueKey) == sessionQueueValue {
             currentState = state
+            DispatchQueue.main.async { [weak self] in
+                self?.onStateChange?(state)
+            }
         } else {
             sessionQueue.async { [weak self] in
-                self?.currentState = state
+                guard let self else { return }
+                self.currentState = state
+                DispatchQueue.main.async { [weak self] in
+                    self?.onStateChange?(state)
+                }
             }
-        }
-        DispatchQueue.main.async { [weak self] in
-            self?.onStateChange?(state)
         }
     }
 
@@ -424,7 +465,7 @@ extension CameraSessionService: AVCaptureVideoDataOutputSampleBufferDelegate {
             onDroppedFrame?()
             return
         }
-        onFrame?(pixelBuffer, CMSampleBufferGetPresentationTimeStamp(sampleBuffer), orientation(for: configuredPosition))
+        onFrame?(pixelBuffer, CMSampleBufferGetPresentationTimeStamp(sampleBuffer), currentOrientation())
     }
 
     func captureOutput(
@@ -442,7 +483,7 @@ extension CameraSessionService: AVCapturePhotoCaptureDelegate {
         didFinishProcessingPhoto photo: AVCapturePhoto,
         error: Error?
     ) {
-        let completion = sessionQueue.sync { () -> ((Result<CapturedPhoto, Error>) -> Void)? in
+        let completion = withSessionQueue { () -> ((Result<CapturedPhoto, Error>) -> Void)? in
             defer { photoCompletion = nil }
             return photoCompletion
         }
@@ -455,7 +496,7 @@ extension CameraSessionService: AVCapturePhotoCaptureDelegate {
             DispatchQueue.main.async { completion(.failure(ServiceError.photoDataUnavailable)) }
             return
         }
-        let captured = CapturedPhoto(data: data, image: image, orientation: orientation(for: activePosition))
+        let captured = CapturedPhoto(data: data, image: image, orientation: currentOrientation())
         DispatchQueue.main.async { completion(.success(captured)) }
     }
 }

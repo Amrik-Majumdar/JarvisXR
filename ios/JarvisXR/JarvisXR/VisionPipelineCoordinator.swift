@@ -82,6 +82,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
     private let diagnostics: VisionDiagnosticsStore
     private var tracker: TemporalObjectTracker
     private let fusion: SceneFusionEngine
+    private let narrationServiceLock = NSLock()
     private var narrationService: VisionNarrationService
 
     private let stateQueue = DispatchQueue(label: "com.amrik.jarvisxr.vision.pipeline.state")
@@ -201,9 +202,9 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                 movementThreshold: 0.07,
                 scaleChangeThreshold: 0.18
             ))
-            self.narrationService = VisionNarrationService(
+            self.setNarrationService(VisionNarrationService(
                 safetyPolicy: VisionSafetyPolicy(configuration: safetyConfiguration)
-            )
+            ))
         }
     }
 
@@ -396,7 +397,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
     func narration(moreDetailed: Bool) -> SceneNarration? {
         guard let snapshot = memory.latestSnapshot() else { return nil }
         let target = stateQueue.sync { targetClassIdentifier }
-        let value = narrationService.narrate(
+        let value = narrationServiceSnapshot().narrate(
             snapshot: snapshot,
             verbosity: moreDetailed ? .detailed : .concise,
             targetClassIdentifier: target
@@ -439,7 +440,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         emitReadingState(update.0, generation: update.1)
         if let line = update.0.currentLine,
            let snapshotIdentifier = update.2,
-           let narration = narrationService.verbatimNarration(
+           let narration = narrationServiceSnapshot().verbatimNarration(
                line.text,
                snapshotIdentifier: snapshotIdentifier,
                kind: .reading
@@ -709,6 +710,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
     ) {
         analysisQueue.async { [weak self] in
             guard let self, self.isCurrent(requestGeneration) else { return }
+            let narrator = self.narrationServiceSnapshot()
             let timestamp = Date()
             let tracking = self.tracker.update(with: objects, at: timestamp)
             let fused = self.fusion.fuse(
@@ -749,22 +751,22 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
             switch mode {
             case .describe:
                 if !quality.isUsable {
-                    narration = self.narrationService.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
                     terminal = true
                 } else if input.isStill {
                     narration = self.singleFrameNarration(snapshot: snapshot, target: target)
                     terminal = true
                 } else if !snapshot.objects.isEmpty {
-                    narration = self.narrationService.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
                     terminal = true
                 } else if self.acceptedCount() >= self.requiredObservationFrames() {
-                    narration = self.narrationService.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
                     terminal = true
                 }
             case .liveGuide:
                 if !quality.isUsable {
                     if self.shouldNarrateQuality(quality, at: timestamp) {
-                        narration = self.narrationService.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                        narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
                     }
                 } else {
                     let meaningful = snapshot.changes.contains { change in
@@ -775,15 +777,15 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                         }
                     }
                     if meaningful {
-                        narration = self.narrationService.narrateChanges(in: snapshot, verbosity: self.verbosity())
+                        narration = narrator.narrateChanges(in: snapshot, verbosity: self.verbosity())
                     }
                 }
             case .find:
                 if !quality.isUsable {
-                    narration = self.narrationService.narrate(snapshot: snapshot, verbosity: self.verbosity(), targetClassIdentifier: target)
+                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity(), targetClassIdentifier: target)
                     terminal = input.isStill
                 } else if let target, snapshot.object(classIdentifier: target) != nil {
-                    narration = self.narrationService.narrate(
+                    narration = narrator.narrate(
                         snapshot: snapshot,
                         verbosity: self.verbosity(),
                         targetClassIdentifier: target
@@ -795,7 +797,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                 }
             case .readText:
                 if !quality.isUsable {
-                    narration = self.narrationService.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
                     self.setReadingFailure(generation: requestGeneration)
                     terminal = true
                 } else if let observation = text.first {
@@ -803,7 +805,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                     let lines = observation.linesInReadingOrder
                     self.setReading(lines: lines, generation: requestGeneration)
                     if let first = lines.first {
-                        narration = self.narrationService.verbatimNarration(
+                        narration = narrator.verbatimNarration(
                             first.text,
                             snapshotIdentifier: snapshot.id,
                             kind: .reading,
@@ -813,10 +815,10 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                 }
             case .scanBarcode:
                 if !quality.isUsable {
-                    narration = self.narrationService.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
                     terminal = true
                 } else if let barcode = barcodes.first {
-                    narration = self.narrationService.verbatimNarration(
+                    narration = narrator.verbatimNarration(
                         barcode.payload,
                         snapshotIdentifier: snapshot.id,
                         kind: .barcode,
@@ -826,7 +828,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                 }
             case .identifyColor:
                 if !quality.isUsable {
-                    narration = self.narrationService.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
                     terminal = true
                 }
             case .inactive:
@@ -850,6 +852,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
     ) {
         analysisQueue.async { [weak self] in
             guard let self, self.isCurrent(requestGeneration) else { return }
+            let narrator = self.narrationServiceSnapshot()
             let snapshot = SceneSnapshot(mode: .identifyColor, quality: quality)
             if self.stateQueue.sync(execute: { self.memoryEnabled }) { self.memory.record(snapshot: snapshot) }
             self.stateQueue.sync {
@@ -863,7 +866,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                 : "The center appears \(result.name)."
             let narration = SceneNarration(
                 snapshotIdentifier: snapshot.id,
-                text: self.narrationService.safetyPolicy.safeNarration(phrase),
+                text: narrator.safetyPolicy.safeNarration(phrase),
                 priority: .target,
                 verbosity: self.verbosity(),
                 contentKind: .scene
@@ -879,6 +882,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
     }
 
     private func singleFrameNarration(snapshot: SceneSnapshot, target: String?) -> SceneNarration {
+        let narrator = narrationServiceSnapshot()
         let minimum = target == nil ? 0.58 : 0.54
         let candidates = snapshot.objects.filter {
             $0.smoothedConfidence >= minimum && (target == nil || $0.classIdentifier == target)
@@ -890,11 +894,11 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
             let name = VisionClassCatalog.definition(forIdentifier: target)?.displayName ?? target
             text = "I have not found \(name) in this image. I may be missing it."
         } else {
-            text = narrationService.safetyPolicy.qualifiedAbsence()
+            text = narrator.safetyPolicy.qualifiedAbsence()
         }
         return SceneNarration(
             snapshotIdentifier: snapshot.id,
-            text: narrationService.safetyPolicy.safeNarration(text),
+            text: narrator.safetyPolicy.safeNarration(text),
             priority: target == nil ? .prominent : .target,
             verbosity: verbosity(),
             contentKind: target == nil ? .scene : .target,
@@ -1112,7 +1116,19 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
     private func changesOnlyImportant() -> Bool { stateQueue.sync { importantChangesOnly } }
 
     private func requiredObservationFrames() -> Int {
-        narrationService.safetyPolicy.configuration.requiredStableFrames
+        narrationServiceSnapshot().safetyPolicy.configuration.requiredStableFrames
+    }
+
+    private func narrationServiceSnapshot() -> VisionNarrationService {
+        narrationServiceLock.lock()
+        defer { narrationServiceLock.unlock() }
+        return narrationService
+    }
+
+    private func setNarrationService(_ service: VisionNarrationService) {
+        narrationServiceLock.lock()
+        narrationService = service
+        narrationServiceLock.unlock()
     }
 
     private func shouldNarrateQuality(_ quality: CameraQualityReport, at date: Date) -> Bool {

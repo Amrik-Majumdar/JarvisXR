@@ -203,7 +203,7 @@ struct JarvisAppShortcuts: AppShortcutsProvider {
         )
         AppShortcut(
             intent: FindObjectVisionIntent(),
-            phrases: ["\(.applicationName) find \(\.$target)"],
+            phrases: ["Find an object with \(.applicationName)", "\(.applicationName) open Find Object"],
             shortTitle: "Find Object",
             systemImageName: "scope"
         )

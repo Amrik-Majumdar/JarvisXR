@@ -106,7 +106,7 @@ final class JarvisCameraViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
         pipeline.stop()
         pipeline.unbindCamera()
-        camera.stop()
+        camera.shutdown()
         voiceInput.cancel()
     }
 
