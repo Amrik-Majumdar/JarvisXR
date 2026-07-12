@@ -197,7 +197,6 @@ jobs:
             -destination "$DESTINATION" \
             -derivedDataPath build/TestDerivedData \
             -resultBundlePath build/logs/JarvisXRUITests.xcresult \
-            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testPrimaryActionsReachableAtCurrentSize \
             -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofHelp \
             -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionDescribeResult \
             -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionLiveActive \

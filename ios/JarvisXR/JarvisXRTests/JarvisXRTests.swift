@@ -372,4 +372,46 @@ final class JarvisXRTests: XCTestCase {
     func testProductionLayoutUsesSafeAreaAndKeyboardGuides() {
         XCTAssertNotNil(JarvisRootViewController.self)
     }
+
+    func testRootPrimaryAccessibilityMetadataAndFocusOrderAreDeterministic() throws {
+        let controller = JarvisRootViewController()
+        controller.loadViewIfNeeded()
+        let required = [
+            "jarvis.wordmark",
+            "jarvis.subtitle",
+            "jarvis.meshMenu",
+            "jarvis.help",
+            "jarvis.orb",
+            "jarvis.state",
+            "jarvis.hint",
+            "jarvis.transientResponse",
+            "jarvis.commandInput",
+            "jarvis.send",
+        ]
+        for identifier in required {
+            let element = try XCTUnwrap(findView(identifier: identifier, in: controller.view))
+            if element is UIControl || identifier == "jarvis.orb" || identifier == "jarvis.wordmark" {
+                XCTAssertFalse((element.accessibilityLabel ?? "").isEmpty, "\(identifier) requires an accessibility label")
+            }
+        }
+        let focusOrder = (controller.view.accessibilityElements as? [UIView])?.compactMap(\.accessibilityIdentifier)
+        XCTAssertEqual(Array(try XCTUnwrap(focusOrder).prefix(8)), [
+            "jarvis.wordmark",
+            "jarvis.subtitle",
+            "jarvis.meshMenu",
+            "jarvis.help",
+            "jarvis.orb",
+            "jarvis.state",
+            "jarvis.hint",
+            "jarvis.transientResponse",
+        ])
+    }
+
+    private func findView(identifier: String, in root: UIView) -> UIView? {
+        if root.accessibilityIdentifier == identifier { return root }
+        for child in root.subviews {
+            if let match = findView(identifier: identifier, in: child) { return match }
+        }
+        return nil
+    }
 }

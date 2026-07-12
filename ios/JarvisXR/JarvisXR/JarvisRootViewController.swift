@@ -211,6 +211,17 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
+        view.accessibilityElements = [
+            wordmarkLabel,
+            subtitleLabel,
+            menuButton,
+            helpButton,
+            orbView,
+            stateLabel,
+            hintLabel,
+            transientResponseLabel,
+            inputContainer,
+        ]
 
         inputBottomConstraint = inputContainer.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -10)
         inputBottomConstraint?.priority = .defaultHigh
