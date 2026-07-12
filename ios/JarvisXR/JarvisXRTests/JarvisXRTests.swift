@@ -284,11 +284,11 @@ final class JarvisXRTests: XCTestCase {
         XCTAssertEqual(begin.route, .inAppMessage)
         XCTAssertEqual(begin.action, .composeMessage)
         XCTAssertEqual(begin.data["message_action"], JarvisMessageAction.begin.rawValue)
-        XCTAssertEqual(begin.data["message_recipient_hint"], "alex")
+        XCTAssertEqual(begin.data["message_recipient_hint"], "Alex")
         XCTAssertFalse(begin.shouldPersistGeneralHistory)
 
         let tell = planner.plan("Tell Alex I will arrive soon")
-        XCTAssertEqual(tell.data["message_recipient_hint"], "alex")
+        XCTAssertEqual(tell.data["message_recipient_hint"], "Alex")
         XCTAssertEqual(tell.data["message_body"], "I will arrive soon")
         XCTAssertFalse(tell.shouldPersistGeneralHistory)
 
