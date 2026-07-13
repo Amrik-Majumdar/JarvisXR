@@ -271,20 +271,18 @@ enum VisionReplayScenarioFactory {
         background: UIColor = UIColor(white: 0.16, alpha: 1),
         rects: [(CGRect, UIColor)]
     ) -> CGImage {
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { context in
+        replayFixtureImage { context in
             background.setFill()
             context.fill(CGRect(origin: .zero, size: size))
             for (rect, color) in rects {
                 color.setFill()
                 UIBezierPath(roundedRect: rect, cornerRadius: 24).fill()
             }
-        }.cgImage!
+        }
     }
 
     private static func textImage(_ text: String, origin: CGPoint, fontSize: CGFloat) -> CGImage {
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { context in
+        replayFixtureImage { context in
             UIColor.white.setFill()
             context.fill(CGRect(origin: .zero, size: size))
             let attributes: [NSAttributedString.Key: Any] = [
@@ -295,7 +293,7 @@ enum VisionReplayScenarioFactory {
                 in: CGRect(x: origin.x, y: origin.y, width: 560, height: 220),
                 withAttributes: attributes
             )
-        }.cgImage!
+        }
     }
 
     private static func barcodeImage() -> CGImage {
@@ -304,14 +302,25 @@ enum VisionReplayScenarioFactory {
         filter.setValue(data, forKey: "inputMessage")
         filter.setValue("H", forKey: "inputCorrectionLevel")
         let code = filter.outputImage!.transformed(by: CGAffineTransform(scaleX: 12, y: 12))
-        let renderer = UIGraphicsImageRenderer(size: size)
-        let background = renderer.image { context in
+        let background = replayFixtureImage { context in
             UIColor.white.setFill()
             context.fill(CGRect(origin: .zero, size: size))
-        }.cgImage!
+        }
         let composite = code.composited(over: CIImage(cgImage: background))
             .cropped(to: CGRect(origin: .zero, size: size))
         return CIContext(options: [.cacheIntermediates: false]).createCGImage(composite, from: composite.extent)!
+    }
+
+    /// Produces camera-like source pixels, not point-sized UIKit artwork. Keeping
+    /// this scale at one makes replay evidence independent of simulator display scale.
+    private static func replayFixtureImage(
+        drawing: (UIGraphicsImageRendererContext) -> Void
+    ) -> CGImage {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+        return renderer.image(actions: drawing).cgImage!
     }
 
     private static func blurred(_ image: CGImage) -> CGImage {

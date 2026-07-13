@@ -12,9 +12,36 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
             let scenario = VisionReplayScenarioFactory.make(kind)
             XCTAssertEqual(scenario.kind, kind)
             XCTAssertFalse(scenario.frames.isEmpty, "\(kind.rawValue) must contain replay input")
-            XCTAssertTrue(scenario.frames.allSatisfy { $0.image.width == 640 && $0.image.height == 480 })
-            XCTAssertTrue(scenario.frames.allSatisfy { $0.orientation == .up })
+            for frame in scenario.frames {
+                XCTAssertEqual(frame.image.width, 640, "\(kind.rawValue) / \(frame.label) must be 640 raw pixels wide")
+                XCTAssertEqual(frame.image.height, 480, "\(kind.rawValue) / \(frame.label) must be 480 raw pixels high")
+                XCTAssertTrue(frameHasOnlyOpaquePixels(frame.image), "\(kind.rawValue) / \(frame.label) must be opaque")
+                XCTAssertEqual(frame.orientation, .up, "\(kind.rawValue) / \(frame.label) must keep upright orientation")
+            }
         }
+    }
+
+    private func frameHasOnlyOpaquePixels(_ image: CGImage) -> Bool {
+        let bytesPerRow = image.width * 4
+        guard let context = CGContext(
+            data: nil,
+            width: image.width,
+            height: image.height,
+            bitsPerComponent: 8,
+            bytesPerRow: bytesPerRow,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else {
+            return false
+        }
+        context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+        guard let data = context.data?.bindMemory(to: UInt8.self, capacity: bytesPerRow * image.height) else {
+            return false
+        }
+        for offset in stride(from: 3, to: bytesPerRow * image.height, by: 4) where data[offset] != UInt8.max {
+            return false
+        }
+        return true
     }
     #endif
 
