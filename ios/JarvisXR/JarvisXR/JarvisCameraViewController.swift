@@ -26,15 +26,17 @@ final class JarvisCameraViewController: UIViewController {
     private var lastPresentedNarration: SceneNarration?
     private var lastAnnouncement: (text: String, date: Date)?
     private var lastTargetCentered = false
+    private var lastKnownTargetRegion: SpatialRegion?
+    private var lastTargetSeenAt: Date?
+    private var announceWhenTargetCentered = false
 
     private let scrollView = UIScrollView()
     private let contentStack = UIStackView()
     private let fixtureBanner = UILabel()
-    private let modeScrollView = UIScrollView()
-    private let modeStack = UIStackView()
-    private var modeButtons: [VisionMode: UIButton] = [:]
+    private let taskButton = UIButton(type: .system)
     private let modeLabel = UILabel()
     private let stateLabel = UILabel()
+    private let stateImageView = UIImageView()
     private let guidanceLabel = UILabel()
     private let previewView = UIView()
     private let resultPanel = JarvisPanelView()
@@ -205,8 +207,7 @@ final class JarvisCameraViewController: UIViewController {
 
         [
             fixtureBanner,
-            makeSectionLabel("Mode"),
-            modeScrollView,
+            taskButton,
             makeStatusPanel(),
             guidanceLabel,
             previewView,
@@ -280,46 +281,57 @@ final class JarvisCameraViewController: UIViewController {
     }
 
     private func configureModePicker() {
-        modeScrollView.translatesAutoresizingMaskIntoConstraints = false
-        modeScrollView.showsHorizontalScrollIndicator = false
-        modeScrollView.accessibilityIdentifier = "jarvis.vision.modePicker"
-        modeScrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: 52).isActive = true
+        taskButton.setTitleColor(JarvisTheme.text, for: .normal)
+        taskButton.backgroundColor = JarvisTheme.panelRaised
+        taskButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
+        taskButton.titleLabel?.adjustsFontForContentSizeCategory = true
+        taskButton.titleLabel?.numberOfLines = 0
+        taskButton.contentHorizontalAlignment = .leading
+        taskButton.tintColor = JarvisTheme.accentHot
+        taskButton.layer.borderColor = JarvisTheme.panelBorder.cgColor
+        taskButton.layer.borderWidth = 1
+        taskButton.layer.cornerRadius = 14
+        taskButton.contentEdgeInsets = UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 16)
+        taskButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 54).isActive = true
+        taskButton.showsMenuAsPrimaryAction = true
+        taskButton.accessibilityLabel = "Change Vision task"
+        taskButton.accessibilityHint = "Opens Describe, Live Guide, Find, Read, and Scan. You can also ask Jarvis by voice."
+        taskButton.accessibilityIdentifier = "jarvis.vision.taskMenu"
+        taskButton.setImage(UIImage(systemName: "sparkles"), for: .normal)
+        taskButton.imageView?.preferredSymbolConfiguration = UIImage.SymbolConfiguration(textStyle: .headline)
+        taskButton.menu = makeTaskMenu()
+    }
 
-        modeStack.translatesAutoresizingMaskIntoConstraints = false
-        modeStack.axis = .horizontal
-        modeStack.spacing = 8
-        modeScrollView.addSubview(modeStack)
-        NSLayoutConstraint.activate([
-            modeStack.topAnchor.constraint(equalTo: modeScrollView.contentLayoutGuide.topAnchor),
-            modeStack.bottomAnchor.constraint(equalTo: modeScrollView.contentLayoutGuide.bottomAnchor),
-            modeStack.leadingAnchor.constraint(equalTo: modeScrollView.contentLayoutGuide.leadingAnchor),
-            modeStack.trailingAnchor.constraint(equalTo: modeScrollView.contentLayoutGuide.trailingAnchor),
-            modeStack.heightAnchor.constraint(equalTo: modeScrollView.frameLayoutGuide.heightAnchor),
-        ])
-
-        let visibleModes: [VisionMode] = [.describe, .liveGuide, .find, .readText, .scanBarcode]
-        for mode in visibleModes {
-            let button = UIButton(type: .system)
-            button.setTitle(mode.visionDisplayName, for: .normal)
-            button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
-            button.titleLabel?.adjustsFontForContentSizeCategory = true
-            button.setTitleColor(JarvisTheme.text, for: .normal)
-            button.backgroundColor = JarvisTheme.panelRaised
-            button.layer.borderColor = JarvisTheme.panelBorder.cgColor
-            button.layer.borderWidth = 1
-            button.layer.cornerRadius = 12
-            button.contentEdgeInsets = UIEdgeInsets(top: 11, left: 15, bottom: 11, right: 15)
-            button.heightAnchor.constraint(greaterThanOrEqualToConstant: 48).isActive = true
-            button.accessibilityLabel = "\(mode.visionDisplayName) mode"
-            button.accessibilityHint = mode.visionReadyGuidance
-            button.accessibilityIdentifier = "jarvis.vision.mode.\(mode.rawValue)"
-            button.addAction(UIAction { [weak self] _ in self?.modeSelected(mode) }, for: .touchUpInside)
-            modeStack.addArrangedSubview(button)
-            modeButtons[mode] = button
+    private func makeTaskMenu() -> UIMenu {
+        let modes: [(VisionMode, String)] = [
+            (.describe, "viewfinder"),
+            (.liveGuide, "wave.3.right"),
+            (.find, "scope"),
+            (.readText, "text.viewfinder"),
+            (.scanBarcode, "barcode.viewfinder"),
+        ]
+        let actions = modes.map { mode, symbol in
+            UIAction(
+                title: taskDisplayName(for: mode),
+                image: UIImage(systemName: symbol),
+                state: mode == currentMode ? .on : .off
+            ) { [weak self] _ in
+                self?.modeSelected(mode)
+            }
         }
+        return UIMenu(title: "Vision task", children: actions)
     }
 
     private func configureStatus() {
+        stateImageView.translatesAutoresizingMaskIntoConstraints = false
+        stateImageView.contentMode = .scaleAspectFit
+        stateImageView.tintColor = JarvisTheme.accentHot
+        stateImageView.isAccessibilityElement = false
+        NSLayoutConstraint.activate([
+            stateImageView.widthAnchor.constraint(equalToConstant: 32),
+            stateImageView.heightAnchor.constraint(equalToConstant: 32),
+        ])
+
         modeLabel.textColor = JarvisTheme.accentHot
         modeLabel.font = UIFont.preferredFont(forTextStyle: .title2)
         modeLabel.adjustsFontForContentSizeCategory = true
@@ -341,9 +353,13 @@ final class JarvisCameraViewController: UIViewController {
 
     private func makeStatusPanel() -> UIView {
         let panel = JarvisPanelView()
-        let stack = UIStackView(arrangedSubviews: [modeLabel, stateLabel])
-        stack.axis = .vertical
-        stack.spacing = 4
+        let labels = UIStackView(arrangedSubviews: [modeLabel, stateLabel])
+        labels.axis = .vertical
+        labels.spacing = 4
+        let stack = UIStackView(arrangedSubviews: [stateImageView, labels])
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 12
         stack.translatesAutoresizingMaskIntoConstraints = false
         panel.addSubview(stack)
         NSLayoutConstraint.activate([
@@ -370,7 +386,7 @@ final class JarvisCameraViewController: UIViewController {
         previewView.accessibilityIdentifier = "jarvis.vision.preview"
 
         let previewMessage = UILabel()
-        previewMessage.text = "Camera starts only when you choose an action."
+        previewMessage.text = "Ask Jarvis what you need, or choose a task above. Camera analysis starts only for an active Vision task."
         previewMessage.textColor = JarvisTheme.mutedText
         previewMessage.font = UIFont.preferredFont(forTextStyle: .footnote)
         previewMessage.adjustsFontForContentSizeCategory = true
@@ -458,14 +474,14 @@ final class JarvisCameraViewController: UIViewController {
 
         repeatButton.addTarget(self, action: #selector(repeatTapped), for: .touchUpInside)
         repeatButton.accessibilityLabel = "Repeat last Vision result"
-        repeatButton.accessibilityHint = "Speaks the latest result again without taking another photo."
+        repeatButton.accessibilityHint = "Speaks the latest result again without restarting camera analysis."
         repeatButton.accessibilityIdentifier = "jarvis.vision.repeat"
         lightButton.addTarget(self, action: #selector(lightTapped), for: .touchUpInside)
         lightButton.accessibilityLabel = "Flashlight"
         lightButton.accessibilityIdentifier = "jarvis.vision.flashlight"
         moreDetailButton.addTarget(self, action: #selector(moreDetailTapped), for: .touchUpInside)
         moreDetailButton.accessibilityLabel = "More detail"
-        moreDetailButton.accessibilityHint = "Describes the latest scene in more detail without taking another photo."
+        moreDetailButton.accessibilityHint = "Describes the latest scene in more detail without restarting camera analysis."
         moreDetailButton.accessibilityIdentifier = "jarvis.vision.moreDetail"
         [repeatButton, lightButton, moreDetailButton, previousLineButton, pauseReadingButton, nextLineButton]
             .forEach(configureDynamicButton)
@@ -643,6 +659,9 @@ final class JarvisCameraViewController: UIViewController {
         requestedRegion = nil
         latestSnapshot = nil
         lastPresentedNarration = nil
+        lastKnownTargetRegion = nil
+        lastTargetSeenAt = nil
+        announceWhenTargetCentered = false
         resultLabel.text = "No result yet."
         setMode(mode, announce: true)
         if mode == .find {
@@ -652,17 +671,11 @@ final class JarvisCameraViewController: UIViewController {
 
     private func setMode(_ mode: VisionMode, announce: Bool) {
         currentMode = mode == .inactive ? .describe : mode
-        modeLabel.text = "\(currentMode.visionDisplayName) mode"
-        for (buttonMode, button) in modeButtons {
-            let selected = buttonMode == currentMode
-            button.backgroundColor = selected ? JarvisTheme.accentDim : JarvisTheme.panelRaised
-            button.layer.borderColor = (selected ? JarvisTheme.accentHot : JarvisTheme.panelBorder).cgColor
-            if selected {
-                button.accessibilityTraits.insert(.selected)
-            } else {
-                button.accessibilityTraits.remove(.selected)
-            }
-        }
+        let taskName = taskDisplayName(for: currentMode)
+        modeLabel.text = "\(taskName) task"
+        taskButton.setTitle("  Task: \(taskName)", for: .normal)
+        taskButton.accessibilityValue = taskName
+        taskButton.menu = makeTaskMenu()
         readingControls.isHidden = currentMode != .readText
         moreDetailButton.isHidden = currentMode == .readText || currentMode == .scanBarcode
         primaryButton.setTitle(primaryTitle(), for: .normal)
@@ -681,6 +694,9 @@ final class JarvisCameraViewController: UIViewController {
         }
         latestSnapshot = nil
         lastPresentedNarration = nil
+        lastKnownTargetRegion = nil
+        lastTargetSeenAt = nil
+        announceWhenTargetCentered = false
         resultLabel.text = "Waiting for a confirmed result."
         failurePanel.isHidden = true
         resetFeedbackSessions()
@@ -706,36 +722,7 @@ final class JarvisCameraViewController: UIViewController {
                 self.speech.setQuietVisionGuideEnabled(self.preferences.importantChangesOnly)
                 self.pipeline.start(mode: self.currentMode, target: self.currentTarget)
                 self.updateScreenAwake()
-                switch self.currentMode {
-                case .describe, .readText, .identifyColor:
-                    self.captureStillForCurrentMode()
-                case .liveGuide, .find, .scanBarcode:
-                    self.renderState(.active, guidance: self.activeGuidance(), announce: true)
-                case .inactive:
-                    break
-                }
-            }
-        }
-    }
-
-    private func captureStillForCurrentMode() {
-        renderState(.active, guidance: currentMode == .readText ? "Capturing text. Hold steady." : "Capturing and analyzing.", announce: true)
-        camera.captureHighResolutionPhoto { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .failure(let error):
-                self.showFailure(error.localizedDescription, offersSettings: false)
-            case .success(let captured):
-                guard let cgImage = captured.image.cgImage else {
-                    self.handle(error: .cameraUnavailable)
-                    return
-                }
-                self.pipeline.analyzeStillImage(
-                    cgImage,
-                    orientation: captured.orientation,
-                    mode: self.currentMode,
-                    target: self.currentTarget
-                )
+                self.renderState(.active, guidance: self.activeGuidance(), announce: true)
             }
         }
     }
@@ -778,6 +765,10 @@ final class JarvisCameraViewController: UIViewController {
         }
         latestSnapshot = nil
         lastPresentedNarration = nil
+        lastTargetCentered = false
+        lastKnownTargetRegion = nil
+        lastTargetSeenAt = nil
+        announceWhenTargetCentered = false
         resultLabel.text = "Vision stopped. Session result cleared."
         VisionDiagnosticsStore.shared.setActiveCamera(nil)
         UIApplication.shared.isIdleTimerDisabled = false
@@ -865,6 +856,15 @@ final class JarvisCameraViewController: UIViewController {
         case .cameraUnavailable, .cameraInterrupted:
             message = "The camera is unavailable right now. Stop other camera use and try again."
             offersSettings = false
+        case .noFrameReceived:
+            message = "The camera started, but no frame arrived. Jarvis will keep trying; stop and restart Vision if this continues."
+            offersSettings = false
+        case .invalidCameraFrame:
+            message = "The camera sent an invalid frame. Jarvis skipped it and will keep trying."
+            offersSettings = false
+        case .cameraNotRunning:
+            message = "The camera session is not running. Restart Vision to continue."
+            offersSettings = false
         case .modelMissing, .modelChecksumMismatch, .modelLoadFailed(_), .invalidModelOutput:
             message = "The on-device object model is unavailable or failed validation. Read Text and Scan may still work."
             offersSettings = false
@@ -898,11 +898,21 @@ final class JarvisCameraViewController: UIViewController {
         case .cancelled:
             return
         }
-        showFailure(message, offersSettings: offersSettings)
         switch error {
-        case .cameraInterrupted, .thermalDegraded, .flashlightUnavailable, .speechUnavailable, .hapticsUnavailable:
-            break
+        case .noFrameReceived, .invalidCameraFrame, .noTextFound, .textRecognitionFailed,
+             .targetNotFound, .thermalDegraded, .flashlightUnavailable,
+             .speechUnavailable, .hapticsUnavailable:
+            guidanceLabel.text = message
+            showResult(message, announce: true)
+            if error == .noFrameReceived || error == .invalidCameraFrame {
+                playHaptic(.warning)
+            }
+            return
+        case .cameraInterrupted:
+            showFailure(message, offersSettings: offersSettings)
+            return
         default:
+            showFailure(message, offersSettings: offersSettings)
             camera.stop()
             VisionDiagnosticsStore.shared.setActiveCamera(nil)
             UIApplication.shared.isIdleTimerDisabled = false
@@ -924,6 +934,10 @@ final class JarvisCameraViewController: UIViewController {
     private func renderState(_ state: VisionSessionState, guidance: String, announce: Bool) {
         currentState = state
         stateLabel.text = stateDisplayName(state)
+        stateImageView.image = UIImage(systemName: stateSymbolName(state))
+        stateImageView.tintColor = state == .failed || state == .unavailable
+            ? JarvisTheme.error
+            : (state == .paused ? JarvisTheme.warning : JarvisTheme.accentHot)
         guidanceLabel.text = guidance
         primaryButton.setTitle(primaryTitle(), for: .normal)
         if announce {
@@ -948,6 +962,34 @@ final class JarvisCameraViewController: UIViewController {
         }
     }
 
+    private func stateSymbolName(_ state: VisionSessionState) -> String {
+        switch state {
+        case .idle: return "waveform"
+        case .preparing: return "camera.aperture"
+        case .active:
+            switch currentMode {
+            case .liveGuide: return "wave.3.right"
+            case .find: return "scope"
+            case .readText: return "text.viewfinder"
+            case .scanBarcode: return "barcode.viewfinder"
+            case .identifyColor: return "paintpalette"
+            case .describe, .inactive: return "viewfinder"
+            }
+        case .paused: return "pause.circle.fill"
+        case .stopping, .stopped: return "stop.circle.fill"
+        case .unavailable, .failed: return "exclamationmark.triangle.fill"
+        }
+    }
+
+    private func taskDisplayName(for mode: VisionMode) -> String {
+        switch mode {
+        case .liveGuide: return "Live Guide"
+        case .readText: return "Read Text"
+        case .scanBarcode: return "Scan Barcode"
+        default: return mode.visionDisplayName
+        }
+    }
+
     private func guidance(for state: VisionSessionState) -> String {
         switch state {
         case .idle: return currentMode.visionReadyGuidance
@@ -966,9 +1008,9 @@ final class JarvisCameraViewController: UIViewController {
         case .liveGuide: return "Live Guide is active in the foreground. Stop is always available below."
         case .find: return "Searching for \(currentTarget ?? "the selected object"). Pan slowly."
         case .scanBarcode: return "Scanning for a barcode. Jarvis will not open links automatically."
-        case .readText: return "Reading captured text on this device."
+        case .readText: return "Looking continuously for readable text. Hold steady when Jarvis says text is visible."
         case .identifyColor: return "Identifying the center color."
-        case .describe, .inactive: return "Analyzing the captured scene on this device."
+        case .describe, .inactive: return "Choosing a useful live frame and analyzing the scene on this device."
         }
     }
 
@@ -1001,6 +1043,8 @@ final class JarvisCameraViewController: UIViewController {
     private func showFailure(_ message: String, offersSettings: Bool) {
         currentState = .unavailable
         stateLabel.text = "Needs attention"
+        stateImageView.image = UIImage(systemName: stateSymbolName(.unavailable))
+        stateImageView.tintColor = JarvisTheme.error
         guidanceLabel.text = message
         failureLabel.text = message
         failurePanel.isHidden = false
@@ -1089,12 +1133,18 @@ final class JarvisCameraViewController: UIViewController {
             lastTargetCentered = false
             return
         }
+        lastKnownTargetRegion = match.horizontalRegion
+        lastTargetSeenAt = snapshot.capturedAt
         switch match.horizontalRegion {
         case .left: playHaptic(.directionLeft)
         case .right: playHaptic(.directionRight)
         case .center:
             playHaptic(lastTargetCentered ? .directionCenter : .targetAcquired)
             lastTargetCentered = true
+            if announceWhenTargetCentered {
+                announceWhenTargetCentered = false
+                speakTaskResponse("The possible \(match.name) is centered.", priority: .target)
+            }
         }
     }
 
@@ -1186,6 +1236,7 @@ final class JarvisCameraViewController: UIViewController {
             settingsTapped()
             return
         }
+        if handleTaskFollowUp(normalized) { return }
         let plan = JarvisCommandPlanner().plan(raw)
         guard let request = plan.visionLaunchRequest else {
             showResult("That is not a recognized Vision command. Try describe, live guide, find, read, scan, repeat, more detail, flashlight, or stop.", announce: true)
@@ -1194,6 +1245,119 @@ final class JarvisCameraViewController: UIViewController {
         var sourced = request
         sourced.source = "vision_voice"
         apply(sourced)
+    }
+
+    private func handleTaskFollowUp(_ normalized: String) -> Bool {
+        if ["pause", "pause guiding", "hold on"].contains(normalized), currentState == .active {
+            pauseVision()
+            return true
+        }
+        if ["continue", "resume", "keep going", "continue guiding"].contains(normalized), currentState == .paused {
+            resumeVision()
+            return true
+        }
+
+        if currentMode == .find, let target = currentTarget {
+            if ["tell me when it is centered", "tell me when centered", "center the object", "let me know when it is centered"].contains(normalized) {
+                announceWhenTargetCentered = true
+                speakTaskResponse("I will tell you when the possible \(target) is centered. Pan slowly.", priority: .prominent)
+                return true
+            }
+            if ["where is it", "where is the object", "is it on my left", "is it on my right", "is it centered"].contains(normalized) {
+                describeCurrentTarget(target, question: normalized)
+                return true
+            }
+            if ["where did it go", "where was it", "i lost it"].contains(normalized) {
+                if let region = lastKnownTargetRegion, let seen = lastTargetSeenAt,
+                   Date().timeIntervalSince(seen) <= 12 {
+                    speakTaskResponse("I lost the possible \(target). I last saw it \(region.spokenLocation).", priority: .prominent)
+                } else {
+                    speakTaskResponse("I have not confirmed the \(target) recently. Pan slowly to continue searching.", priority: .prominent)
+                }
+                return true
+            }
+        }
+
+        if currentMode == .readText {
+            if ["start from the top", "read from the top", "go to the first line"].contains(normalized) {
+                pipeline.moveToFirstReadingLine()
+                speakCurrentReadingLine()
+                return true
+            }
+            if ["read the largest text", "largest text"].contains(normalized) {
+                pipeline.moveToLargestReadingLine()
+                speakCurrentReadingLine()
+                return true
+            }
+            if ["spell that", "spell it", "spell this line"].contains(normalized) {
+                guard let line = pipeline.currentReadingLine() else {
+                    speakTaskResponse("There is no current reading line to spell.", priority: .prominent)
+                    return true
+                }
+                let spelled = line.text.map(String.init).joined(separator: ", ")
+                speakTaskResponse(spelled, priority: .target)
+                return true
+            }
+        }
+
+        if currentMode == .scanBarcode,
+           ["read the numbers one at a time", "read numbers one at a time", "read the numbers individually", "read numbers individually", "say the code one digit at a time"].contains(normalized) {
+            guard let payload = latestSnapshot?.barcodes.first?.payload else {
+                speakTaskResponse("I have not confirmed a code yet. Hold it steady in front of the camera.", priority: .prominent)
+                return true
+            }
+            let spoken = payload.map(String.init).joined(separator: ", ")
+            speakTaskResponse(spoken, priority: .target)
+            return true
+        }
+        return false
+    }
+
+    private func describeCurrentTarget(_ target: String, question: String) {
+        guard let snapshot = latestSnapshot,
+              let match = snapshot.objects.first(where: { observation in
+                  observation.isConfirmed && (
+                      observation.name.caseInsensitiveCompare(target) == .orderedSame ||
+                      observation.classIdentifier.caseInsensitiveCompare(target) == .orderedSame ||
+                      observation.name.localizedCaseInsensitiveContains(target)
+                  )
+              }) else {
+            speakTaskResponse("I have not confirmed the \(target) yet. Pan slowly.", priority: .prominent)
+            return
+        }
+        let region = match.horizontalRegion
+        let answer: String
+        if question.contains("left") {
+            answer = region == .left
+                ? "The possible \(target) is on your left."
+                : "The possible \(target) is not on the left; it is \(region.spokenLocation)."
+        } else if question.contains("right") {
+            answer = region == .right
+                ? "The possible \(target) is on your right."
+                : "The possible \(target) is not on the right; it is \(region.spokenLocation)."
+        } else if question.contains("center") {
+            answer = region == .center
+                ? "The possible \(target) is centered."
+                : "The possible \(target) is \(region.spokenLocation)."
+        } else {
+            answer = "The possible \(target) is \(region.spokenLocation)."
+        }
+        speakTaskResponse(answer, priority: .target)
+    }
+
+    private func speakTaskResponse(_ text: String, priority: SpeechPriority) {
+        showResult(text, announce: !speech.isEnabled)
+        ensureFeedbackSessions()
+        guard let speechSessionID else { return }
+        let narration = SceneNarration(
+            snapshotIdentifier: latestSnapshot?.id ?? UUID(),
+            text: text,
+            priority: priority,
+            verbosity: preferences.narrationVerbosity,
+            contentKind: .system,
+            groundedObservationIdentifiers: []
+        )
+        speech.enqueueVisionNarration(narration, sessionID: speechSessionID)
     }
 
     private func promptForFindTarget() {

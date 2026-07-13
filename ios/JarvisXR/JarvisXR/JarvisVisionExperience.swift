@@ -66,7 +66,7 @@ extension VisionMode {
         case .inactive, .describe: return "Describe What Is Here"
         case .liveGuide: return "Start Live Guide"
         case .find: return "Choose an Object to Find"
-        case .readText: return "Capture and Read"
+        case .readText: return "Read Visible Text"
         case .scanBarcode: return "Start Barcode Scan"
         case .identifyColor: return "Identify Color"
         }

@@ -79,7 +79,7 @@ final class JarvisCommandRouter {
                 return cameraStatus()
             }
             if matches(text, ["read this", "read this label", "read what is on screen", "read the screen", "read paper"]) {
-                return .ok("Opening inspection.", display: "Opening inspection. Text recognition runs after capture when available.", data: ["action": "inspect", "vision": "ocr"])
+                return .ok("Opening inspection.", display: "Opening inspection. Text recognition looks continuously for a useful live frame.", data: ["action": "inspect", "vision": "ocr"])
             }
             if matches(text, ["detect objects", "what am i looking at", "what am i pointing at", "look at this"]) {
                 return .ok("Opening visual scan.", display: "Opening inspection. \(JarvisObjectDetectionModel.statusLine())", data: ["action": "inspect", "vision": "visual_classification"])
@@ -156,25 +156,32 @@ final class JarvisCommandRouter {
             JarvisSpeechService.shared.previewAllProfiles()
             return .ok("Previewing voice profiles.", display: "Previewing Natural, Friendly, Crisp, Quiet, and Formal.")
         }
+        if text == "speak faster" || text == "talk faster" || text == "faster speech" {
+            let rate = JarvisSpeechService.shared.adjustSpeechRate(by: 0.03)
+            return .ok("I will speak faster.", display: "Speech rate: \(String(format: "%.2f", rate)).")
+        }
+        if text == "speak slower" || text == "talk slower" || text == "slower speech" {
+            let rate = JarvisSpeechService.shared.adjustSpeechRate(by: -0.03)
+            return .ok("I will speak slower.", display: "Speech rate: \(String(format: "%.2f", rate)).")
+        }
+        if text == "use another voice" || text == "change voice" || text == "next voice" {
+            let configuration = JarvisSpeechService.shared.selectNextProfile()
+            return voiceSelectionResponse(configuration)
+        }
         if text == "voice natural" || text == "natural voice" || text == "voice default" || text == "default voice" {
-            JarvisSpeechService.shared.profile = .natural
-            return .ok("Natural voice selected.", display: "Voice profile: Natural.")
+            return voiceSelectionResponse(JarvisSpeechService.shared.selectProfile(.natural))
         }
         if text == "voice friendly" || text == "friendly voice" {
-            JarvisSpeechService.shared.profile = .friendly
-            return .ok("Friendly voice selected.", display: "Voice profile: Friendly.")
+            return voiceSelectionResponse(JarvisSpeechService.shared.selectProfile(.friendly))
         }
         if text == "voice formal" || text == "formal voice" {
-            JarvisSpeechService.shared.profile = .formal
-            return .ok("Formal voice selected.", display: "Voice profile: Formal.")
+            return voiceSelectionResponse(JarvisSpeechService.shared.selectProfile(.formal))
         }
         if text == "voice crisp" || text == "crisp voice" {
-            JarvisSpeechService.shared.profile = .crisp
-            return .ok("Crisp voice selected.", display: "Voice profile: Crisp.")
+            return voiceSelectionResponse(JarvisSpeechService.shared.selectProfile(.crisp))
         }
         if text == "voice quiet" || text == "quiet voice" {
-            JarvisSpeechService.shared.profile = .quiet
-            return .ok("Quiet voice selected.", display: "Voice profile: Quiet.")
+            return voiceSelectionResponse(JarvisSpeechService.shared.selectProfile(.quiet))
         }
         if text == "diagnostics" {
             return .ok("Diagnostics are available.", display: "Open Diagnostics for battery, system version, notes count, and install notes.", data: ["action": "diagnostics"])
@@ -297,7 +304,7 @@ final class JarvisCommandRouter {
         let display = """
         Hardware advantage
         Camera: local inspection, capture, torch, focus, exposure.
-        Vision: OCR, barcode scan, and built-in image classification after capture. A custom Core ML detector can be bundled later.
+        Vision: continuous OCR, barcode scan, and bundled on-device object detection while a Vision task is active.
         Voice: local speech output and in-app push-to-talk.
         Sensors: motion availability, battery, storage, Low Power Mode.
         Security: Guided Access and device restrictions are the current lockdown layer.
@@ -448,6 +455,14 @@ final class JarvisCommandRouter {
         4. Enable Guided Access only after you have tested the exit path.
         """
         return .ok("Readiness checklist ready.", display: display)
+    }
+
+    private func voiceSelectionResponse(_ configuration: JarvisResolvedVoiceConfiguration) -> JarvisResponse {
+        let fallback = configuration.usedFallbackVoice ? " A fallback installed voice is being used." : ""
+        return .ok(
+            "\(configuration.profile.displayName) voice selected.\(fallback)",
+            display: "Voice: \(configuration.profile.displayName) — \(configuration.voiceName), \(configuration.locale), rate \(String(format: "%.2f", configuration.rate)), pitch \(String(format: "%.2f", configuration.pitch)).\(fallback)"
+        )
     }
 
     private func convert(_ raw: String) -> JarvisResponse {

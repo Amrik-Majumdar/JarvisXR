@@ -259,6 +259,9 @@ final class JarvisVisionSelfTestViewController: UIViewController {
 
     private static func userFacing(_ error: VisionError) -> String {
         switch error {
+        case .noFrameReceived: return "no camera frame received"
+        case .invalidCameraFrame: return "invalid camera frame"
+        case .cameraNotRunning: return "camera session not running"
         case .modelMissing: return "model resource missing"
         case .modelChecksumMismatch: return "model checksum mismatch"
         case .modelLoadFailed(let detail): return "model load failed: \(detail)"

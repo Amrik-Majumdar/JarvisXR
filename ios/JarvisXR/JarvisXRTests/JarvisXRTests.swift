@@ -211,13 +211,46 @@ final class JarvisXRTests: XCTestCase {
 
     func testVoiceProfilePersistsAndChangesConfiguration() {
         let original = JarvisSpeechService.shared.profile
+        JarvisSpeechService.shared.resetSpeechTuningToProfileDefaults()
+        defer {
+            JarvisSpeechService.shared.resetSpeechTuningToProfileDefaults()
+            JarvisSpeechService.shared.profile = original
+        }
         JarvisSpeechService.shared.profile = .crisp
         XCTAssertEqual(JarvisSpeechService.shared.profile, .crisp)
         XCTAssertGreaterThan(JarvisSpeechService.shared.speechRate, 0.50)
         JarvisSpeechService.shared.profile = .quiet
         XCTAssertEqual(JarvisSpeechService.shared.profile, .quiet)
         XCTAssertLessThan(JarvisSpeechService.shared.volume, 0.70)
-        JarvisSpeechService.shared.profile = original
+        JarvisSpeechService.shared.speechRate = 0.55
+        XCTAssertEqual(JarvisSpeechService.shared.speechRate, 0.55, accuracy: 0.001)
+        let descriptors = Set(JarvisVoiceProfile.ordered.map { profile in
+            let value = profile.descriptor
+            return "\(value.languages.joined(separator: ","))|\(value.voiceSlot)|\(value.rate)|\(value.pitch)|\(value.volume)"
+        })
+        XCTAssertEqual(descriptors.count, JarvisVoiceProfile.ordered.count)
+    }
+
+    func testSpeechRateAndVoiceCyclingCommandsChangeProductionConfiguration() {
+        let service = JarvisSpeechService.shared
+        let originalProfile = service.profile
+        service.resetSpeechTuningToProfileDefaults()
+        defer {
+            service.resetSpeechTuningToProfileDefaults()
+            service.profile = originalProfile
+        }
+        service.speechRate = 0.46
+
+        let faster = router.route(JarvisCommand("speak faster"))
+        XCTAssertEqual(faster.status, .ok)
+        XCTAssertGreaterThan(service.speechRate, 0.46)
+
+        let beforeProfile = service.profile
+        let changed = router.route(JarvisCommand("use another voice"))
+        XCTAssertEqual(changed.status, .ok)
+        XCTAssertNotEqual(service.profile, beforeProfile)
+        XCTAssertFalse(service.resolvedConfiguration(for: service.profile).locale.isEmpty)
+
     }
 
     func testDetectObjectsDoesNotDeadEndOnMissingModel() {
@@ -246,10 +279,52 @@ final class JarvisXRTests: XCTestCase {
     func testLiveGuideLifecycleCommandsAreTyped() {
         let planner = JarvisCommandPlanner()
         XCTAssertEqual(planner.plan("start live guide").visionLaunchRequest?.command, .run)
+        XCTAssertEqual(planner.plan("start guiding me").visionLaunchRequest?.command, .run)
         XCTAssertEqual(planner.plan("pause live guide").visionLaunchRequest?.command, .pause)
         XCTAssertEqual(planner.plan("resume live guide").visionLaunchRequest?.command, .resume)
         XCTAssertEqual(planner.plan("stop live guide").visionLaunchRequest?.command, .stop)
         XCTAssertEqual(planner.plan("start live guide").visionLaunchRequest?.mode, .liveGuide)
+        XCTAssertEqual(planner.plan("only tell me important changes").visionLaunchRequest?.command, .lessDetail)
+        XCTAssertEqual(planner.plan("be concise").visionLaunchRequest?.command, .lessDetail)
+        XCTAssertEqual(planner.plan("stop searching").visionLaunchRequest?.command, .stop)
+    }
+
+    func testCompleteDeviceTestCommandUsesPrivateDiagnosticsRoute() {
+        let plan = JarvisCommandPlanner().plan("Jarvis, run the complete device test")
+        XCTAssertEqual(plan.route, .inAppDiagnostics)
+        XCTAssertEqual(plan.action, .runDeviceAcceptance)
+        XCTAssertEqual(plan.data["action"], "device_acceptance")
+        XCTAssertFalse(plan.shouldPersistGeneralHistory)
+    }
+
+    func testDeviceAcceptanceVoiceResponsesAreBounded() {
+        XCTAssertEqual(JarvisDeviceAcceptanceResponse.parse("yes"), .yes)
+        XCTAssertEqual(JarvisDeviceAcceptanceResponse.parse("different"), .different)
+        XCTAssertEqual(JarvisDeviceAcceptanceResponse.parse("continue"), .continue)
+        XCTAssertEqual(JarvisDeviceAcceptanceResponse.parse("skip this"), .skip)
+        XCTAssertEqual(JarvisDeviceAcceptanceResponse.parse("stop test"), .stop)
+        XCTAssertEqual(JarvisDeviceAcceptanceResponse.parse("something unrelated"), .unknown)
+    }
+
+    func testDeviceAcceptanceReportRecordsAttentionAndCompletion() {
+        var report = JarvisDeviceAcceptanceReport(
+            appVersion: "1.0",
+            build: "1",
+            iOSVersion: "18.0",
+            deviceCapabilitySummary: ["rear_camera": "true"]
+        )
+        report.append(JarvisDeviceAcceptanceCheck(
+            identifier: "camera.frames",
+            title: "Live camera frame arrival",
+            status: .attention,
+            method: .automated,
+            measuredValues: ["delivered": "0"],
+            error: "no frame",
+            recordedAt: Date()
+        ))
+        report.complete()
+        XCTAssertEqual(report.overallStatus, .attention)
+        XCTAssertNotNil(report.completedAt)
     }
 
     func testFindCommandPreservesTarget() {
@@ -257,6 +332,25 @@ final class JarvisXRTests: XCTestCase {
         XCTAssertEqual(plan.action, .findObject)
         XCTAssertEqual(plan.visionLaunchRequest?.mode, .find)
         XCTAssertEqual(plan.visionLaunchRequest?.target, "chair")
+        XCTAssertEqual(
+            JarvisCommandPlanner().plan("Help me locate a table").visionLaunchRequest?.target,
+            "table"
+        )
+    }
+
+    func testNaturalReadAndScanVariantsSelectContinuousTasks() {
+        let planner = JarvisCommandPlanner()
+        let read = planner.plan("Read the sign in front of me").visionLaunchRequest
+        XCTAssertEqual(read?.mode, .readText)
+        XCTAssertEqual(read?.command, .run)
+        XCTAssertTrue(read?.startsImmediately == true)
+
+        XCTAssertEqual(planner.plan("Read the sign").visionLaunchRequest?.mode, .readText)
+
+        let scan = planner.plan("What is this code?").visionLaunchRequest
+        XCTAssertEqual(scan?.mode, .scanBarcode)
+        XCTAssertEqual(scan?.command, .run)
+        XCTAssertTrue(scan?.startsImmediately == true)
     }
 
     func testSensitiveVisionModesDoNotEnterGeneralHistoryPolicy() {
@@ -292,10 +386,25 @@ final class JarvisXRTests: XCTestCase {
         XCTAssertEqual(tell.data["message_body"], "I will arrive soon")
         XCTAssertFalse(tell.shouldPersistGeneralHistory)
 
+        let text = planner.plan("Text Mom that I will be home soon")
+        XCTAssertEqual(text.data["message_recipient_hint"], "Mom")
+        XCTAssertEqual(text.data["message_body"], "I will be home soon")
+        XCTAssertFalse(text.shouldPersistGeneralHistory)
+
         XCTAssertEqual(planner.plan("read the message back").data["message_action"], JarvisMessageAction.readBack.rawValue)
         XCTAssertEqual(planner.plan("change the recipient").data["message_action"], JarvisMessageAction.changeRecipient.rawValue)
         XCTAssertEqual(planner.plan("cancel the message").data["message_action"], JarvisMessageAction.cancel.rawValue)
         XCTAssertEqual(planner.plan("open the message composer").data["message_action"], JarvisMessageAction.openComposer.rawValue)
+
+        let correction = JarvisMessageCommandParser.parseActiveDraftFollowUp(
+            "change it to i am waiting outside",
+            raw: "Change it to I am waiting outside"
+        )
+        XCTAssertEqual(correction?.action, .changeBody)
+        XCTAssertEqual(correction?.body, "I am waiting outside")
+        XCTAssertEqual(JarvisMessageCommandParser.parseActiveDraftFollowUp("yes")?.action, .openComposer)
+        XCTAssertEqual(JarvisMessageCommandParser.parseActiveDraftFollowUp("read it back")?.action, .readBack)
+        XCTAssertEqual(JarvisMessageCommandParser.parseActiveDraftFollowUp("cancel")?.action, .cancel)
     }
 
     func testMessageDraftRequiresRecipientAndBodyAndClearsOnCancel() {

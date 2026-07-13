@@ -63,12 +63,20 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
     var onGenerationChange: ((VisionPipelineToken) -> Void)?
 
     private enum AnalysisInput {
-        case frame(CVPixelBuffer, CMTime)
+        case frame(CVPixelBuffer, CMTime, Date)
         case still(CGImage)
+        case replay(CGImage, Date)
 
         var isStill: Bool {
             if case .still = self { return true }
             return false
+        }
+
+        var capturedAt: Date {
+            switch self {
+            case .frame(_, _, let date), .replay(_, let date): return date
+            case .still: return Date()
+            }
         }
     }
 
@@ -113,6 +121,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
     private var processingPreference: VisionProcessingPreference = .automatic
     private var lastQualityNarrationKey: String?
     private var lastQualityNarrationAt: Date?
+    private var lastLiveGuideStatusAt: Date?
     private var latestSnapshotIdentifier: UUID?
 
     init(
@@ -158,12 +167,14 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         if previous !== camera {
             previous?.onFrame = nil
             previous?.onDroppedFrame = nil
+            previous?.onFrameIssue = nil
             previous?.onStateChange = nil
         }
         camera.onFrame = { [weak self] pixelBuffer, timestamp, orientation in
             self?.submitFrame(pixelBuffer, timestamp: timestamp, orientation: orientation)
         }
         camera.onDroppedFrame = { [weak self] in self?.recordDroppedFrame() }
+        camera.onFrameIssue = { [weak self] issue in self?.handle(frameIssue: issue) }
         camera.onStateChange = { [weak self] state in self?.handle(cameraState: state) }
     }
 
@@ -174,6 +185,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         }
         bound?.onFrame = nil
         bound?.onDroppedFrame = nil
+        bound?.onFrameIssue = nil
         bound?.onStateChange = nil
     }
 
@@ -323,7 +335,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
             self.emitStatistics(for: generation)
             self.analysisQueue.async {
                 self.analyze(
-                    input: .frame(pixelBuffer, timestamp),
+                    input: .frame(pixelBuffer, timestamp, Date()),
                     orientation: orientation,
                     mode: mode,
                     target: target,
@@ -333,6 +345,46 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
             }
         }
     }
+
+    #if DEBUG
+    /// Development replay entry point. Frames still pass through the production quality,
+    /// detector, OCR/barcode, tracking, fusion, narration, and cancellation path.
+    func submitReplayFrame(
+        _ image: CGImage,
+        capturedAt: Date,
+        orientation: CGImagePropertyOrientation = .up
+    ) {
+        stateQueue.async { [weak self] in
+            guard let self else { return }
+            self.submittedFrames += 1
+            guard self.sessionStateValue == .active,
+                  self.modeValue != .inactive,
+                  self.inFlightGeneration == nil else {
+                self.dropFrameLocked()
+                return
+            }
+            let now = ProcessInfo.processInfo.systemUptime
+            self.lastAcceptedFrameUptime = now
+            self.lastAcceptedFrameDate = capturedAt
+            self.inFlightGeneration = self.generation
+            self.acceptedFrameCountForSession += 1
+            let generation = self.generation
+            let mode = self.modeValue
+            let target = self.targetClassIdentifier
+            self.emitStatistics(for: generation)
+            self.analysisQueue.async {
+                self.analyze(
+                    input: .replay(image, capturedAt),
+                    orientation: orientation,
+                    mode: mode,
+                    target: target,
+                    generation: generation,
+                    startedAtUptime: now
+                )
+            }
+        }
+    }
+    #endif
 
     func analyzeStillImage(
         _ image: CGImage,
@@ -453,6 +505,31 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         stateQueue.sync { readingStateValue.currentLine }
     }
 
+    func moveToFirstReadingLine() {
+        moveToReadingLine { _ in 0 }
+    }
+
+    func moveToLargestReadingLine() {
+        moveToReadingLine { lines in
+            lines.indices.max { lhs, rhs in
+                let left = lines[lhs].boundingBox.width * lines[lhs].boundingBox.height
+                let right = lines[rhs].boundingBox.width * lines[rhs].boundingBox.height
+                return left < right
+            }
+        }
+    }
+
+    private func moveToReadingLine(_ selection: ([TextLine]) -> Int?) {
+        let update: (VisionReadingState, UInt64)? = stateQueue.sync {
+            let lines = readingStateValue.lines
+            guard !lines.isEmpty, let index = selection(lines), lines.indices.contains(index) else { return nil }
+            let next = VisionReadingState(status: .ready, lines: lines, currentLineIndex: index, updatedAt: Date())
+            readingStateValue = next
+            return (next, generation)
+        }
+        if let update { emitReadingState(update.0, generation: update.1) }
+    }
+
     private func beginSession(mode: VisionMode, target: String?) -> Result<UInt64, VisionError> {
         let resolvedTarget: Result<String?, VisionError>
         if mode == .find {
@@ -497,6 +574,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                 : .inactive
             lastQualityNarrationKey = nil
             lastQualityNarrationAt = nil
+            lastLiveGuideStatusAt = nil
             latestSnapshotIdentifier = nil
             let token = VisionPipelineToken(
                 sessionIdentifier: UUID(),
@@ -586,9 +664,14 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         guard isCurrent(requestGeneration) else { return }
         let quality: CameraQualityReport
         switch input {
-        case .frame(let pixelBuffer, _): quality = qualityAnalyzer.analyze(pixelBuffer: pixelBuffer)
-        case .still(let image): quality = qualityAnalyzer.analyze(image: image)
+        case .frame(let pixelBuffer, _, let capturedAt):
+            quality = qualityAnalyzer.analyze(pixelBuffer: pixelBuffer, at: capturedAt)
+        case .still(let image):
+            quality = qualityAnalyzer.analyze(image: image)
+        case .replay(let image, let capturedAt):
+            quality = qualityAnalyzer.analyze(image: image, at: capturedAt)
         }
+        diagnostics.record(frameQuality: quality)
         guard quality.isUsable else {
             finishScene(
                 input: input,
@@ -648,7 +731,12 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
             recognizeText(input: input, orientation: orientation, mode: .accurate) { [weak self] text in
                 guard let self else { return }
                 guard let text else {
-                    self.failPipeline(.noTextFound, generation: requestGeneration, startedAtUptime: startedAtUptime, terminal: false)
+                    self.finishAnalysis(
+                        generation: requestGeneration,
+                        startedAtUptime: startedAtUptime,
+                        terminal: false,
+                        mode: mode
+                    )
                     return
                 }
                 self.finishScene(
@@ -682,8 +770,8 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         case .identifyColor:
             let result: ColorAnalysisResult
             switch input {
-            case .frame(let pixelBuffer, _): result = colorAnalyzer.analyze(pixelBuffer: pixelBuffer)
-            case .still(let image): result = colorAnalyzer.analyze(image: image)
+            case .frame(let pixelBuffer, _, _): result = colorAnalyzer.analyze(pixelBuffer: pixelBuffer)
+            case .still(let image), .replay(let image, _): result = colorAnalyzer.analyze(image: image)
             }
             finishColor(
                 result,
@@ -711,7 +799,7 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         analysisQueue.async { [weak self] in
             guard let self, self.isCurrent(requestGeneration) else { return }
             let narrator = self.narrationServiceSnapshot()
-            let timestamp = Date()
+            let timestamp = input.capturedAt
             let tracking = self.tracker.update(with: objects, at: timestamp)
             let fused = self.fusion.fuse(
                 mode: mode,
@@ -751,8 +839,10 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
             switch mode {
             case .describe:
                 if !quality.isUsable {
-                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
-                    terminal = true
+                    if self.shouldNarrateQuality(quality, at: timestamp) {
+                        narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    }
+                    terminal = input.isStill
                 } else if input.isStill {
                     narration = self.singleFrameNarration(snapshot: snapshot, target: target)
                     terminal = true
@@ -778,6 +868,13 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                     }
                     if meaningful {
                         narration = narrator.narrateChanges(in: snapshot, verbosity: self.verbosity())
+                        self.recordLiveGuideNarration(at: timestamp)
+                    } else if self.shouldNarrateLiveGuideStatus(at: timestamp) {
+                        narration = narrator.statusNarration(
+                            "Live Guide is active. I have not confirmed a scene change yet.",
+                            snapshot: snapshot,
+                            verbosity: self.verbosity()
+                        )
                     }
                 }
             case .find:
@@ -797,9 +894,10 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                 }
             case .readText:
                 if !quality.isUsable {
-                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
-                    self.setReadingFailure(generation: requestGeneration)
-                    terminal = true
+                    if self.shouldNarrateQuality(quality, at: timestamp) {
+                        narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    }
+                    terminal = input.isStill
                 } else if let observation = text.first {
                     terminal = true
                     let lines = observation.linesInReadingOrder
@@ -815,8 +913,10 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                 }
             case .scanBarcode:
                 if !quality.isUsable {
-                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
-                    terminal = true
+                    if self.shouldNarrateQuality(quality, at: timestamp) {
+                        narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    }
+                    terminal = input.isStill
                 } else if let barcode = barcodes.first {
                     narration = narrator.verbatimNarration(
                         barcode.payload,
@@ -828,8 +928,10 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
                 }
             case .identifyColor:
                 if !quality.isUsable {
-                    narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
-                    terminal = true
+                    if self.shouldNarrateQuality(quality, at: timestamp) {
+                        narration = narrator.narrate(snapshot: snapshot, verbosity: self.verbosity())
+                    }
+                    terminal = input.isStill
                 }
             case .inactive:
                 break
@@ -962,14 +1064,14 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         completion: @escaping (Result<ObjectDetectionResult, VisionError>) -> Void
     ) {
         switch input {
-        case .frame(let pixelBuffer, _):
+        case .frame(let pixelBuffer, _, _):
             detector.detectObjects(
                 in: pixelBuffer,
                 orientation: orientation,
                 requestedClassIdentifier: target,
                 completion: completion
             )
-        case .still(let image):
+        case .still(let image), .replay(let image, _):
             detector.detectObjects(
                 in: image,
                 orientation: orientation,
@@ -993,9 +1095,9 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
             }
         }
         switch input {
-        case .frame(let pixelBuffer, _):
+        case .frame(let pixelBuffer, _, _):
             textRecognizer.recognize(in: pixelBuffer, orientation: orientation, mode: mode, completion: callback)
-        case .still(let image):
+        case .still(let image), .replay(let image, _):
             textRecognizer.recognize(in: image, orientation: orientation, mode: mode, completion: callback)
         }
     }
@@ -1006,9 +1108,9 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         completion: @escaping (Result<BarcodeRecognitionResult, VisionError>) -> Void
     ) {
         switch input {
-        case .frame(let pixelBuffer, _):
+        case .frame(let pixelBuffer, _, _):
             barcodeRecognizer.recognize(in: pixelBuffer, orientation: orientation, completion: completion)
-        case .still(let image):
+        case .still(let image), .replay(let image, _):
             barcodeRecognizer.recognize(in: image, orientation: orientation, completion: completion)
         }
     }
@@ -1022,9 +1124,9 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
             if case .success(let value) = result { completion(value) } else { completion(nil) }
         }
         switch input {
-        case .frame(let pixelBuffer, _):
+        case .frame(let pixelBuffer, _, _):
             peopleRecognizer.analyze(pixelBuffer: pixelBuffer, orientation: orientation, completion: callback)
-        case .still(let image):
+        case .still(let image), .replay(let image, _):
             peopleRecognizer.analyze(image: image, orientation: orientation, completion: callback)
         }
     }
@@ -1111,6 +1213,19 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
         }
     }
 
+    private func handle(frameIssue: CameraSessionService.FrameIssue) {
+        let error: VisionError
+        switch frameIssue {
+        case .noFrameReceived: error = .noFrameReceived
+        case .captureSessionNotRunning: error = .cameraNotRunning
+        case .invalidPixelBuffer: error = .invalidCameraFrame
+        }
+        diagnostics.record(error: error)
+        let current = currentGeneration
+        guard currentMode != .inactive, sessionState != .stopped else { return }
+        publish(error: error, generation: current)
+    }
+
     private func acceptedCount() -> Int { stateQueue.sync { acceptedFrameCountForSession } }
     private func verbosity() -> NarrationVerbosity { stateQueue.sync { narrationVerbosity } }
     private func changesOnlyImportant() -> Bool { stateQueue.sync { importantChangesOnly } }
@@ -1132,6 +1247,8 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
     }
 
     private func shouldNarrateQuality(_ quality: CameraQualityReport, at date: Date) -> Bool {
+        if quality.condition == .blackFrame && acceptedCount() < 2 { return false }
+        if quality.condition == .invalidPixelBuffer && acceptedCount() < 3 { return false }
         let key = quality.warnings.map(\.rawValue).sorted().joined(separator: ",")
         return stateQueue.sync {
             let elapsed = lastQualityNarrationAt.map { date.timeIntervalSince($0) } ?? .infinity
@@ -1140,6 +1257,23 @@ final class VisionPipelineCoordinator: @unchecked Sendable {
             lastQualityNarrationAt = date
             return true
         }
+    }
+
+    private func shouldNarrateLiveGuideStatus(at date: Date) -> Bool {
+        stateQueue.sync {
+            guard modeValue == .liveGuide,
+                  acceptedFrameCountForSession >= 3,
+                  let startedAt = tokenValue?.startedAt,
+                  date.timeIntervalSince(startedAt) >= 2.5 else { return false }
+            let elapsed = lastLiveGuideStatusAt.map { date.timeIntervalSince($0) } ?? .infinity
+            guard elapsed >= 15 else { return false }
+            lastLiveGuideStatusAt = date
+            return true
+        }
+    }
+
+    private func recordLiveGuideNarration(at date: Date) {
+        stateQueue.sync { lastLiveGuideStatusAt = date }
     }
 
     private func minimumFrameInterval(mode: VisionMode) -> TimeInterval {

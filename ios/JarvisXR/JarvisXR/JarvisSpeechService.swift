@@ -1,4 +1,5 @@
 import AVFoundation
+import UIKit
 
 enum JarvisVoiceProfile: String {
     static let ordered: [JarvisVoiceProfile] = [.natural, .friendly, .crisp, .quiet, .formal]
@@ -12,6 +13,40 @@ enum JarvisVoiceProfile: String {
     var displayName: String {
         rawValue.prefix(1).uppercased() + rawValue.dropFirst()
     }
+
+    var descriptor: JarvisVoiceProfileDescriptor {
+        switch self {
+        case .natural:
+            return JarvisVoiceProfileDescriptor(languages: ["en-US", "en-CA"], voiceSlot: 0, rate: 0.46, pitch: 1.00, volume: 0.90)
+        case .friendly:
+            return JarvisVoiceProfileDescriptor(languages: ["en-AU", "en-US"], voiceSlot: 1, rate: 0.47, pitch: 1.08, volume: 0.92)
+        case .formal:
+            return JarvisVoiceProfileDescriptor(languages: ["en-GB", "en-IE"], voiceSlot: 0, rate: 0.42, pitch: 0.94, volume: 0.88)
+        case .crisp:
+            return JarvisVoiceProfileDescriptor(languages: ["en-US", "en-GB"], voiceSlot: 2, rate: 0.53, pitch: 1.03, volume: 0.96)
+        case .quiet:
+            return JarvisVoiceProfileDescriptor(languages: ["en-IE", "en-GB", "en-US"], voiceSlot: 3, rate: 0.38, pitch: 0.92, volume: 0.58)
+        }
+    }
+}
+
+struct JarvisVoiceProfileDescriptor: Equatable {
+    let languages: [String]
+    let voiceSlot: Int
+    let rate: Float
+    let pitch: Float
+    let volume: Float
+}
+
+struct JarvisResolvedVoiceConfiguration: Equatable {
+    let profile: JarvisVoiceProfile
+    let voiceIdentifier: String?
+    let voiceName: String
+    let locale: String
+    let rate: Float
+    let pitch: Float
+    let volume: Float
+    let usedFallbackVoice: Bool
 }
 
 /// UIKit-owned speech adapter. Production callers and notification recovery enter
@@ -50,13 +85,10 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate, @uncheck
 
     var speechRate: Float {
         get {
-            switch profile {
-            case .natural: return 0.46
-            case .friendly: return 0.47
-            case .formal: return 0.42
-            case .crisp: return 0.51
-            case .quiet: return 0.38
+            if UserDefaults.standard.object(forKey: rateKey) != nil {
+                return min(max(UserDefaults.standard.float(forKey: rateKey), 0.35), 0.58)
             }
+            return profile.descriptor.rate
         }
         set {
             UserDefaults.standard.set(min(max(newValue, 0.35), 0.55), forKey: rateKey)
@@ -65,13 +97,10 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate, @uncheck
 
     var pitch: Float {
         get {
-            switch profile {
-            case .natural: return 1.03
-            case .friendly: return 1.05
-            case .formal: return 0.98
-            case .crisp: return 1.04
-            case .quiet: return 0.98
+            if UserDefaults.standard.object(forKey: pitchKey) != nil {
+                return min(max(UserDefaults.standard.float(forKey: pitchKey), 0.85), 1.10)
             }
+            return profile.descriptor.pitch
         }
         set {
             UserDefaults.standard.set(min(max(newValue, 0.85), 1.08), forKey: pitchKey)
@@ -80,11 +109,10 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate, @uncheck
 
     var volume: Float {
         get {
-            if profile == .quiet {
-                return 0.58
+            if UserDefaults.standard.object(forKey: volumeKey) != nil {
+                return min(max(UserDefaults.standard.float(forKey: volumeKey), 0.4), 1.0)
             }
-            let stored = UserDefaults.standard.float(forKey: volumeKey)
-            return stored > 0 ? stored : 0.88
+            return profile.descriptor.volume
         }
         set {
             UserDefaults.standard.set(min(max(newValue, 0.4), 1.0), forKey: volumeKey)
@@ -167,7 +195,7 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate, @uncheck
         at date: Date = Date()
     ) -> VisionSpeechEnqueueDisposition {
         guard isEnabled else { return .rejectedExpired }
-        if quietVisionGuideEnabled && narration.priority < .target {
+        if Self.shouldSuppressVisionNarration(narration, quietModeEnabled: quietVisionGuideEnabled) {
             return .suppressedQuietMode
         }
 
@@ -190,6 +218,13 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate, @uncheck
             break
         }
         return disposition
+    }
+
+    static func shouldSuppressVisionNarration(
+        _ narration: SceneNarration,
+        quietModeEnabled: Bool
+    ) -> Bool {
+        quietModeEnabled && narration.priority < .target && narration.contentKind != .system
     }
 
     @MainActor
@@ -247,7 +282,9 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate, @uncheck
     }
 
     func testPhrase() -> String {
-        "JARVIS voice output is ready."
+        let configuration = resolvedConfiguration(for: profile)
+        let fallback = configuration.usedFallbackVoice ? " A fallback system voice is active." : ""
+        return "\(profile.displayName) voice. JARVIS voice output is ready.\(fallback)"
     }
 
     func previewAllProfiles() {
@@ -260,6 +297,45 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate, @uncheck
             synthesizer.speak(utterance)
         }
         profile = current
+    }
+
+    @discardableResult
+    func selectProfile(_ newProfile: JarvisVoiceProfile) -> JarvisResolvedVoiceConfiguration {
+        profile = newProfile
+        return resolvedConfiguration(for: newProfile)
+    }
+
+    @discardableResult
+    func adjustSpeechRate(by delta: Float) -> Float {
+        speechRate = speechRate + delta
+        return speechRate
+    }
+
+    @discardableResult
+    func selectNextProfile() -> JarvisResolvedVoiceConfiguration {
+        let profiles = JarvisVoiceProfile.ordered
+        let current = profiles.firstIndex(of: profile) ?? 0
+        return selectProfile(profiles[(current + 1) % profiles.count])
+    }
+
+    func resetSpeechTuningToProfileDefaults() {
+        UserDefaults.standard.removeObject(forKey: rateKey)
+        UserDefaults.standard.removeObject(forKey: pitchKey)
+        UserDefaults.standard.removeObject(forKey: volumeKey)
+    }
+
+    func resolvedConfiguration(for voiceProfile: JarvisVoiceProfile) -> JarvisResolvedVoiceConfiguration {
+        let selection = resolvedVoice(for: voiceProfile)
+        return JarvisResolvedVoiceConfiguration(
+            profile: voiceProfile,
+            voiceIdentifier: selection.voice?.identifier,
+            voiceName: selection.voice?.name ?? "System English",
+            locale: selection.voice?.language ?? voiceProfile.descriptor.languages.first ?? "en-US",
+            rate: speechRate(for: voiceProfile),
+            pitch: pitch(for: voiceProfile),
+            volume: volume(for: voiceProfile),
+            usedFallbackVoice: selection.usedFallback
+        )
     }
 
     func personalVoiceStatusText(completion: @escaping (String) -> Void) {
@@ -299,73 +375,62 @@ final class JarvisSpeechService: NSObject, AVSpeechSynthesizerDelegate, @uncheck
     }
 
     private func makeUtterance(_ text: String, profile utteranceProfile: JarvisVoiceProfile) -> AVSpeechUtterance {
+        let configuration = resolvedConfiguration(for: utteranceProfile)
         let utterance = AVSpeechUtterance(string: text)
-        utterance.rate = speechRate(for: utteranceProfile)
-        utterance.pitchMultiplier = pitch(for: utteranceProfile)
-        utterance.volume = volume(for: utteranceProfile)
-        if let voice = preferredVoice(for: utteranceProfile) {
+        utterance.rate = configuration.rate
+        utterance.pitchMultiplier = configuration.pitch
+        utterance.volume = configuration.volume
+        if let identifier = configuration.voiceIdentifier,
+           let voice = AVSpeechSynthesisVoice(identifier: identifier) {
             utterance.voice = voice
+        } else {
+            utterance.voice = AVSpeechSynthesisVoice(language: configuration.locale)
         }
+        utterance.prefersAssistiveTechnologySettings = UIAccessibility.isVoiceOverRunning
         return utterance
     }
 
     private func speechRate(for utteranceProfile: JarvisVoiceProfile) -> Float {
-        switch utteranceProfile {
-        case .natural: return 0.46
-        case .friendly: return 0.47
-        case .formal: return 0.42
-        case .crisp: return 0.51
-        case .quiet: return 0.38
+        if UserDefaults.standard.object(forKey: rateKey) != nil {
+            return min(max(UserDefaults.standard.float(forKey: rateKey), 0.35), 0.58)
         }
+        return utteranceProfile.descriptor.rate
     }
 
     private func pitch(for utteranceProfile: JarvisVoiceProfile) -> Float {
-        switch utteranceProfile {
-        case .natural: return 1.03
-        case .friendly: return 1.05
-        case .formal: return 0.98
-        case .crisp: return 1.04
-        case .quiet: return 0.98
+        if UserDefaults.standard.object(forKey: pitchKey) != nil {
+            return min(max(UserDefaults.standard.float(forKey: pitchKey), 0.85), 1.10)
         }
+        return utteranceProfile.descriptor.pitch
     }
 
     private func volume(for utteranceProfile: JarvisVoiceProfile) -> Float {
-        if utteranceProfile == .quiet {
-            return 0.58
+        if UserDefaults.standard.object(forKey: volumeKey) != nil {
+            return min(max(UserDefaults.standard.float(forKey: volumeKey), 0.4), 1.0)
         }
-        let stored = UserDefaults.standard.float(forKey: volumeKey)
-        return stored > 0 ? stored : 0.88
+        return utteranceProfile.descriptor.volume
     }
 
-    private func preferredVoice() -> AVSpeechSynthesisVoice? {
-        preferredVoice(for: profile)
-    }
-
-    private func preferredVoice(for voiceProfile: JarvisVoiceProfile) -> AVSpeechSynthesisVoice? {
+    private func resolvedVoice(for voiceProfile: JarvisVoiceProfile) -> (voice: AVSpeechSynthesisVoice?, usedFallback: Bool) {
         if prefersPersonalVoice, let personal = personalVoices().first {
-            return personal
+            return (personal, false)
         }
-        let voices = AVSpeechSynthesisVoice.speechVoices()
-        let preferredLanguages: [String]
-        switch voiceProfile {
-        case .formal:
-            preferredLanguages = ["en-GB", "en-US", "en-AU", "en-IE", "en-ZA"]
-        default:
-            preferredLanguages = ["en-US", "en-GB", "en-AU", "en-IE", "en-ZA"]
+        let voices = AVSpeechSynthesisVoice.speechVoices().sorted { lhs, rhs in
+            if lhs.quality != rhs.quality { return lhs.quality.rawValue > rhs.quality.rawValue }
+            return lhs.identifier < rhs.identifier
         }
-        for language in preferredLanguages {
-            if let enhanced = voices.first(where: { $0.language == language && $0.quality == .enhanced }) {
-                return enhanced
+        let descriptor = voiceProfile.descriptor
+        for language in descriptor.languages {
+            let candidates = voices.filter { $0.language == language }
+            if !candidates.isEmpty {
+                return (candidates[descriptor.voiceSlot % candidates.count], false)
             }
         }
-        for language in preferredLanguages {
-            if let voice = voices.first(where: { $0.language == language }) {
-                return voice
-            }
+        let english = voices.filter { $0.language.hasPrefix("en") }
+        if !english.isEmpty {
+            return (english[descriptor.voiceSlot % english.count], true)
         }
-        return voices.first(where: { $0.language.hasPrefix("en") && $0.quality == .enhanced }) ??
-            voices.first(where: { $0.language.hasPrefix("en") }) ??
-            AVSpeechSynthesisVoice(language: "en-US")
+        return (AVSpeechSynthesisVoice(language: descriptor.languages.first ?? "en-US"), true)
     }
 
     private func personalVoices() -> [AVSpeechSynthesisVoice] {

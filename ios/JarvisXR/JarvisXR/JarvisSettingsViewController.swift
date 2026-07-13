@@ -85,7 +85,7 @@ final class JarvisSettingsViewController: UIViewController {
         stackView.addArrangedSubview(settingRow(title: "Speech Output", control: speechSwitch, identifier: "jarvis.settings.speechLabel"))
 
         configureSegmented(voiceProfileControl, identifier: "jarvis.settings.voiceProfile", action: #selector(profileChanged))
-        stackView.addArrangedSubview(settingPanel(title: "Voice Profile", detail: "Changes the local system voice pace, pitch, and volume.", control: voiceProfileControl))
+        stackView.addArrangedSubview(settingPanel(title: "Voice Profile", detail: "Changes the installed system voice, locale, pace, pitch, and volume.", control: voiceProfileControl))
 
         stackView.addArrangedSubview(sectionHeading("Vision narration"))
         configureSegmented(defaultModeControl, identifier: "jarvis.settings.vision.defaultMode", action: #selector(defaultModeChanged))
@@ -278,11 +278,11 @@ final class JarvisSettingsViewController: UIViewController {
 
     @objc private func profileChanged() {
         switch voiceProfileControl.selectedSegmentIndex {
-        case 1: JarvisSpeechService.shared.profile = .friendly
-        case 2: JarvisSpeechService.shared.profile = .crisp
-        case 3: JarvisSpeechService.shared.profile = .quiet
-        case 4: JarvisSpeechService.shared.profile = .formal
-        default: JarvisSpeechService.shared.profile = .natural
+        case 1: _ = JarvisSpeechService.shared.selectProfile(.friendly)
+        case 2: _ = JarvisSpeechService.shared.selectProfile(.crisp)
+        case 3: _ = JarvisSpeechService.shared.selectProfile(.quiet)
+        case 4: _ = JarvisSpeechService.shared.selectProfile(.formal)
+        default: _ = JarvisSpeechService.shared.selectProfile(.natural)
         }
         JarvisSpeechService.shared.speak(JarvisSpeechService.shared.testPhrase())
     }

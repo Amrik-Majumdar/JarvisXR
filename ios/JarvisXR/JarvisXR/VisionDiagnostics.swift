@@ -41,6 +41,14 @@ struct VisionDiagnosticsSnapshot: Codable, Equatable, Sendable {
     var thermalState: VisionThermalState
     var processingProfile: VisionProcessingProfile
     var inferenceMetrics: InferenceMetrics
+    var lastFrameCondition: CameraFrameCondition?
+    var lastFrameWidth: Int?
+    var lastFrameHeight: Int?
+    var lastPixelFormat: UInt32?
+    var lastFrameBrightness: Double?
+    var lastFrameSharpness: Double?
+    var obstructionEvidenceFrames: Int
+    var lastFrameEvaluatedAt: Date?
     var lastRecoverableError: String?
     var offlinePrivacyEnabled: Bool
     var applicationBuildVersion: String
@@ -73,6 +81,14 @@ final class VisionDiagnosticsStore: @unchecked Sendable {
             thermalState: .unknown,
             processingProfile: .stopped,
             inferenceMetrics: InferenceMetrics(),
+            lastFrameCondition: nil,
+            lastFrameWidth: nil,
+            lastFrameHeight: nil,
+            lastPixelFormat: nil,
+            lastFrameBrightness: nil,
+            lastFrameSharpness: nil,
+            obstructionEvidenceFrames: 0,
+            lastFrameEvaluatedAt: nil,
             lastRecoverableError: nil,
             offlinePrivacyEnabled: true,
             applicationBuildVersion: version,
@@ -165,6 +181,19 @@ final class VisionDiagnosticsStore: @unchecked Sendable {
     func recordNarrationDelay(_ duration: TimeInterval) {
         guard duration.isFinite, duration >= 0 else { return }
         mutate { $0.inferenceMetrics.narrationDelay = duration }
+    }
+
+    func record(frameQuality: CameraQualityReport) {
+        mutate {
+            $0.lastFrameCondition = frameQuality.condition
+            $0.lastFrameWidth = frameQuality.frameWidth > 0 ? frameQuality.frameWidth : nil
+            $0.lastFrameHeight = frameQuality.frameHeight > 0 ? frameQuality.frameHeight : nil
+            $0.lastPixelFormat = frameQuality.pixelFormat
+            $0.lastFrameBrightness = frameQuality.brightness
+            $0.lastFrameSharpness = frameQuality.sharpness
+            $0.obstructionEvidenceFrames = frameQuality.obstructionEvidenceFrames
+            $0.lastFrameEvaluatedAt = frameQuality.evaluatedAt
+        }
     }
 
     func record(error: VisionError) {

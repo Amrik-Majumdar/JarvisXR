@@ -252,6 +252,15 @@ final class JarvisXRVisualProofTests: XCTestCase {
         saveScreenshot("vision-self-test")
     }
 
+    func testProofDeviceAcceptance() throws {
+        try printVisualProofStart()
+        launch(state: "device_acceptance")
+        waitFor(app.staticTexts["jarvis.deviceTest.header"], named: "Complete Device Test header")
+        waitFor(app.staticTexts["jarvis.deviceTest.report"], named: "Device test report")
+        waitFor(app.buttons["jarvis.deviceTest.stop"], named: "Device test Stop")
+        saveScreenshot("device-acceptance")
+    }
+
     func testProofVisionOnboarding() throws {
         try printVisualProofStart()
         launch(state: "vision_onboarding")
@@ -264,11 +273,7 @@ final class JarvisXRVisualProofTests: XCTestCase {
         launch(state: "vision_describe_result")
         waitForVisionSurface()
         for identifier in [
-            "jarvis.vision.mode.describe",
-            "jarvis.vision.mode.liveGuide",
-            "jarvis.vision.mode.find",
-            "jarvis.vision.mode.readText",
-            "jarvis.vision.mode.scanBarcode",
+            "jarvis.vision.taskMenu",
             "jarvis.vision.primaryAction",
             "jarvis.vision.repeat",
             "jarvis.vision.voice",
@@ -278,6 +283,10 @@ final class JarvisXRVisualProofTests: XCTestCase {
             waitFor(element, named: identifier)
             XCTAssertFalse(element.label.isEmpty, "\(identifier) needs an accessibility label")
             XCTAssertGreaterThanOrEqual(element.frame.height, 44, "\(identifier) touch target is too short")
+        }
+        app.buttons["jarvis.vision.taskMenu"].tap()
+        for task in ["Describe", "Live Guide", "Find", "Read Text", "Scan Barcode"] {
+            waitFor(app.descendants(matching: .any)[task], named: "\(task) task menu item")
         }
         XCTAssertEqual(app.buttons["jarvis.vision.stop"].label, "Stop Vision and speech")
         XCTAssertFalse(app.staticTexts["jarvis.vision.result"].label.contains("%"), "Product result must not expose confidence percentages")

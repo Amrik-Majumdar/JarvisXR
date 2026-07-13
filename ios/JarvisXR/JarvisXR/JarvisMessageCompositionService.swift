@@ -7,6 +7,7 @@ import UIKit
 enum JarvisMessageAction: String, Equatable {
     case begin
     case readBack
+    case changeBody
     case changeRecipient
     case cancel
     case openComposer
@@ -33,10 +34,11 @@ enum JarvisMessageCommandParser {
         if ["open the message composer", "open message composer", "review the message", "review message"].contains(normalized) {
             return JarvisMessageCommandDetails(action: .openComposer, recipientHint: nil, body: nil)
         }
+        if normalized.hasPrefix("text ") {
+            return beginDetails(argument(after: "text ", in: preservedCommand))
+        }
         if normalized.hasPrefix("message ") {
-            let recipient = argument(after: "message ", in: preservedCommand)
-            guard !recipient.isEmpty else { return nil }
-            return JarvisMessageCommandDetails(action: .begin, recipientHint: recipient, body: nil)
+            return beginDetails(argument(after: "message ", in: preservedCommand))
         }
         if normalized.hasPrefix("tell ") {
             let remainder = argument(after: "tell ", in: preservedCommand)
@@ -50,6 +52,43 @@ enum JarvisMessageCommandParser {
             )
         }
         return nil
+    }
+
+    static func parseActiveDraftFollowUp(_ normalized: String, raw: String? = nil) -> JarvisMessageCommandDetails? {
+        let preserved = commandTextPreservingContent(raw ?? normalized)
+        if normalized == "cancel" {
+            return JarvisMessageCommandDetails(action: .cancel, recipientHint: nil, body: nil)
+        }
+        if ["yes", "yes open messages", "confirm", "open messages", "open the composer"].contains(normalized) {
+            return JarvisMessageCommandDetails(action: .openComposer, recipientHint: nil, body: nil)
+        }
+        if ["read it back", "read that back", "what is the message", "what does it say"].contains(normalized) {
+            return JarvisMessageCommandDetails(action: .readBack, recipientHint: nil, body: nil)
+        }
+        if ["change the message", "change message", "edit the message", "change it"].contains(normalized) {
+            return JarvisMessageCommandDetails(action: .changeBody, recipientHint: nil, body: nil)
+        }
+        for prefix in ["change it to ", "change the message to ", "replace it with "] where normalized.hasPrefix(prefix) {
+            let body = argument(after: prefix, in: preserved)
+            return JarvisMessageCommandDetails(action: .changeBody, recipientHint: nil, body: body)
+        }
+        return parse(normalized, raw: raw)
+    }
+
+    private static func beginDetails(_ remainder: String) -> JarvisMessageCommandDetails? {
+        let trimmed = remainder.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if let range = trimmed.range(of: " that ", options: [.caseInsensitive]) {
+            let recipient = String(trimmed[..<range.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+            let body = String(trimmed[range.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !recipient.isEmpty else { return nil }
+            return JarvisMessageCommandDetails(
+                action: .begin,
+                recipientHint: recipient,
+                body: body.nilIfEmpty
+            )
+        }
+        return JarvisMessageCommandDetails(action: .begin, recipientHint: trimmed, body: nil)
     }
 
     private static func argument(after prefix: String, in value: String) -> String {
@@ -77,6 +116,10 @@ struct JarvisMessageDraft: Equatable {
 
     var isReadyForComposer: Bool {
         recipientAddress?.isEmpty == false && body?.isEmpty == false
+    }
+
+    var isActive: Bool {
+        recipientDisplayName != nil || recipientAddress != nil || body != nil
     }
 
     mutating func begin(body: String?) {
@@ -120,6 +163,8 @@ final class JarvisMessageCompositionService: NSObject, CNContactPickerDelegate, 
     private(set) var draft = JarvisMessageDraft()
     private var recipientHint: String?
 
+    var hasActiveDraft: Bool { draft.isActive }
+
     init(presenter: UIViewController, responseHandler: @escaping (JarvisResponse) -> Void) {
         self.presenter = presenter
         self.responseHandler = responseHandler
@@ -133,6 +178,13 @@ final class JarvisMessageCompositionService: NSObject, CNContactPickerDelegate, 
             presentContactPicker()
         case .readBack:
             respond(draft.readback)
+        case .changeBody:
+            if let body = details.body?.trimmingCharacters(in: .whitespacesAndNewlines), !body.isEmpty {
+                draft.setBody(body)
+                respond("\(draft.readback). Say yes to open Messages, or change it again.", expectsVoiceFollowUp: true)
+            } else {
+                presentBodyPrompt()
+            }
         case .changeRecipient:
             draft.clearRecipient()
             recipientHint = nil
@@ -177,7 +229,7 @@ final class JarvisMessageCompositionService: NSObject, CNContactPickerDelegate, 
                 self?.presentBodyPrompt()
             }
         } else {
-            respond("\(draft.readback). Say open the message composer to review and send, read the message back, change the recipient, or cancel the message.")
+            respond("\(draft.readback). Should I open Messages? Say yes, read it back, change the message, change the recipient, or cancel.", expectsVoiceFollowUp: true)
         }
     }
 
@@ -207,7 +259,7 @@ final class JarvisMessageCompositionService: NSObject, CNContactPickerDelegate, 
                 self.respond("No message body was entered. The draft was not opened in the composer.", status: .confirmationRequired)
                 return
             }
-            self.respond("\(self.draft.readback). Say open the message composer to review and send, read the message back, change the recipient, or cancel the message.")
+            self.respond("\(self.draft.readback). Should I open Messages? Say yes, read it back, change the message, change the recipient, or cancel.", expectsVoiceFollowUp: true)
         })
         presenter.present(alert, animated: !UIAccessibility.isReduceMotionEnabled)
     }
@@ -261,8 +313,17 @@ final class JarvisMessageCompositionService: NSObject, CNContactPickerDelegate, 
         }
     }
 
-    private func respond(_ text: String, status: JarvisResponseStatus = .ok) {
-        responseHandler(JarvisResponse(status: status, spokenResponse: text, displayResponse: text))
+    private func respond(
+        _ text: String,
+        status: JarvisResponseStatus = .ok,
+        expectsVoiceFollowUp: Bool = false
+    ) {
+        responseHandler(JarvisResponse(
+            status: status,
+            spokenResponse: text,
+            displayResponse: text,
+            data: expectsVoiceFollowUp ? ["message_voice_follow_up": "true"] : [:]
+        ))
     }
 }
 

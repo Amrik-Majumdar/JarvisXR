@@ -83,7 +83,7 @@ These are simulator and static-policy checks. They do not measure physical iPhon
 
 ## UI Tests and Visual Proof
 
-The `JarvisXRUITests` target verifies accessible navigation and deterministic fixture states. The workflow also captures and validates 28 PNG states covering the main assistant, all six Vision modes, permissions, model failure, settings, help, diagnostics, self-test, and onboarding.
+The `JarvisXRUITests` target verifies accessible navigation and deterministic fixture states on dynamically measured compact and large available iPhone simulators. The workflow also captures and validates 29 PNG states covering the main assistant, all six Vision modes, permissions, model failure, settings, help, diagnostics, self-test, Device Acceptance Mode, and onboarding.
 
 ## Unsigned Device Build
 
@@ -112,8 +112,8 @@ The GitHub Actions workflow packages it as `Payload/JarvisXR.app` inside `Jarvis
 
 1. Fork the repository.
 2. Enable Actions for the fork.
-3. Open **Actions > Build JarvisXR iOS IPA**.
-4. Choose **Run workflow**.
+3. Open **Actions > Jarvis Native Validation**.
+4. Choose **Run workflow** and provide the exact immutable commit SHA to validate.
 5. Download the relevant artifacts:
 
    - `JarvisXR-unsigned-ipa`
@@ -125,7 +125,7 @@ The GitHub Actions workflow packages it as `Payload/JarvisXR.app` inside `Jarvis
 
 Artifacts expire according to GitHub retention policy. Release assets remain available until removed.
 
-The workflow is configured to fetch and verify the detector, run the Python gates, build an unsigned arm64 app, run Swift unit and UI tests, execute the real simulator fixture, evaluate safety and privacy policy, capture 28 visual states, audit the IPA, and upload logs and reports even when diagnostic steps fail. Run-specific pass evidence for the current rewrite remains pending in [Vision Completion Ledger](JARVIS_VISION_COMPLETION_LEDGER.md) until the release run is recorded.
+The workflow is configured to fetch and verify the detector, run the Python gates, build an unsigned arm64 app, run Swift unit and UI tests, execute the real simulator fixture, evaluate safety and privacy policy, capture 29 visual states, audit the IPA, generate `ipa-evidence.json`, and upload logs and reports even when diagnostic steps fail. Run-specific pass evidence for the current rewrite remains pending in [Vision Completion Ledger](JARVIS_VISION_COMPLETION_LEDGER.md) until the validation run is recorded.
 
 ## Reproducibility Scope
 

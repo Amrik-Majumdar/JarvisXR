@@ -3,6 +3,32 @@ import ImageIO
 import UIKit
 
 final class CameraSessionService: NSObject {
+    enum FrameIssue: Equatable {
+        case noFrameReceived
+        case captureSessionNotRunning
+        case invalidPixelBuffer(width: Int, height: Int, pixelFormat: OSType)
+
+        var diagnosticLabel: String {
+            switch self {
+            case .noFrameReceived: return "no frame received"
+            case .captureSessionNotRunning: return "capture session not running"
+            case .invalidPixelBuffer: return "invalid pixel buffer"
+            }
+        }
+    }
+
+    struct FrameDiagnostics: Equatable {
+        let deliveredFrameCount: Int
+        let droppedFrameCount: Int
+        let invalidFrameCount: Int
+        let lastFrameAt: Date?
+        let lastFrameWidth: Int?
+        let lastFrameHeight: Int?
+        let lastPixelFormat: OSType?
+        let lastOrientation: CGImagePropertyOrientation?
+        let lastIssue: FrameIssue?
+    }
+
     enum CameraPosition: String, CaseIterable {
         case rear
         case front
@@ -65,12 +91,14 @@ final class CameraSessionService: NSObject {
     var onFrame: ((CVPixelBuffer, CMTime, CGImagePropertyOrientation) -> Void)?
     var onStateChange: ((State) -> Void)?
     var onDroppedFrame: (() -> Void)?
+    var onFrameIssue: ((FrameIssue) -> Void)?
 
     private let sessionQueue = DispatchQueue(label: "com.amrik.jarvisxr.camera.session", qos: .userInitiated)
     private let videoQueue = DispatchQueue(label: "com.amrik.jarvisxr.camera.video", qos: .userInitiated)
     private let videoOutput = AVCaptureVideoDataOutput()
     private let photoOutput = AVCapturePhotoOutput()
     private let orientationLock = NSLock()
+    private let frameDiagnosticsLock = NSLock()
     private var activeDevice: AVCaptureDevice?
     private var configuredPosition: CameraPosition?
     private var cachedOrientation: CGImagePropertyOrientation = .right
@@ -78,6 +106,15 @@ final class CameraSessionService: NSObject {
     private var shouldResumeAfterInterruption = false
     private var photoCompletion: ((Result<CapturedPhoto, Error>) -> Void)?
     private var observers: [NSObjectProtocol] = []
+    private var deliveredFrameCount = 0
+    private var droppedFrameCount = 0
+    private var invalidFrameCount = 0
+    private var lastFrameAt: Date?
+    private var lastFrameWidth: Int?
+    private var lastFrameHeight: Int?
+    private var lastPixelFormat: OSType?
+    private var lastFrameOrientation: CGImagePropertyOrientation?
+    private var lastFrameIssue: FrameIssue?
 
     override init() {
         super.init()
@@ -109,6 +146,22 @@ final class CameraSessionService: NSObject {
 
     var isTorchEnabled: Bool {
         withSessionQueue { activeDevice?.torchMode == .on }
+    }
+
+    var frameDiagnostics: FrameDiagnostics {
+        frameDiagnosticsLock.lock()
+        defer { frameDiagnosticsLock.unlock() }
+        return FrameDiagnostics(
+            deliveredFrameCount: deliveredFrameCount,
+            droppedFrameCount: droppedFrameCount,
+            invalidFrameCount: invalidFrameCount,
+            lastFrameAt: lastFrameAt,
+            lastFrameWidth: lastFrameWidth,
+            lastFrameHeight: lastFrameHeight,
+            lastPixelFormat: lastPixelFormat,
+            lastOrientation: lastFrameOrientation,
+            lastIssue: lastFrameIssue
+        )
     }
 
     func requestAccessAndStart(
@@ -158,6 +211,7 @@ final class CameraSessionService: NSObject {
                 self.session.startRunning()
                 self.shouldResumeAfterInterruption = true
                 self.transition(to: .running)
+                self.scheduleFirstFrameWatchdog(startingAt: self.frameDiagnostics.deliveredFrameCount)
                 DispatchQueue.main.async { completion(.success(())) }
             } catch {
                 self.transition(to: .unavailable(error.localizedDescription))
@@ -300,6 +354,61 @@ final class CameraSessionService: NSObject {
         activeDevice = camera
         configuredPosition = position
         setCachedOrientation(orientation(for: position))
+        resetFrameDiagnostics()
+    }
+
+    private func scheduleFirstFrameWatchdog(startingAt baseline: Int) {
+        sessionQueue.asyncAfter(deadline: .now() + 1.75) { [weak self] in
+            guard let self, self.session.isRunning, self.currentState == .running else { return }
+            guard self.frameDiagnostics.deliveredFrameCount == baseline else { return }
+            self.record(issue: .noFrameReceived)
+        }
+    }
+
+    private func resetFrameDiagnostics() {
+        frameDiagnosticsLock.lock()
+        deliveredFrameCount = 0
+        droppedFrameCount = 0
+        invalidFrameCount = 0
+        lastFrameAt = nil
+        lastFrameWidth = nil
+        lastFrameHeight = nil
+        lastPixelFormat = nil
+        lastFrameOrientation = nil
+        lastFrameIssue = nil
+        frameDiagnosticsLock.unlock()
+    }
+
+    private func recordDeliveredFrame(
+        width: Int,
+        height: Int,
+        pixelFormat: OSType,
+        orientation: CGImagePropertyOrientation
+    ) {
+        frameDiagnosticsLock.lock()
+        deliveredFrameCount += 1
+        lastFrameAt = Date()
+        lastFrameWidth = width
+        lastFrameHeight = height
+        lastPixelFormat = pixelFormat
+        lastFrameOrientation = orientation
+        lastFrameIssue = nil
+        frameDiagnosticsLock.unlock()
+    }
+
+    private func recordDroppedFrame() {
+        frameDiagnosticsLock.lock()
+        droppedFrameCount += 1
+        frameDiagnosticsLock.unlock()
+        onDroppedFrame?()
+    }
+
+    private func record(issue: FrameIssue) {
+        frameDiagnosticsLock.lock()
+        if case .invalidPixelBuffer = issue { invalidFrameCount += 1 }
+        lastFrameIssue = issue
+        frameDiagnosticsLock.unlock()
+        DispatchQueue.main.async { [weak self] in self?.onFrameIssue?(issue) }
     }
 
     private func orientation(for position: CameraPosition?) -> CGImagePropertyOrientation {
@@ -461,11 +570,29 @@ extension CameraSessionService: AVCaptureVideoDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            onDroppedFrame?()
+        guard session.isRunning else {
+            record(issue: .captureSessionNotRunning)
+            recordDroppedFrame()
             return
         }
-        onFrame?(pixelBuffer, CMSampleBufferGetPresentationTimeStamp(sampleBuffer), currentOrientation())
+        guard CMSampleBufferIsValid(sampleBuffer),
+              CMSampleBufferDataIsReady(sampleBuffer),
+              let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            record(issue: .invalidPixelBuffer(width: 0, height: 0, pixelFormat: 0))
+            recordDroppedFrame()
+            return
+        }
+        let width = CVPixelBufferGetWidth(pixelBuffer)
+        let height = CVPixelBufferGetHeight(pixelBuffer)
+        let pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer)
+        guard width > 1, height > 1 else {
+            record(issue: .invalidPixelBuffer(width: width, height: height, pixelFormat: pixelFormat))
+            recordDroppedFrame()
+            return
+        }
+        let orientation = currentOrientation()
+        recordDeliveredFrame(width: width, height: height, pixelFormat: pixelFormat, orientation: orientation)
+        onFrame?(pixelBuffer, CMSampleBufferGetPresentationTimeStamp(sampleBuffer), orientation)
     }
 
     func captureOutput(
@@ -473,7 +600,7 @@ extension CameraSessionService: AVCaptureVideoDataOutputSampleBufferDelegate {
         didDrop sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        onDroppedFrame?()
+        recordDroppedFrame()
     }
 }
 

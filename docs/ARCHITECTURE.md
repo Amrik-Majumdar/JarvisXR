@@ -22,26 +22,27 @@ The app runs in the normal iOS sandbox and uses public frameworks. It has no pri
 
 ## Command Flow
 
-1. The user taps the orb for push-to-talk or submits text.
+1. The app becomes ready to listen after launch when permissions and onboarding allow it; the user may speak naturally, tap the orb or Voice control, or submit text.
 2. The interface enters Listening or Processing.
 3. `JarvisCommandRouter` normalizes the command and creates a local response or action.
 4. In-app actions open native screens such as Jarvis Vision, Settings, Help, or Diagnostics.
-5. Vision commands route to a typed `VisionMode` and `JarvisVisionCommand` through the active camera experience.
+5. Vision commands route to a typed `VisionMode` and `JarvisVisionCommand` through the active camera experience, which maintains task-scoped conversational context for Find, Read, Scan, and Message follow-ups.
 6. Supported external routes use public URLs, App Intents, or Control Mesh guidance.
 7. `JarvisSpeechService` speaks non-vision responses when output is enabled.
 8. `JarvisMemoryStore` persists allowed notes, settings, and history locally.
 
 ## Vision Flow
 
-1. `CameraSessionService` owns camera permission, preview, sample and still capture, camera choice, focus, exposure, white balance, torch, interruptions, and foreground lifecycle.
+1. `CameraSessionService` owns camera permission, preview, continuous sample delivery, optional internal still capture, camera choice, focus, exposure, white balance, torch, interruptions, first-frame diagnostics, and foreground lifecycle.
 2. `VisionPipelineCoordinator` owns the active mode and session generation. Frame backpressure and generation checks prevent unbounded queues and stale completion delivery.
-3. `ObjectDetectionService`, `TextRecognitionService`, `BarcodeRecognitionService`, `FaceAndPersonService`, `CameraQualityAnalyzer`, and `ColorAnalysisService` return typed observations. The `VisionDetecting` interface keeps the detector replaceable without changing downstream features.
+3. `ObjectDetectionService`, `TextRecognitionService`, `BarcodeRecognitionService`, `FaceAndPersonService`, `CameraQualityAnalyzer`, and `ColorAnalysisService` return typed observations. `CameraQualityMetricsEngine` distinguishes invalid, startup-black, light, detail, motion, framing, and temporal obstruction states without treating a valid no-detection frame as a covered camera. The `VisionDetecting` interface keeps the detector replaceable without changing downstream features.
 4. `TemporalObjectTracker` stabilizes object identity and movement. `SceneFusionEngine` combines bounded evidence into a `SceneSnapshot`.
 5. `VisionSafetyPolicy` applies confidence, stability, age, supported-class, and prohibited-language rules. `VisionNarrationService` describes only grounded evidence and qualifies absence.
 6. `VisionSpeechPriorityQueue` orders warnings and requested targets above changes and ambient detail. Session tokens cancel stale or stopped-session speech.
 7. `VisionHapticsService` maps broad direction and status into a small documented vocabulary, with spoken guidance as fallback.
 8. `VisionSessionMemory` keeps temporary observations in memory and clears them when the session stops. `VisionDiagnosticsStore` retains bounded operational metrics without frames or recognized content.
 9. Runtime conditions select full, balanced, reduced-power, target-only, or stopped processing profiles. Serious or critical thermal state selects reduced processing.
+10. In debug builds, `VisionReplayLab` submits original local frames through this same coordinator and analyzer path; it is deliberately excluded from ordinary user navigation.
 
 ## Model Supply Chain
 

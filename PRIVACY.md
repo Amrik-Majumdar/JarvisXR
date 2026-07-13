@@ -18,13 +18,13 @@ Message-composition commands are excluded from general command history. Jarvis u
 
 ### Microphone and speech recognition
 
-Microphone access is used only after the user starts in-app voice input. Audio is provided to Apple's Speech framework for recognition. Recognition may occur on-device or may be processed by Apple depending on the device, language, operating system, network state, and Apple's service availability. Apple's handling is governed by Apple's own privacy terms.
+Microphone access is used only while Jarvis is ready to listen or when the user starts in-app voice input. The app becomes ready to listen after launch when permissions and onboarding allow it, and the user can stop listening or speaking at any time. Audio is provided to Apple's Speech framework for recognition. Recognition may occur on-device or may be processed by Apple depending on the device, language, operating system, network state, and Apple's service availability. Apple's handling is governed by Apple's own privacy terms.
 
 JARVIS XR does not provide a background wake word and does not intentionally record while voice input is inactive.
 
 ### Camera and visual inspection
 
-Camera access is used for the inspection screen. Captured frames are analyzed in the app with Apple Vision for text, barcode, QR, classification, and compatible bundled model requests. The app does not upload camera images to a developer-operated server. The current inspection flow does not intentionally save captured images to the photo library.
+Camera access is used while an active Vision task needs it. Live frames are analyzed in the app with Apple Vision for text, barcode, QR, classification, and compatible bundled model requests. The app does not upload camera images to a developer-operated server and does not intentionally save camera frames, video, recognized text, or barcode values to the photo library.
 
 ### Device diagnostics
 

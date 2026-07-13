@@ -8,25 +8,29 @@ It is informational assistance, not a safety-certified navigation or mobility sy
 
 | Mode | Analysis and interaction |
 |---|---|
-| Describe | Fuses supported object, person, text, and spatial observations into a bounded scene description |
-| Live Guide | Samples frames with backpressure, tracks stable objects, and announces meaningful changes while foregrounded |
-| Find | Resolves a requested supported class, tracks it, and reports broad left, center, or right guidance plus found and lost state |
-| Read Text | Runs accurate OCR, preserves reading order, and exposes pause, previous-line, and next-line controls |
-| Barcode | Recognizes and deduplicates supported symbologies, speaks values only in Scan mode, and never opens a URL automatically |
+| Describe | Continuously selects useful frames and fuses supported object, person, text, and spatial observations into a bounded scene description |
+| Live Guide | Samples frames with backpressure, tracks stable objects, announces meaningful changes, and provides a rate-limited status heartbeat while foregrounded |
+| Find | Resolves a spoken requested supported class, tracks it, and reports broad left, center, or right guidance plus found, centered, and lost state |
+| Read Text | Continuously looks for readable text, preserves reading order, and supports spoken start-from-top, largest-text, pause, line, and spelling controls |
+| Barcode | Continuously recognizes and deduplicates supported symbologies, can read a confirmed code character by character, and never opens a URL automatically |
 | Color | Classifies the center region into common color names and qualifies results when lighting or confidence is poor |
 
-Camera-quality analysis can report dark, overexposed, blurry, moving, low-detail, or likely covered frames. Face and person observations support counts without identifying who a person is.
+Camera-quality analysis records the pixel format, dimensions, sampling evidence, brightness, sharpness, and obstruction evidence. It distinguishes no frame, invalid buffer, startup black, underexposure, overexposure, blur, motion, poor framing, and sustained obstruction. A valid blank or blurred frame can still continue to inference; a covered-camera warning requires temporal evidence rather than one dark startup frame. Face and person observations support counts without identifying who a person is.
 
 ## Processing Flow
 
-1. `CameraSessionService` owns camera authorization, rear or front selection, preview, still capture, sample delivery, focus, exposure, white balance, torch, interruption recovery, and foreground lifecycle.
+1. `CameraSessionService` owns camera authorization, rear or front selection, preview, continuous sample delivery, optional internal still capture, focus, exposure, white balance, torch, interruption recovery, first-frame diagnostics, and foreground lifecycle. Users do not have to take a photo to begin Describe, Find, Read, or Scan.
 2. `VisionPipelineCoordinator` creates a session generation token and accepts only the latest permitted work. It drops excess frames instead of building an unbounded queue.
 3. Mode-specific analyzers run behind typed interfaces. `VisionDetecting` keeps capture, tracking, fusion, narration, and accessibility independent of one model implementation.
 4. `TemporalObjectTracker` stabilizes identity and broad spatial location. `SceneFusionEngine` creates a bounded snapshot from object, text, barcode, person, quality, and color evidence.
 5. `VisionSafetyPolicy` filters unsupported, weak, stale, or unsafe claims. `VisionNarrationService` produces grounded summaries and qualified absence language.
 6. `VisionSpeechPriorityQueue` orders warnings and requested targets ahead of changes and ambient detail. Session tokens prevent old speech from leaking into a new or stopped session.
 7. `VisionHapticsService` provides a compact direction, found, lost, warning, and completion vocabulary. Speech remains the fallback when haptics are unavailable or disabled.
-8. `VisionSessionMemory` retains only bounded observations needed for the active session. Stop and background transitions clear temporary results and cancel analysis and output.
+8. `VisionSessionMemory` retains only bounded observations needed for the active session. Stop and background transitions clear temporary results and cancel analysis, speech, haptics, and output.
+
+## Development Replay Lab
+
+Debug builds include a hidden Replay Lab in Diagnostics. It drives original local sequences through the production `VisionPipelineCoordinator`, quality analyzer, object detector, OCR, barcode recognizer, tracker, fusion engine, narration service, cancellation, and backpressure path; it does not inject observations. The 17 scenarios cover normal indoor light, dark, overexposure, sustained and brief obstruction, motion, blur, object and target movement, readable and poorly framed text, barcode, unsupported content, and a valid scene with no detector result. Replay evidence validates code paths, not physical-camera performance or detector accuracy on real-world objects.
 
 ## Bundled Object Detector
 

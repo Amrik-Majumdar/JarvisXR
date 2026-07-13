@@ -6,6 +6,7 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
     private let speech = JarvisSpeechService.shared
     private let voiceInput = JarvisVoiceInputService.shared
     private lazy var messageComposition = JarvisMessageCompositionService(presenter: self) { [weak self] response in
+        self?.shouldListenAfterSpeech = response.data["message_voice_follow_up"] == "true"
         self?.render(response: response)
     }
 
@@ -33,6 +34,8 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
     private var longPressSuppressesNextTap = false
     private var didApplyVisualProofState = false
     private var pendingVisionRequestAfterOnboarding: JarvisVisionLaunchRequest?
+    private var hasAutoStartedListeningForAppearance = false
+    private var shouldListenAfterSpeech = false
     private var isUITestMode: Bool {
         let arguments = ProcessInfo.processInfo.arguments
         return arguments.contains("-JARVIS_UI_TESTING") || arguments.contains("--jarvis-ui-test")
@@ -61,6 +64,7 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
             didCheckFirstLaunch = true
             showFirstLaunchIfNeeded()
         }
+        scheduleAutomaticListeningIfAppropriate()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -68,6 +72,7 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
         // The Vision screen temporarily owns the shared in-app voice callbacks.
         // Rewire them whenever the user returns to the main Jarvis surface.
         wireVoice()
+        hasAutoStartedListeningForAppearance = false
         if interfaceState == .inspection {
             setInterfaceState(.ready, hint: "Jarvis Vision closed. Ready when you are.")
         }
@@ -120,7 +125,7 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
         tap.require(toFail: longPress)
         orbView.addGestureRecognizer(tap)
         orbView.addGestureRecognizer(longPress)
-        orbView.accessibilityHint = "Tap to wake, listen, or process. Long hold to standby."
+        orbView.accessibilityHint = "Tap to listen or process. Long hold returns Jarvis to standby."
         orbView.accessibilityIdentifier = "jarvis.orb"
 
         stateLabel.textColor = JarvisTheme.accentHot
@@ -310,6 +315,14 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
         }
         speech.onSpeechFinish = { [weak self] in
             guard let self else { return }
+            if self.shouldListenAfterSpeech,
+               self.presentedViewController == nil,
+               self.viewIfLoaded?.window != nil {
+                self.shouldListenAfterSpeech = false
+                self.setInterfaceState(.ready, hint: "Ready for your answer.")
+                self.voiceInput.startListening()
+                return
+            }
             if JarvisSpeechService.shared.isEnabled {
                 self.setInterfaceState(.ready, hint: "Ready when you are.")
             } else {
@@ -346,6 +359,14 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
         let commandText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !commandText.isEmpty else {
             setInterfaceState(.ready, hint: "Ready when you are.")
+            return
+        }
+
+        let normalized = JarvisCommandPlanner().normalize(commandText)
+        if messageComposition.hasActiveDraft,
+           let followUp = JarvisMessageCommandParser.parseActiveDraftFollowUp(normalized, raw: commandText) {
+            setInterfaceState(.processing, hint: "Updating message draft.")
+            messageComposition.handle(followUp)
             return
         }
 
@@ -389,6 +410,9 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
             openCamera()
         } else if response.data["action"] == "diagnostics" {
             diagnosticsTapped()
+        } else if response.data["action"] == "device_acceptance" {
+            deviceAcceptanceTapped()
+            return
         } else if response.data["action"] == "settings" {
             settingsTapped()
         } else if response.data["action"] == "control_mesh" {
@@ -503,8 +527,7 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
         switch interfaceState {
         case .standby:
             speech.isEnabled = true
-            setInterfaceState(.ready, hint: "JARVIS ready.")
-            speech.speak("JARVIS ready.", notifyState: false)
+            voiceInput.startListening()
         case .ready, .done, .attention, .quiet:
             voiceInput.startListening()
         case .listening, .heardYou:
@@ -553,6 +576,26 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
         setInterfaceState(.standby, hint: "Standby.")
     }
 
+    private func scheduleAutomaticListeningIfAppropriate() {
+        guard !isUITestMode,
+              !hasAutoStartedListeningForAppearance,
+              presentedViewController == nil,
+              !JarvisVisionFirstRunStore.shared.shouldPresent else { return }
+        hasAutoStartedListeningForAppearance = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.65) { [weak self] in
+            guard let self,
+                  self.viewIfLoaded?.window != nil,
+                  self.presentedViewController == nil,
+                  !self.voiceInput.isListening,
+                  self.interfaceState != .inspection,
+                  self.interfaceState != .processing,
+                  self.interfaceState != .speaking else { return }
+            self.speech.isEnabled = true
+            self.setInterfaceState(.ready, hint: "Listening automatically.")
+            self.voiceInput.startListening()
+        }
+    }
+
     private func handleUITestOrbTap() {
         switch interfaceState {
         case .standby:
@@ -593,6 +636,14 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
     private func diagnosticsTapped() {
         navigationController?.setNavigationBarHidden(false, animated: true)
         navigationController?.pushViewController(JarvisDiagnosticsViewController(), animated: true)
+    }
+
+    private func deviceAcceptanceTapped() {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.pushViewController(
+            JarvisDeviceAcceptanceViewController(),
+            animated: !UIAccessibility.isReduceMotionEnabled
+        )
     }
 
     private func settingsTapped() {
@@ -679,9 +730,13 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
             self.openVision(request)
         }
         controller.onContinue = { [weak self] in
-            guard let self, let request = self.pendingVisionRequestAfterOnboarding else { return }
-            self.pendingVisionRequestAfterOnboarding = nil
-            self.openVision(request)
+            guard let self else { return }
+            if let request = self.pendingVisionRequestAfterOnboarding {
+                self.pendingVisionRequestAfterOnboarding = nil
+                self.openVision(request)
+            } else {
+                self.scheduleAutomaticListeningIfAppropriate()
+            }
         }
     }
 
@@ -729,6 +784,9 @@ final class JarvisRootViewController: UIViewController, UITextFieldDelegate {
         case "vision_self_test":
             navigationController?.setNavigationBarHidden(false, animated: false)
             navigationController?.pushViewController(JarvisVisionSelfTestViewController(), animated: false)
+        case "device_acceptance":
+            navigationController?.setNavigationBarHidden(false, animated: false)
+            navigationController?.pushViewController(JarvisDeviceAcceptanceViewController(), animated: false)
         case "vision_onboarding":
             let controller = JarvisVisionOnboardingViewController()
             present(UINavigationController(rootViewController: controller), animated: false)

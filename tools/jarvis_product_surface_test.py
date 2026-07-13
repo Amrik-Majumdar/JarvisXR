@@ -39,8 +39,11 @@ def main() -> int:
     detector = read(IOS_ROOT / "ObjectDetectionService.swift")
     speech_queue = read(IOS_ROOT / "VisionSpeechPriorityQueue.swift")
     settings = read(IOS_ROOT / "JarvisSettingsViewController.swift")
+    diagnostics = read(IOS_ROOT / "JarvisDiagnosticsViewController.swift")
     speech = read(IOS_ROOT / "JarvisSpeechService.swift")
     app_intents = read(IOS_ROOT / "JarvisAppIntents.swift")
+    device_acceptance = read(IOS_ROOT / "JarvisDeviceAcceptanceViewController.swift")
+    device_acceptance_models = read(IOS_ROOT / "JarvisDeviceAcceptanceModels.swift")
     preview_text = read(PREVIEW)
     voice = read(IOS_ROOT / "JarvisVoiceInputService.swift")
     state = read(IOS_ROOT / "JarvisInteractionState.swift")
@@ -129,9 +132,11 @@ def main() -> int:
     check("Voice profiles persist and affect speech parameters", all(term in speech for term in [
         "profileKey",
         "UserDefaults.standard.set(newValue.rawValue",
-        "utterance.rate = speechRate(for:",
-        "utterance.pitchMultiplier = pitch(for:",
-        "utterance.volume = volume(for:",
+        "resolvedConfiguration(for:",
+        "AVSpeechSynthesisVoice(identifier: identifier)",
+        "utterance.rate = configuration.rate",
+        "utterance.pitchMultiplier = configuration.pitch",
+        "utterance.volume = configuration.volume",
     ]))
     check("No Recent Activity in product sources", "Recent Activity" not in root)
     check("No response panel label", "JARVIS RESPONSE" not in root)
@@ -177,6 +182,15 @@ def main() -> int:
         "Run JARVIS Command",
         "Set JARVIS Quiet Mode",
         "Set JARVIS Normal Mode",
+    ]))
+    check("Device Acceptance Mode is voice-routable and report-backed", all(text in planner + root + diagnostics + app_intents + device_acceptance + device_acceptance_models for text in [
+        "run the complete device test",
+        "device_acceptance",
+        "Complete Device Test",
+        "JarvisDeviceAcceptanceReport",
+        "Share Report",
+        "UIActivityViewController",
+        "JarvisDeviceAcceptanceResponse",
     ]))
     check("UI test target configured", "JarvisXRUITests" in project_yml and "bundle.ui-testing" in project_yml)
     check("UI test target has TEST_TARGET_NAME", "TEST_TARGET_NAME: JarvisXR" in project_yml)

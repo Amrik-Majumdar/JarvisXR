@@ -60,12 +60,29 @@ final class JarvisDiagnosticsViewController: UIViewController {
         selfTestButton.accessibilityIdentifier = "jarvis.diagnostics.selfTest"
         selfTestButton.addTarget(self, action: #selector(selfTestTapped), for: .touchUpInside)
 
-        let buttons = UIStackView(arrangedSubviews: [refreshButton, selfTestButton])
-        buttons.axis = .horizontal
+        let deviceTestButton = JarvisTheme.button(title: "Complete Device Test")
+        deviceTestButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
+        deviceTestButton.titleLabel?.adjustsFontForContentSizeCategory = true
+        deviceTestButton.accessibilityHint = "Runs a voice-first physical-device acceptance test and saves a local JSON report you can share to Files."
+        deviceTestButton.accessibilityIdentifier = "jarvis.diagnostics.deviceTest"
+        deviceTestButton.addTarget(self, action: #selector(deviceTestTapped), for: .touchUpInside)
+
+        let buttons = UIStackView(arrangedSubviews: [refreshButton, selfTestButton, deviceTestButton])
+        buttons.axis = .vertical
         buttons.spacing = 8
         buttons.distribution = .fillEqually
 
+        #if DEBUG
+        let replayButton = JarvisTheme.button(title: "Vision Replay Lab")
+        replayButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
+        replayButton.titleLabel?.adjustsFontForContentSizeCategory = true
+        replayButton.accessibilityHint = "Opens development-only prerecorded camera pipeline scenarios."
+        replayButton.accessibilityIdentifier = "jarvis.diagnostics.replayLab"
+        replayButton.addTarget(self, action: #selector(replayLabTapped), for: .touchUpInside)
+        let stack = UIStackView(arrangedSubviews: [heading, explanation, buttons, replayButton, textView])
+        #else
         let stack = UIStackView(arrangedSubviews: [heading, explanation, buttons, textView])
+        #endif
         stack.axis = .vertical
         stack.spacing = 12
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -111,6 +128,14 @@ final class JarvisDiagnosticsViewController: UIViewController {
         let darkerColors = UIAccessibility.isDarkerSystemColorsEnabled ? "enabled" : "disabled"
         let voiceOver = UIAccessibility.isVoiceOverRunning ? "running" : "not running"
         let screenAwake = preferences.keepScreenAwakeDuringLiveGuide ? "enabled for active Live Guide" : "disabled"
+        let frameDimensions: String
+        if let width = snapshot.lastFrameWidth, let height = snapshot.lastFrameHeight {
+            frameDimensions = "\(width) by \(height)"
+        } else {
+            frameDimensions = "no valid frame recorded"
+        }
+        let frameBrightness = snapshot.lastFrameBrightness.map { String(format: "%.3f", $0) } ?? "unavailable"
+        let frameSharpness = snapshot.lastFrameSharpness.map { String(format: "%.3f", $0) } ?? "unavailable"
 
         textView.text = """
         VISION
@@ -127,6 +152,12 @@ final class JarvisDiagnosticsViewController: UIViewController {
         Last inference: \(latency)
         Frames analyzed: \(snapshot.inferenceMetrics.framesAnalyzed)
         Dropped frames: \(snapshot.inferenceMetrics.droppedFrameCount)
+        Last frame condition: \(snapshot.lastFrameCondition?.rawValue ?? "no frame received")
+        Last frame dimensions: \(frameDimensions)
+        Last pixel format: \(snapshot.lastPixelFormat.map { String($0) } ?? "unavailable")
+        Last frame brightness: \(frameBrightness)
+        Last frame sharpness: \(frameSharpness)
+        Obstruction evidence frames: \(snapshot.obstructionEvidenceFrames)
         Last recoverable error: \(lastError)
 
         ACCESSIBILITY AND AUDIO
@@ -180,4 +211,17 @@ final class JarvisDiagnosticsViewController: UIViewController {
     @objc private func selfTestTapped() {
         navigationController?.pushViewController(JarvisVisionSelfTestViewController(), animated: !UIAccessibility.isReduceMotionEnabled)
     }
+
+    @objc private func deviceTestTapped() {
+        navigationController?.pushViewController(JarvisDeviceAcceptanceViewController(), animated: !UIAccessibility.isReduceMotionEnabled)
+    }
+
+    #if DEBUG
+    @objc private func replayLabTapped() {
+        navigationController?.pushViewController(
+            VisionReplayLabViewController(),
+            animated: !UIAccessibility.isReduceMotionEnabled
+        )
+    }
+    #endif
 }

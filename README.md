@@ -5,8 +5,8 @@
 
   **A native, offline-first assistant interface for compatible iPhones**
 
-  Voice and typed commands, six on-device vision modes, local memory, accessible
-  speech and haptics, and public-API iOS automation guidance in one UIKit experience.
+Natural voice and typed commands, continuous on-device vision, local memory,
+accessible speech and haptics, and public-API iOS automation guidance in one UIKit experience.
 
   [![iOS 18+](https://img.shields.io/badge/iOS-18%2B-111827?style=for-the-badge&logo=apple)](ios/JarvisXR/project.yml)
   [![Swift 5.9](https://img.shields.io/badge/Swift-5.9-F05138?style=for-the-badge&logo=swift&logoColor=white)](ios/JarvisXR/JarvisXR)
@@ -25,7 +25,7 @@
 
 ## Product Overview
 
-JARVIS XR turns a dedicated iPhone into a focused assistant surface without relying on a browser UI or paid cloud APIs. The app centers interaction on a reactive orb, push-to-talk speech recognition, typed commands, local speech output, and an accessibility-first camera assistant that performs vision analysis on the device.
+JARVIS XR turns a dedicated iPhone into a focused assistant surface without relying on a browser UI or paid cloud APIs. The app becomes ready to listen after launch when permissions and onboarding allow it, accepts natural voice or typed requests, and uses an accessibility-first camera assistant that analyzes a live stream on the device while a task is active.
 
 | Native interaction | Local intelligence | Device integration |
 |---|---|---|
@@ -56,7 +56,7 @@ Portrait-first UIKit layout, full-screen dark interface, accessible labels, loca
 
 | Area | Current implementation | Boundary |
 |---|---|---|
-| Voice input | In-app push-to-talk using Apple's Speech framework | Recognition availability and on-device processing vary by device, language, and Apple service state |
+| Voice input | Automatic ready-to-listen state with an accessible orb and Voice control fallback using Apple's Speech framework | Recognition availability and on-device processing vary by device, language, and Apple service state |
 | Voice output | `AVSpeechSynthesizer` with persistent voice profiles and a priority queue for vision warnings, targets, and scene changes | Installed system voices and the selected audio route determine final sound |
 | Jarvis Vision | Describe, Live Guide, Find, Read Text, Barcode, and Color modes with object tracking, scene fusion, safe narration, camera-quality guidance, and directional haptics | Results can be incomplete or wrong and are never permission to cross or proceed |
 | Messages | Accessible system contact picker, private in-memory draft readback, explicit confirmation, and the standard iOS message composer | The user sends or cancels in Apple's composer; Jarvis never claims a silent send |
@@ -68,14 +68,14 @@ Portrait-first UIKit layout, full-screen dark interface, accessible labels, loca
 
 | Mode | On-device behavior |
 |---|---|
-| Describe | Captures and narrates grounded objects, people, text, and scene position |
-| Live Guide | Tracks stable objects and announces meaningful changes while the app remains in the foreground |
-| Find | Searches the detector's supported classes and provides broad left, center, and right guidance |
-| Read Text | Recognizes printed text with reading-order and line controls |
-| Barcode | Reports deduplicated QR and barcode values without opening links automatically |
+| Describe | Continuously selects useful frames and narrates grounded objects, people, text, and scene position |
+| Live Guide | Repeats controlled live inference, tracks stable objects, and announces meaningful changes while the app remains in the foreground |
+| Find | Accepts a spoken target, searches the detector's supported classes, and provides broad left, center, and right guidance plus conversational follow-ups |
+| Read Text | Continuously finds readable text and supports spoken reading-order, line, and spelling controls |
+| Barcode | Continuously scans and reports deduplicated QR and barcode values without opening links automatically |
 | Color | Names an approximate center color and reports uncertainty when lighting limits confidence |
 
-The detector boundary is model-agnostic. The release build fetches Apple's 8.9 MB `YOLOv3TinyInt8LUT.mlmodel`, verifies its pinned SHA-256, compiles it as `JarvisObjectDetector.mlmodelc`, and bundles its manifest and notice. The detector recognizes 80 documented classes. Door, stairs, curb, step, and exit-sign requests are reported as unsupported rather than guessed. See [Vision Pipeline](docs/VISION.md) and [Model Decision](docs/JARVIS_VISION_MODEL_DECISION.md).
+The detector boundary is model-agnostic. The build fetches Apple's 8.9 MB `YOLOv3TinyInt8LUT.mlmodel`, verifies its pinned SHA-256, compiles it as `JarvisObjectDetector.mlmodelc`, and bundles its manifest and notice. The detector recognizes 80 documented classes. Door, stairs, curb, step, and exit-sign requests are reported as unsupported rather than guessed. A development-only Replay Lab exercises the same production analyzer path using original local frames. See [Vision Pipeline](docs/VISION.md) and [Model Decision](docs/JARVIS_VISION_MODEL_DECISION.md).
 
 ## Start Here
 
@@ -107,6 +107,8 @@ Native builds require macOS and Xcode. Windows and Linux can run the Python vali
 
 The iPhone XR is the minimum hardware capability baseline, not a model allowlist. The app targets the iPhone device family and uses runtime camera, torch, haptic, thermal, accessibility, and API-availability checks. Any standard, mini, Plus, Pro, Pro Max, SE, or “e” iPhone that can run the preserved iOS 18 deployment target is supported without matching a hard-coded device name.
 
+See [Voice commands](docs/VOICE_COMMANDS.md) for natural-language task routing and [Accessibility](docs/ACCESSIBILITY.md) for the blind-first interaction contract and remaining device checks.
+
 See [Building](docs/BUILDING.md) for the complete reproducible path.
 
 ## Verification
@@ -117,7 +119,7 @@ The workflow defines the following gates for app-affecting pull requests, main-b
 Registry and policy validation -> pinned model fetch and checksum audit
 -> XcodeGen -> unsigned iPhoneOS build -> Swift unit tests
 -> real Core ML simulator execution and output-contract validation
--> UI tests and 28 screenshots -> privacy, safety, and IPA audits -> artifacts
+-> UI tests on measured compact and large layouts, and 29 screenshots -> privacy, safety, and IPA audits -> artifacts
 ```
 
 The workflow uploads:

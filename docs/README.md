@@ -6,6 +6,9 @@
 - [First-run checklist](FIRST_RUN_CHECKLIST.md)
 - [Troubleshooting](TROUBLESHOOTING.md)
 - [Control Mesh](CONTROL_MESH.md)
+- [Voice commands](VOICE_COMMANDS.md)
+- [Accessibility](ACCESSIBILITY.md)
+- [Device Acceptance Mode](DEVICE_ACCEPTANCE.md)
 
 ## Build and Verify
 

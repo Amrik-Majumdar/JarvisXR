@@ -61,7 +61,7 @@ final class JarvisVisionOnboardingViewController: UIViewController {
         )
         addPoint(
             title: "You stay in control",
-            text: "Choose a large primary action to begin. The red Stop control remains visible and stops camera analysis, narration, haptics, and voice input."
+            text: "Ask Jarvis naturally or choose the large visible task control. The red Stop control remains visible and stops camera analysis, narration, haptics, and voice input."
         )
         addPoint(
             title: "Permissions when needed",

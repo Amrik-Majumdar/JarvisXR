@@ -1,33 +1,18 @@
-name: Build JarvisXR iOS IPA
+name: Jarvis Native Validation
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "ios/JarvisXR/**"
-      - "core/**"
-      - "mock/**"
-      - "native/**"
-      - "tests/**"
-      - "tools/**"
-      - ".github/workflows/ios-build.yml"
-  pull_request:
-    paths:
-      - "ios/JarvisXR/**"
-      - "core/**"
-      - "mock/**"
-      - "native/**"
-      - "tests/**"
-      - "tools/**"
-      - ".github/workflows/ios-build.yml"
+    inputs:
+      expected_sha:
+        description: "Exact validation commit SHA to check out"
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: jarvisxr-ios-${{ github.ref }}
+  group: jarvisxr-native-validation-${{ inputs.expected_sha }}
   cancel-in-progress: true
 
 jobs:
@@ -37,6 +22,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.expected_sha }}
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -69,6 +57,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.expected_sha }}
+          fetch-depth: 1
+
+      - name: Verify exact validation commit
+        run: |
+          set -euo pipefail
+          ACTUAL_SHA="$(git rev-parse HEAD)"
+          test "$ACTUAL_SHA" = "${{ inputs.expected_sha }}"
+          echo "Validated commit: $ACTUAL_SHA"
 
       - name: Fetch and verify pinned Core ML detector
         run: |
@@ -172,40 +170,42 @@ jobs:
           print(f"Exported native inference observations to {output}")
           PY
 
-      - name: Run focused JarvisXR UI behavior tests
+      - name: Discover compact and large layouts from available iPhones
+        working-directory: ios/JarvisXR
+        run: |
+          set -euo pipefail
+          mkdir -p build/logs
+          python3 ../../tools/select_ios_simulator.py \
+            --discover-layouts build/logs/simulator-layouts.json \
+            | tee build/logs/simulator-layout-discovery.log
+          python3 ../../tools/select_ios_simulator.py --layout compact --layout-report build/logs/simulator-layouts.json --details \
+            | tee build/logs/compact-simulator.txt
+          python3 ../../tools/select_ios_simulator.py --layout large --layout-report build/logs/simulator-layouts.json --details \
+            | tee build/logs/large-simulator.txt
+
+      - name: Run JarvisXR UI behavior tests on measured layouts
         timeout-minutes: 20
         working-directory: ios/JarvisXR
         run: |
           set -o pipefail
           mkdir -p build/logs build/visual-proof
-          SIM_ID="$(python3 ../../tools/select_ios_simulator.py || true)"
-          DESTINATION="$(python3 ../../tools/select_ios_simulator.py --destination || true)"
-          python3 ../../tools/select_ios_simulator.py --details | tee build/logs/selected-ui-simulator.txt || true
-          if [ -z "$SIM_ID" ]; then
-            echo "No available iPhone simulator found. Failing because UI verification is required." | tee build/logs/xcodebuild-ui-test.log
-            exit 1
-          fi
-          echo "Using simulator id: $SIM_ID" | tee build/logs/xcodebuild-ui-test.log
-          echo "Using xcodebuild destination: $DESTINATION" | tee -a build/logs/xcodebuild-ui-test.log
-          xcrun simctl boot "$SIM_ID" || true
-          xcrun simctl bootstatus "$SIM_ID" -b
-          xcodebuild \
-            -project JarvisXR.xcodeproj \
-            -scheme JarvisXR \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -destination "$DESTINATION" \
-            -derivedDataPath build/TestDerivedData \
-            -resultBundlePath build/logs/JarvisXRUITests.xcresult \
-            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofHelp \
-            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionDescribeResult \
-            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionLiveActive \
-            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionReading \
-            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionPermissionDenied \
-            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testVisionAccessibilityMetadataAndTouchTargets \
-            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testVisionCompactLargeTypeKeepsStopVisible \
-            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testVisionRepeatedStartStopFixtureCycles \
-            test | tee -a build/logs/xcodebuild-ui-test.log
+          for LAYOUT in compact large; do
+            DESTINATION="$(python3 ../../tools/select_ios_simulator.py --layout "$LAYOUT" --layout-report build/logs/simulator-layouts.json --destination)"
+            SIM_ID="${DESTINATION#id=}"
+            echo "Using $LAYOUT simulator id: $SIM_ID" | tee -a build/logs/xcodebuild-ui-test.log
+            xcrun simctl boot "$SIM_ID" || true
+            xcrun simctl bootstatus "$SIM_ID" -b
+            xcodebuild \
+              -project JarvisXR.xcodeproj \
+              -scheme JarvisXR \
+              -configuration Debug \
+              -sdk iphonesimulator \
+              -destination "$DESTINATION" \
+              -derivedDataPath "build/${LAYOUT}UITestDerivedData" \
+              -resultBundlePath "build/logs/JarvisXR-${LAYOUT}-UITests.xcresult" \
+              -only-testing:JarvisXRUITests \
+              test | tee -a build/logs/xcodebuild-ui-test.log
+          done
 
       - name: Run vision fixture and policy evaluation
         run: |
@@ -252,6 +252,45 @@ jobs:
           python3 tools/audit_ipa.py ios/JarvisXR/build/JarvisXR-unsigned.ipa \
             --json-output ios/JarvisXR/build/reports/ipa-audit.json \
             | tee ios/JarvisXR/build/logs/ipa-audit.log
+
+      - name: Record IPA evidence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import plistlib
+          import subprocess
+          import tempfile
+          import zipfile
+          from pathlib import Path
+
+          ipa = Path("ios/JarvisXR/build/JarvisXR-unsigned.ipa")
+          with zipfile.ZipFile(ipa) as archive:
+              info_name = next(name for name in archive.namelist() if name.endswith("JarvisXR.app/Info.plist"))
+              executable_name = next(name for name in archive.namelist() if name.endswith("JarvisXR.app/JarvisXR"))
+              info = plistlib.loads(archive.read(info_name))
+              model_present = any("JarvisObjectDetector" in name for name in archive.namelist())
+              with tempfile.TemporaryDirectory() as directory:
+                  executable_path = Path(directory) / "JarvisXR"
+                  executable_path.write_bytes(archive.read(executable_name))
+                  architectures = subprocess.check_output(["lipo", "-archs", str(executable_path)], text=True).strip().split()
+          report = {
+              "commit": "${{ inputs.expected_sha }}",
+              "ipa_filename": ipa.name,
+              "size_bytes": ipa.stat().st_size,
+              "sha256": hashlib.sha256(ipa.read_bytes()).hexdigest(),
+              "bundle_identifier": info.get("CFBundleIdentifier"),
+              "version": info.get("CFBundleShortVersionString"),
+              "build": info.get("CFBundleVersion"),
+              "minimum_ios": info.get("MinimumOSVersion"),
+              "architectures": architectures,
+              "bundled_model_present": model_present,
+              "ipa_audit": "passed",
+          }
+          Path("ios/JarvisXR/build/reports/ipa-evidence.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+          print(json.dumps(report, sort_keys=True))
+          PY
 
       - name: Capture required iOS screenshots
         timeout-minutes: 10
@@ -340,6 +379,7 @@ jobs:
           capture_state vision_settings vision-settings.png 3
           capture_state vision_help vision-help.png 3
           capture_state vision_self_test vision-self-test.png 3
+          capture_state device_acceptance device-acceptance.png 3
           capture_state vision_onboarding vision-onboarding.png 3
 
           python3 ../../tools/verify_visual_proof.py "$VISUAL_PROOF_DIR" | tee -a build/logs/xcodebuild-visual-proof.log
@@ -414,6 +454,7 @@ jobs:
             ios/JarvisXR/build/logs/**
             ios/JarvisXR/build/DerivedData/Logs/**
             ios/JarvisXR/build/TestDerivedData/Logs/**
+            ios/JarvisXR/build/*UITestDerivedData/Logs/**
             ios/JarvisXR/build/VisualProofDerivedData/Logs/**
             ios/JarvisXR/build/visual-proof/**
             ios/JarvisXR/build/reports/**

@@ -131,6 +131,8 @@ enum SpeechPriority: Int, Codable, CaseIterable, Comparable, Sendable {
 
 enum VisionWarning: String, Codable, CaseIterable, Sendable {
     case possibleObstruction
+    case invalidFrame
+    case blackFrame
     case lowLight
     case overexposed
     case blurry
@@ -146,6 +148,9 @@ enum VisionError: Error, Codable, Equatable, Sendable {
     case cameraPermissionDenied
     case cameraUnavailable
     case cameraInterrupted
+    case noFrameReceived
+    case invalidCameraFrame
+    case cameraNotRunning
     case modelMissing
     case modelChecksumMismatch
     case modelLoadFailed(String)
@@ -520,6 +525,7 @@ struct TrackingUpdate: Codable, Equatable, Sendable {
 }
 
 struct CameraQualityReport: Codable, Equatable, Hashable, Sendable {
+    let condition: CameraFrameCondition
     let brightness: Double
     let sharpness: Double
     let overexposure: Double
@@ -529,8 +535,14 @@ struct CameraQualityReport: Codable, Equatable, Hashable, Sendable {
     let warnings: [VisionWarning]
     let guidance: [String]
     let evaluatedAt: Date
+    let frameWidth: Int
+    let frameHeight: Int
+    let pixelFormat: UInt32?
+    let sampleCount: Int
+    let obstructionEvidenceFrames: Int
 
     init(
+        condition: CameraFrameCondition = .valid,
         brightness: Double,
         sharpness: Double,
         overexposure: Double,
@@ -539,8 +551,14 @@ struct CameraQualityReport: Codable, Equatable, Hashable, Sendable {
         isUsable: Bool,
         warnings: [VisionWarning] = [],
         guidance: [String] = [],
-        evaluatedAt: Date = Date()
+        evaluatedAt: Date = Date(),
+        frameWidth: Int = 0,
+        frameHeight: Int = 0,
+        pixelFormat: UInt32? = nil,
+        sampleCount: Int = 0,
+        obstructionEvidenceFrames: Int = 0
     ) {
+        self.condition = condition
         self.brightness = Self.unit(brightness)
         self.sharpness = Self.unit(sharpness)
         self.overexposure = Self.unit(overexposure)
@@ -550,10 +568,16 @@ struct CameraQualityReport: Codable, Equatable, Hashable, Sendable {
         self.warnings = warnings
         self.guidance = guidance
         self.evaluatedAt = evaluatedAt
+        self.frameWidth = max(0, frameWidth)
+        self.frameHeight = max(0, frameHeight)
+        self.pixelFormat = pixelFormat
+        self.sampleCount = max(0, sampleCount)
+        self.obstructionEvidenceFrames = max(0, obstructionEvidenceFrames)
     }
 
     static func acceptable(at date: Date = Date()) -> CameraQualityReport {
         CameraQualityReport(
+            condition: .valid,
             brightness: 0.5,
             sharpness: 0.8,
             overexposure: 0,

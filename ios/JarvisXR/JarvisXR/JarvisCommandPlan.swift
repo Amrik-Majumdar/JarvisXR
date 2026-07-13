@@ -27,6 +27,7 @@ enum JarvisPlannedAction: String {
     case visionControl
     case openSettings
     case openDiagnostics
+    case runDeviceAcceptance
     case openControlMesh
     case openURL
     case guideVoiceControl
@@ -55,6 +56,23 @@ struct JarvisCommandPlan {
 final class JarvisCommandPlanner {
     func plan(_ rawCommand: String) -> JarvisCommandPlan {
         let text = normalize(rawCommand)
+
+        if matches(text, ["run the complete device test", "run complete device test", "complete device test", "device acceptance test"]) {
+            return plan(
+                text,
+                intent: "complete device test",
+                route: .inAppDiagnostics,
+                action: .runDeviceAcceptance,
+                display: "Opening the voice-first complete device test.",
+                spoken: "Starting the complete device test.",
+                state: .processing,
+                routeLabel: "On-device acceptance test",
+                confidence: 0.99,
+                requiresUserAction: false,
+                data: ["action": "device_acceptance"],
+                shouldPersistGeneralHistory: false
+            )
+        }
 
         if let message = JarvisMessageCommandParser.parse(text, raw: rawCommand) {
             var data = [
@@ -94,7 +112,7 @@ final class JarvisCommandPlanner {
             )
         }
 
-        if matches(text, ["stop", "stop vision", "stop live guide", "stop guide", "stop reading", "cancel vision"]) {
+        if matches(text, ["stop", "stop vision", "stop live guide", "stop guide", "stop searching", "stop reading", "cancel vision"]) {
             return visionPlan(
                 text,
                 intent: "stop vision",
@@ -106,7 +124,7 @@ final class JarvisCommandPlanner {
             )
         }
 
-        if matches(text, ["pause live guide", "pause guide", "pause vision", "pause reading"]) {
+        if matches(text, ["pause live guide", "pause guide", "pause guiding", "pause vision", "pause reading"]) {
             let mode: VisionMode = text.contains("reading") ? .readText : .liveGuide
             return visionPlan(
                 text,
@@ -119,7 +137,7 @@ final class JarvisCommandPlanner {
             )
         }
 
-        if matches(text, ["resume live guide", "resume guide", "resume vision", "resume reading"]) {
+        if matches(text, ["resume live guide", "resume guide", "continue guiding", "resume vision", "resume reading"]) {
             let mode: VisionMode = text.contains("reading") ? .readText : .liveGuide
             return visionPlan(
                 text,
@@ -157,7 +175,7 @@ final class JarvisCommandPlanner {
             )
         }
 
-        if matches(text, ["describe less", "be quieter", "only important changes", "speak only important changes"]) {
+        if matches(text, ["describe less", "be concise", "be more concise", "be quieter", "only important changes", "only tell me important changes", "speak only important changes"]) {
             return visionPlan(
                 text,
                 intent: "concise vision",
@@ -209,7 +227,7 @@ final class JarvisCommandPlanner {
             )
         }
 
-        if matches(text, ["start live guide", "start live guidance", "live guide", "guide me live"]) {
+        if matches(text, ["start live guide", "start live guidance", "start guiding me", "guide me", "live guide", "guide me live"]) {
             return visionPlan(
                 text,
                 intent: "live guide",
@@ -221,7 +239,7 @@ final class JarvisCommandPlanner {
             )
         }
 
-        if matches(text, ["scan barcode", "scan this barcode", "scan this code", "scan product code", "read barcode", "read this code", "barcode"]) {
+        if matches(text, ["scan barcode", "scan this barcode", "scan this code", "scan product code", "read barcode", "read this code", "what is this code", "barcode"]) {
             return visionPlan(
                 text,
                 intent: "scan barcode",
@@ -235,7 +253,7 @@ final class JarvisCommandPlanner {
             )
         }
 
-        if matches(text, ["read this", "read this label", "read what is on screen", "read the screen", "read paper", "what does this say", "summarize this text"]) {
+        if matches(text, ["read this", "read this label", "read the sign", "read the sign in front of me", "read this sign", "read what is on screen", "read the screen", "read paper", "what does this say", "summarize this text"]) {
             return visionPlan(
                 text,
                 intent: "read text",
@@ -464,7 +482,11 @@ final class JarvisCommandPlanner {
     }
 
     private func findTarget(in text: String) -> String? {
-        let prefixes = ["find the ", "find a ", "find an ", "find my ", "find ", "where is the ", "where is a ", "where is ", "locate the ", "locate "]
+        let prefixes = [
+            "help me locate the ", "help me locate a ", "help me locate ",
+            "find the ", "find a ", "find an ", "find my ", "find ",
+            "where is the ", "where is a ", "where is ", "locate the ", "locate "
+        ]
         for prefix in prefixes where text.hasPrefix(prefix) {
             let target = String(text.dropFirst(prefix.count)).trimmingCharacters(in: .whitespacesAndNewlines)
             if !target.isEmpty && target != "objects" { return target }

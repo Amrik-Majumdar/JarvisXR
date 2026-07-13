@@ -32,6 +32,7 @@ REQUIRED_SCREENSHOTS = [
     "vision-settings.png",
     "vision-help.png",
     "vision-self-test.png",
+    "device-acceptance.png",
     "vision-onboarding.png",
 ]
 

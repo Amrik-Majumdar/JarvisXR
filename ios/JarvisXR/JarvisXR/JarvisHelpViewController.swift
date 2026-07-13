@@ -86,8 +86,8 @@ final class JarvisHelpViewController: UIViewController {
             "Jarvis reports broad left, center, or right guidance and says when a requested target is unsupported or lost.",
         ])
         addSection("Read text", [
-            "Choose Read, hold printed text steady, then Capture and Read.",
-            "Try: “Read this.” Use Pause Reading, Previous Line, and Next Line for control.",
+            "Say “Read this” or choose Read, then hold printed text steady while Jarvis continuously looks for a useful frame.",
+            "Try: “Start from the top,” “Read the largest text,” “Spell that,” Pause Reading, Previous Line, and Next Line for control.",
             "Recognized text remains session-only and is not added to general command history.",
         ])
         addSection("Scan a barcode", [
@@ -126,12 +126,12 @@ final class JarvisHelpViewController: UIViewController {
         addSection("Troubleshooting", [
             "Camera access off: use Open iOS Settings in the recovery panel, enable Camera, return, and Try Again.",
             "Model unavailable: Read and Scan may still work; Diagnostics shows validation and availability details.",
-            "Dark or blurry result: add light, move closer, steady the phone, and capture again.",
+            "Dark or blurry view: add light, move closer, and steady the phone. Jarvis keeps looking for a useful frame while the task is active.",
             "No speech: confirm Speech Output in Settings and check the current audio route.",
         ])
         addSection("Main JARVIS and Control Mesh", [
-            "Tap once from standby to wake JARVIS.",
-            "Tap again to listen. Tap while listening to process what you said.",
+            "JARVIS begins listening after launch when permissions and onboarding allow it. Tap the orb to listen again from standby.",
+            "Tap while listening to process what you said.",
             "Tap while JARVIS is speaking to stop speech. Long hold to return to standby.",
             "Try: scan this, read this, detect objects, or open Control Mesh.",
             "Control Mesh explains supported Voice Control, Shortcuts, and phone-level routes without claiming hidden system control.",

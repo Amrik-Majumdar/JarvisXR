@@ -44,7 +44,7 @@ struct DescribeVisionIntent: AppIntent {
 @available(iOS 16.0, *)
 struct ReadTextVisionIntent: AppIntent {
     static var title: LocalizedStringResource = "Read Text with JARVIS Vision"
-    static var description = IntentDescription("Capture and read visible text on device.")
+    static var description = IntentDescription("Continuously read visible text on device.")
     static var openAppWhenRun = true
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
@@ -175,6 +175,17 @@ struct VoiceTestIntent: AppIntent {
 }
 
 @available(iOS 16.0, *)
+struct CompleteDeviceTestIntent: AppIntent {
+    static var title: LocalizedStringResource = "Run JARVIS Complete Device Test"
+    static var openAppWhenRun = true
+
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        JarvisPendingIntentStore.save(command: "run the complete device test")
+        return .result(dialog: "Starting the JARVIS complete device test.")
+    }
+}
+
+@available(iOS 16.0, *)
 struct JarvisAppShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -224,6 +235,12 @@ struct JarvisAppShortcuts: AppShortcutsProvider {
             phrases: ["\(.applicationName) diagnostics", "Open \(.applicationName) diagnostics"],
             shortTitle: "Diagnostics",
             systemImageName: "gauge"
+        )
+        AppShortcut(
+            intent: CompleteDeviceTestIntent(),
+            phrases: ["Run the complete device test with \(.applicationName)", "\(.applicationName) run device test"],
+            shortTitle: "Device Test",
+            systemImageName: "checklist"
         )
         AppShortcut(
             intent: OpenControlMeshIntent(),

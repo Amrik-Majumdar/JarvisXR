@@ -3,15 +3,15 @@
 ## Implemented
 
 - Native Swift and UIKit interface with VoiceOver labels, Dynamic Type, contrast support, and reduced-motion behavior
-- Typed local commands and in-app push-to-talk through Speech and AVAudioEngine
-- Local speech output through `AVSpeechSynthesizer`, including session-scoped priority for warnings, requested targets, scene changes, and detail
+- Natural typed commands plus ready-to-listen and accessible in-app voice control through Speech and AVAudioEngine
+- Local speech output through `AVSpeechSynthesizer`, including persistent distinct profile configuration, installed-voice fallback, rate adjustment, and session-scoped priority for warnings, requested targets, scene changes, and essential status
 - Persistent voice and Vision preferences, notes, and command history with explicit clear controls
 - Accessible contact selection and in-memory message drafting with readback, explicit confirmation, and the standard iOS message composer
-- AVFoundation rear or front camera preview, still capture, torch, focus, exposure, white balance, interruption handling, and foreground lifecycle
+- AVFoundation rear or front camera preview, continuous task frames, optional internal still capture, torch, focus, exposure, white balance, first-frame diagnostics, interruption handling, and foreground lifecycle
 - Six Jarvis Vision modes: Describe, Live Guide, Find, Read Text, Barcode, and Color
 - Checksum-pinned `YOLOv3TinyInt8LUT` Core ML detector with 80 documented classes, manifest validation, and bundled license notice
-- Model-agnostic detector interface, frame backpressure, generation-token cancellation, temporal tracking, scene fusion, and bounded session memory
-- Vision OCR, reading order, barcode and QR deduplication, face and person counting, common-color naming, and camera-quality guidance
+- Model-agnostic detector interface, frame backpressure, generation-token cancellation, temporal tracking, scene fusion, debug-only replay, and bounded session memory
+- Vision OCR, spoken reading controls, barcode and QR deduplication, face and person counting, common-color naming, and temporal camera-quality guidance that distinguishes invalid, black, light, blur, motion, and sustained obstruction states
 - Safety policy that filters weak or stale observations, qualifies absence, rejects unsupported targets, and prohibits path-clear claims
 - Direction, target-found, target-lost, warning, and completion haptics with speech fallback
 - Diagnostics for model and analyzer availability, camera state, dropped frames, latency, haptics backend, thermal state, and degradation profile

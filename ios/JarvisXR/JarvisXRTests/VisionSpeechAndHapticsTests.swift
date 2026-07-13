@@ -2,6 +2,23 @@ import XCTest
 @testable import JarvisXR
 
 final class VisionSpeechAndHapticsTests: XCTestCase {
+    func testQuietGuideKeepsEssentialSystemStatusButSuppressesAmbientSceneSpeech() {
+        let systemStatus = makeNarration(
+            "Live Guide is active.",
+            priority: .ambient,
+            contentKind: .system
+        )
+        let ambientScene = makeNarration(
+            "A chair remains near the center.",
+            priority: .ambient,
+            contentKind: .scene
+        )
+
+        XCTAssertFalse(JarvisSpeechService.shouldSuppressVisionNarration(systemStatus, quietModeEnabled: true))
+        XCTAssertTrue(JarvisSpeechService.shouldSuppressVisionNarration(ambientScene, quietModeEnabled: true))
+        XCTAssertFalse(JarvisSpeechService.shouldSuppressVisionNarration(ambientScene, quietModeEnabled: false))
+    }
+
     func testHigherPriorityNarrationInterruptsAndMovesToFront() {
         let sessionID = UUID()
         let now = Date()
@@ -112,14 +129,15 @@ final class VisionSpeechAndHapticsTests: XCTestCase {
     private func makeNarration(
         _ text: String,
         priority: SpeechPriority,
-        createdAt: Date
+        createdAt: Date = Date(),
+        contentKind: NarrationContentKind = .scene
     ) -> SceneNarration {
         SceneNarration(
             snapshotIdentifier: UUID(),
             text: text,
             priority: priority,
             verbosity: .standard,
-            contentKind: .scene,
+            contentKind: contentKind,
             createdAt: createdAt
         )
     }

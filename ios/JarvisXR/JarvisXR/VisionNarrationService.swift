@@ -147,6 +147,21 @@ final class VisionNarrationService {
         )
     }
 
+    func statusNarration(
+        _ content: String,
+        snapshot: SceneSnapshot,
+        priority: SpeechPriority = .ambient,
+        verbosity: NarrationVerbosity = .standard
+    ) -> SceneNarration {
+        makeNarration(
+            snapshot: snapshot,
+            text: content,
+            priority: priority,
+            verbosity: verbosity,
+            contentKind: .system
+        )
+    }
+
     private func targetNarration(
         classIdentifier: String,
         candidates: [TrackedObservation],
@@ -256,8 +271,12 @@ final class VisionNarrationService {
 
     private func qualityNarration(for snapshot: SceneSnapshot, verbosity: NarrationVerbosity) -> SceneNarration {
         let text: String
-        if snapshot.quality.warnings.contains(.cameraCovered) {
-            text = "The camera may be covered. Uncover it and try again."
+        if snapshot.quality.warnings.contains(.invalidFrame) {
+            text = "The camera sent an invalid frame. I skipped it and will keep trying."
+        } else if snapshot.quality.warnings.contains(.cameraCovered) {
+            text = "The lens appears covered across several frames. Check the camera and try again."
+        } else if snapshot.quality.warnings.contains(.blackFrame) {
+            text = "The camera image is black while exposure settles. Hold steady; if this continues, check the lens."
         } else if snapshot.quality.warnings.contains(.lowLight) {
             text = "The image is too dark for a reliable description. More light may help."
         } else if snapshot.quality.warnings.contains(.overexposed) {

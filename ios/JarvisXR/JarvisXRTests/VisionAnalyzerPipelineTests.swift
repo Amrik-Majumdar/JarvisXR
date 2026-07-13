@@ -5,6 +5,19 @@ import XCTest
 @testable import JarvisXR
 
 final class VisionAnalyzerPipelineTests: XCTestCase {
+    #if DEBUG
+    func testReplayLabCoversAllRequiredScenariosWithOriginalFrames() {
+        XCTAssertEqual(VisionReplayScenarioKind.allCases.count, 17)
+        for kind in VisionReplayScenarioKind.allCases {
+            let scenario = VisionReplayScenarioFactory.make(kind)
+            XCTAssertEqual(scenario.kind, kind)
+            XCTAssertFalse(scenario.frames.isEmpty, "\(kind.rawValue) must contain replay input")
+            XCTAssertTrue(scenario.frames.allSatisfy { $0.image.width == 640 && $0.image.height == 480 })
+            XCTAssertTrue(scenario.frames.allSatisfy { $0.orientation == .up })
+        }
+    }
+    #endif
+
     func testMultiArrayDecoderMapsExactLabelCoordinatesAndRequestedTarget() throws {
         let confidence = try makeMultiArray(shape: [2, 80], dataType: .double)
         let coordinates = try makeMultiArray(shape: [2, 4], dataType: .double)
@@ -84,9 +97,30 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
 
     func testCameraQualityDetectsCoveredOverexposedBlurAndMotion() {
         let coveredAnalyzer = CameraQualityAnalyzer()
-        let covered = coveredAnalyzer.evaluate(luminanceSamples: [UInt8](repeating: 0, count: 64), width: 8, height: 8)
+        let start = Date(timeIntervalSince1970: 1_000)
+        let startupBlack = coveredAnalyzer.evaluate(
+            luminanceSamples: [UInt8](repeating: 0, count: 64),
+            width: 8,
+            height: 8,
+            at: start
+        )
+        XCTAssertFalse(startupBlack.warnings.contains(.cameraCovered))
+        XCTAssertEqual(startupBlack.condition, .blackFrame)
+        _ = coveredAnalyzer.evaluate(
+            luminanceSamples: [UInt8](repeating: 0, count: 64),
+            width: 8,
+            height: 8,
+            at: start.addingTimeInterval(0.7)
+        )
+        let covered = coveredAnalyzer.evaluate(
+            luminanceSamples: [UInt8](repeating: 0, count: 64),
+            width: 8,
+            height: 8,
+            at: start.addingTimeInterval(1.3)
+        )
         XCTAssertFalse(covered.isUsable)
         XCTAssertTrue(covered.warnings.contains(.cameraCovered))
+        XCTAssertEqual(covered.condition, .obstructed)
 
         let brightAnalyzer = CameraQualityAnalyzer()
         let bright = brightAnalyzer.evaluate(luminanceSamples: [UInt8](repeating: 255, count: 64), width: 8, height: 8)
@@ -95,9 +129,10 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
 
         let blurAnalyzer = CameraQualityAnalyzer()
         let blur = blurAnalyzer.evaluate(luminanceSamples: [UInt8](repeating: 128, count: 64), width: 8, height: 8)
-        XCTAssertFalse(blur.isUsable)
+        XCTAssertTrue(blur.isUsable, "A valid low-detail frame must still reach inference")
         XCTAssertTrue(blur.warnings.contains(.blurry))
         XCTAssertTrue(blur.warnings.contains(.poorFraming))
+        XCTAssertFalse(blur.warnings.contains(.cameraCovered))
 
         let motionAnalyzer = CameraQualityAnalyzer()
         let checkerboard: [UInt8] = (0..<64).map { index in
@@ -107,6 +142,27 @@ final class VisionAnalyzerPipelineTests: XCTestCase {
         let inverted: [UInt8] = checkerboard.map { 255 - $0 }
         let motion = motionAnalyzer.evaluate(luminanceSamples: inverted, width: 8, height: 8)
         XCTAssertTrue(motion.warnings.contains(VisionWarning.excessiveMotion))
+    }
+
+    func testCameraQualityDistinguishesInvalidDarkAndValidNoDetectionFrames() {
+        let invalid = CameraQualityAnalyzer().evaluate(luminanceSamples: [0, 1, 2], width: 8, height: 8)
+        XCTAssertEqual(invalid.condition, .invalidPixelBuffer)
+        XCTAssertTrue(invalid.warnings.contains(.invalidFrame))
+        XCTAssertFalse(invalid.warnings.contains(.cameraCovered))
+
+        let darkTexture: [UInt8] = (0..<64).map { $0.isMultiple(of: 2) ? 5 : 15 }
+        let dark = CameraQualityAnalyzer().evaluate(luminanceSamples: darkTexture, width: 8, height: 8)
+        XCTAssertEqual(dark.condition, .underexposed)
+        XCTAssertTrue(dark.warnings.contains(.lowLight))
+        XCTAssertFalse(dark.warnings.contains(.cameraCovered))
+
+        let blank = CameraQualityAnalyzer().evaluate(
+            luminanceSamples: [UInt8](repeating: 128, count: 64),
+            width: 8,
+            height: 8
+        )
+        XCTAssertTrue(blank.isUsable)
+        XCTAssertFalse(blank.warnings.contains(.cameraCovered))
     }
 
     func testCameraQualityAcceptsDetailedBalancedFrame() {
