@@ -248,12 +248,6 @@ struct JarvisAppShortcuts: AppShortcutsProvider {
             shortTitle: "Mesh",
             systemImageName: "point.3.connected.trianglepath.dotted"
         )
-        AppShortcut(
-            intent: ReturnToJarvisIntent(),
-            phrases: ["Return to \(.applicationName)", "\(.applicationName) return"],
-            shortTitle: "Return",
-            systemImageName: "arrow.uturn.backward"
-        )
     }
 }
 #endif
