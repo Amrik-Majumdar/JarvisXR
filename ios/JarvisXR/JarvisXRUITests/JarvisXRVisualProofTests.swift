@@ -10,7 +10,11 @@ final class JarvisXRVisualProofTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        if let app, app.state != .notRunning {
+            app.terminate()
+        }
         app = nil
+        try super.tearDownWithError()
     }
 
     func testProofStandby() throws {
@@ -111,6 +115,202 @@ final class JarvisXRVisualProofTests: XCTestCase {
         saveScreenshot("keyboard")
     }
 
+    func testPrimaryActionsReachableAtCurrentSize() {
+        launch(state: "ready")
+        waitForOrb()
+        let elements: [(String, XCUIElement)] = [
+            ("jarvis.orb", app.otherElements["jarvis.orb"]),
+            ("jarvis.commandInput", app.textFields["jarvis.commandInput"]),
+            ("jarvis.send", app.buttons["jarvis.send"]),
+            ("jarvis.meshMenu", app.buttons["jarvis.meshMenu"]),
+            ("jarvis.help", app.buttons["jarvis.help"]),
+        ]
+        for (identifier, element) in elements {
+            waitFor(element, named: identifier)
+            XCTAssertTrue(element.isHittable, "\(identifier) must remain reachable at the current simulator size")
+            XCTAssertTrue(app.frame.contains(element.frame), "\(identifier) must remain inside the visible application frame")
+        }
+    }
+
+    func testProofVisionIdle() throws {
+        try printVisualProofStart()
+        launch(state: "vision_idle")
+        waitForVisionSurface()
+        assertFixtureDisclosure()
+        waitForVisionState("Ready")
+        saveScreenshot("vision-idle")
+    }
+
+    func testProofVisionDescribeListening() throws {
+        try printVisualProofStart()
+        launch(state: "vision_describe_listening")
+        waitForVisionSurface()
+        waitForVisionState("Listening")
+        saveScreenshot("vision-describe-listening")
+    }
+
+    func testProofVisionDescribeAnalyzing() throws {
+        try printVisualProofStart()
+        launch(state: "vision_describe_analyzing")
+        waitForVisionSurface()
+        waitForVisionState("Active")
+        saveScreenshot("vision-describe-analyzing")
+    }
+
+    func testProofVisionDescribeResult() throws {
+        try printVisualProofStart()
+        launch(state: "vision_describe_result")
+        waitForVisionSurface()
+        waitFor(app.staticTexts["jarvis.vision.result"], named: "Vision result")
+        XCTAssertTrue(app.staticTexts["jarvis.vision.result"].label.contains("chair"))
+        saveScreenshot("vision-describe-result")
+    }
+
+    func testProofVisionLiveActive() throws {
+        try printVisualProofStart()
+        launch(state: "vision_live_active")
+        waitForVisionSurface()
+        waitForVisionState("Active")
+        XCTAssertTrue(app.buttons["jarvis.vision.stop"].isHittable)
+        saveScreenshot("vision-live-active")
+    }
+
+    func testProofVisionFindSearching() throws {
+        try printVisualProofStart()
+        launch(state: "vision_find_searching")
+        waitForVisionSurface()
+        waitForVisionState("Searching for chair")
+        saveScreenshot("vision-find-searching")
+    }
+
+    func testProofVisionFindCentered() throws {
+        try printVisualProofStart()
+        launch(state: "vision_find_centered")
+        waitForVisionSurface()
+        XCTAssertTrue(app.staticTexts["jarvis.vision.result"].label.contains("center"))
+        saveScreenshot("vision-find-centered")
+    }
+
+    func testProofVisionReading() throws {
+        try printVisualProofStart()
+        launch(state: "vision_reading")
+        waitForVisionSurface()
+        waitForVisionState("Reading")
+        waitFor(app.buttons["jarvis.vision.read.pause"], named: "Pause Reading")
+        saveScreenshot("vision-reading")
+    }
+
+    func testProofVisionScanResult() throws {
+        try printVisualProofStart()
+        launch(state: "vision_scan_result")
+        waitForVisionSurface()
+        XCTAssertTrue(app.staticTexts["jarvis.vision.result"].label.contains("012345678905"))
+        saveScreenshot("vision-scan-result")
+    }
+
+    func testProofVisionPermissionDenied() throws {
+        try printVisualProofStart()
+        launch(state: "vision_permission_denied")
+        waitForVisionSurface()
+        waitFor(app.staticTexts["jarvis.vision.failure"], named: "permission failure")
+        waitFor(app.buttons["jarvis.vision.openSystemSettings"], named: "Open iOS Settings recovery")
+        XCTAssertTrue(app.buttons["jarvis.vision.retry"].isHittable)
+        saveScreenshot("vision-permission-denied")
+    }
+
+    func testProofVisionModelUnavailable() throws {
+        try printVisualProofStart()
+        launch(state: "vision_model_unavailable")
+        waitForVisionSurface()
+        waitFor(app.staticTexts["jarvis.vision.failure"], named: "model failure")
+        XCTAssertTrue(app.staticTexts["jarvis.vision.failure"].label.contains("model"))
+        saveScreenshot("vision-model-unavailable")
+    }
+
+    func testProofVisionSettings() throws {
+        try printVisualProofStart()
+        launch(state: "vision_settings")
+        waitFor(app.staticTexts["jarvis.settings.header"], named: "Vision Settings header")
+        waitFor(app.switches["jarvis.settings.vision.haptics"], named: "Vision haptics switch")
+        saveScreenshot("vision-settings")
+    }
+
+    func testProofVisionHelp() throws {
+        try printVisualProofStart()
+        launch(state: "vision_help")
+        waitFor(app.staticTexts["jarvis.help.header"], named: "Vision Help header")
+        waitFor(app.staticTexts["Safety first"], named: "Vision safety callout")
+        saveScreenshot("vision-help")
+    }
+
+    func testProofVisionSelfTest() throws {
+        try printVisualProofStart()
+        launch(state: "vision_self_test")
+        waitFor(app.staticTexts["jarvis.vision.selfTest.header"], named: "Vision Self-Test header")
+        waitFor(app.staticTexts["jarvis.vision.selfTest.results"], named: "fixture self-test results")
+        XCTAssertTrue(app.staticTexts["jarvis.vision.selfTest.results"].label.contains("No physical camera test"))
+        saveScreenshot("vision-self-test")
+    }
+
+    func testProofVisionOnboarding() throws {
+        try printVisualProofStart()
+        launch(state: "vision_onboarding")
+        waitFor(app.staticTexts["jarvis.vision.onboarding.header"], named: "Vision onboarding header")
+        waitFor(app.buttons["jarvis.vision.onboarding.open"], named: "Open Vision onboarding action")
+        saveScreenshot("vision-onboarding")
+    }
+
+    func testVisionAccessibilityMetadataAndTouchTargets() throws {
+        launch(state: "vision_describe_result")
+        waitForVisionSurface()
+        for identifier in [
+            "jarvis.vision.mode.describe",
+            "jarvis.vision.mode.liveGuide",
+            "jarvis.vision.mode.find",
+            "jarvis.vision.mode.readText",
+            "jarvis.vision.mode.scanBarcode",
+            "jarvis.vision.primaryAction",
+            "jarvis.vision.repeat",
+            "jarvis.vision.voice",
+            "jarvis.vision.stop",
+        ] {
+            let element = app.descendants(matching: .any)[identifier]
+            waitFor(element, named: identifier)
+            XCTAssertFalse(element.label.isEmpty, "\(identifier) needs an accessibility label")
+            XCTAssertGreaterThanOrEqual(element.frame.height, 44, "\(identifier) touch target is too short")
+        }
+        XCTAssertEqual(app.buttons["jarvis.vision.stop"].label, "Stop Vision and speech")
+        XCTAssertFalse(app.staticTexts["jarvis.vision.result"].label.contains("%"), "Product result must not expose confidence percentages")
+    }
+
+    func testVisionCompactLargeTypeKeepsStopVisible() throws {
+        app = XCUIApplication()
+        app.launchArguments = [
+            "--jarvis-ui-test",
+            "--jarvis-state", "vision_live_active",
+            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityExtraExtraExtraLarge",
+        ]
+        app.launch()
+        waitForVisionSurface()
+        let stop = app.buttons["jarvis.vision.stop"]
+        XCTAssertTrue(stop.isHittable)
+        XCTAssertGreaterThanOrEqual(stop.frame.height, 44)
+        XCTAssertLessThanOrEqual(stop.frame.maxY, app.windows.firstMatch.frame.maxY + 1)
+    }
+
+    func testVisionRepeatedStartStopFixtureCycles() throws {
+        launch(state: "vision_live_active")
+        waitForVisionSurface()
+        for _ in 0..<3 {
+            app.buttons["jarvis.vision.stop"].tap()
+            waitForVisionState("Stopped")
+            app.buttons["jarvis.vision.primaryAction"].tap()
+            waitForVisionState("Active")
+        }
+        app.buttons["jarvis.vision.stop"].tap()
+        waitForVisionState("Stopped")
+    }
+
     private func printVisualProofStart() throws {
         let outputDirectory = try visualProofDirectory()
         print("JARVIS visual proof output: \(outputDirectory.path)")
@@ -130,6 +330,17 @@ final class JarvisXRVisualProofTests: XCTestCase {
         waitFor(app.otherElements["jarvis.orb"], named: "JARVIS orb", timeout: 8)
     }
 
+    private func waitForVisionSurface() {
+        waitFor(app.buttons["jarvis.vision.primaryAction"], named: "Vision primary action", timeout: 8)
+        waitFor(app.buttons["jarvis.vision.stop"], named: "always-visible Vision stop", timeout: 8)
+    }
+
+    private func assertFixtureDisclosure() {
+        let banner = app.staticTexts["jarvis.vision.fixtureBanner"]
+        waitFor(banner, named: "fixture disclosure")
+        XCTAssertTrue(banner.label.lowercased().contains("camera is not active"))
+    }
+
     private func waitForState(_ state: String) {
         let label = app.staticTexts["jarvis.state"]
         waitFor(label, named: "state label")
@@ -143,6 +354,14 @@ final class JarvisXRVisualProofTests: XCTestCase {
         waitFor(label, named: "state label")
         waitUntil("one of states \(states.joined(separator: ", "))") {
             states.contains(label.label)
+        }
+    }
+
+    private func waitForVisionState(_ state: String) {
+        let label = app.staticTexts["jarvis.vision.state"]
+        waitFor(label, named: "Vision state label")
+        waitUntil("Vision state \(state)") {
+            label.label == state
         }
     }
 
@@ -202,24 +421,11 @@ final class JarvisXRVisualProofTests: XCTestCase {
 
     private func visualProofDirectory() throws -> URL {
         let environment = ProcessInfo.processInfo.environment
-        let rawDirectory = environment["VISUAL_PROOF_DIR"] ?? environment["JARVIS_SCREENSHOT_DIR"] ?? derivedVisualProofDirectory()
-        guard let rawDirectory, !rawDirectory.isEmpty else {
-            throw NSError(
-                domain: "JarvisXRVisualProof",
-                code: 1,
-                userInfo: [NSLocalizedDescriptionKey: "VISUAL_PROOF_DIR or JARVIS_SCREENSHOT_DIR must be set for screenshot proof."]
-            )
-        }
-        let directory = URL(fileURLWithPath: rawDirectory, isDirectory: true)
+        let rawDirectory = environment["VISUAL_PROOF_DIR"] ?? environment["JARVIS_SCREENSHOT_DIR"]
+        let directory = rawDirectory.flatMap { $0.isEmpty ? nil : URL(fileURLWithPath: $0, isDirectory: true) }
+            ?? FileManager.default.temporaryDirectory.appendingPathComponent("JarvisXRVisualProof", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
-    }
-
-    private func derivedVisualProofDirectory(filePath: String = #filePath) -> String? {
-        let marker = "/ios/JarvisXR/"
-        guard let range = filePath.range(of: marker) else { return nil }
-        let projectRoot = String(filePath[..<range.upperBound])
-        return projectRoot + "build/visual-proof"
     }
 
     private func printVisualProofEnvironment() {
@@ -245,15 +451,11 @@ final class JarvisXRVisualProofTests: XCTestCase {
     }
 
     private func saveFailureScreenshot() {
-        let environment = ProcessInfo.processInfo.environment
-        guard let rawDirectory = environment["VISUAL_PROOF_DIR"] ?? environment["JARVIS_SCREENSHOT_DIR"] ?? derivedVisualProofDirectory(),
-              !rawDirectory.isEmpty else {
-            print("JARVIS could not write failure screenshot because VISUAL_PROOF_DIR was missing.")
+        guard let directory = try? visualProofDirectory() else {
+            print("JARVIS could not create the failure screenshot directory.")
             return
         }
         do {
-            let directory = URL(fileURLWithPath: rawDirectory, isDirectory: true)
-            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
             let url = directory.appendingPathComponent("failure-current-screen.png")
             try XCUIScreen.main.screenshot().pngRepresentation.write(to: url)
             print("JARVIS saved failure screenshot: \(url.path)")

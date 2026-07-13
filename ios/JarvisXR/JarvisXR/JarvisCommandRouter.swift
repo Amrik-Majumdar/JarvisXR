@@ -229,8 +229,11 @@ final class JarvisCommandRouter {
 
     private func help() -> JarvisResponse {
         let commands = """
-        Vision: scan this, look at this, read this, read this label, detect objects, what am I looking at
-        Inspection: inspect mode, take photo, camera status, flashlight on, flashlight off
+        Vision: describe this room, what is in front of me, describe left, start live guide, stop live guide
+        Find: find the chair, where is the person, find the door
+        Read and scan: read this, next line, scan this barcode, what color is this
+        Vision control: repeat that, more detail, only important changes, camera quality, flashlight on, flashlight off, stop
+        Messages: message a contact, tell a contact a message, read the message back, change the recipient, cancel the message, open the message composer
         Voice: JARVIS ready, listen, stop listening, stop speaking, quiet mode, normal mode
         Memory: remember this, save note, show notes, search notes, what did I say
         Control Mesh: Mesh, show grid, tap that, scroll down, go home, take screenshot, return to JARVIS
@@ -245,6 +248,8 @@ final class JarvisCommandRouter {
             return nil
         case .inAppVision:
             return .ok(plan.spokenText, display: plan.displayText, data: plan.data)
+        case .inAppMessage:
+            return .ok(plan.spokenText, display: plan.displayText, data: plan.data, shouldSpeak: false)
         case .controlMeshGuide where plan.action == .openControlMesh:
             return .ok(plan.spokenText, display: controlMeshSummary(), data: ["action": "control_mesh", "route_label": plan.routeLabel])
         case .voiceControlRoute, .shortcutRoute, .appOpenURL:

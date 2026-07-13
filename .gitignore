@@ -22,3 +22,7 @@ secrets.*
 *.mobileprovision
 *.p12
 *.cer
+
+# Checksum-pinned model fetched by tools/fetch_vision_model.py before XcodeGen.
+ios/JarvisXR/JarvisXR/Models/JarvisObjectDetector.mlmodel
+ios/JarvisXR/JarvisXR/Models/.JarvisObjectDetector-*.download

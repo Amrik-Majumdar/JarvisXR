@@ -14,6 +14,8 @@ JARVIS XR does not include a developer-operated account system, advertising SDK,
 
 Typed commands, recognized command text, saved notes, preferences, and command history are stored locally in the app container. They are used to provide app functions such as command routing, note search, voice settings, and history management.
 
+Message-composition commands are excluded from general command history. Jarvis uses the system contact picker to let the user authorize one recipient selection without copying or uploading the address book. The selected phone number and message body remain in an in-memory draft and are passed to Apple's standard message composer only after the user asks to open it. Sending or cancelling occurs in that system interface.
+
 ### Microphone and speech recognition
 
 Microphone access is used only after the user starts in-app voice input. Audio is provided to Apple's Speech framework for recognition. Recognition may occur on-device or may be processed by Apple depending on the device, language, operating system, network state, and Apple's service availability. Apple's handling is governed by Apple's own privacy terms.

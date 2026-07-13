@@ -17,10 +17,12 @@ targets:
       - path: JarvisXR
         excludes:
           - Models/README.md
+          - Models/MODEL_LICENSE.md
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.amrik.jarvisxr
         PRODUCT_NAME: JarvisXR
+        TARGETED_DEVICE_FAMILY: "1"
         INFOPLIST_FILE: JarvisXR/Info.plist
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: ""
@@ -31,6 +33,12 @@ targets:
     platform: iOS
     sources:
       - JarvisXRTests
+      - path: ../../tests/fixtures/vision/images/Desk_chair.jpg
+        buildPhase: resources
+      - path: ../../tests/fixtures/vision/fixtures.manifest.json
+        buildPhase: resources
+      - path: ../../tests/fixtures/vision/expected/Desk_chair.expected.json
+        buildPhase: resources
     dependencies:
       - target: JarvisXR
     settings:

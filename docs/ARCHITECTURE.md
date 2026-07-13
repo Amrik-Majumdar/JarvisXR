@@ -5,39 +5,57 @@
 `ios/JarvisXR` is the current product target. It is a Swift and UIKit application generated with XcodeGen.
 
 ```text
-UIKit interface
-  -> interaction state controller
-  -> local command router
-  -> local memory and settings
-  -> AVSpeechSynthesizer output
+UIKit and accessible interaction
+  -> command and deep-link routing
+  -> local memory and preferences
   -> Speech + AVAudioEngine input
-  -> AVFoundation camera
-  -> Vision / optional Core ML
+  -> priority AVSpeechSynthesizer output
+  -> AVFoundation camera session
+     -> model-agnostic analyzers
+     -> tracking and scene fusion
+     -> safety policy and narration
+     -> session-scoped speech and haptics
   -> App Intents, URL routes, and Control Mesh guidance
 ```
 
-The app runs in the normal iOS sandbox and uses public frameworks.
+The app runs in the normal iOS sandbox and uses public frameworks. It has no private API, root daemon, injected input, global overlay, remote vision backend, CUDA, or TensorRT dependency.
 
 ## Command Flow
 
 1. The user taps the orb for push-to-talk or submits text.
 2. The interface enters Listening or Processing.
 3. `JarvisCommandRouter` normalizes the command and creates a local response or action.
-4. In-app actions open native screens such as Inspection, Settings, Help, or Diagnostics.
-5. Supported external routes use public URLs, App Intents, or Control Mesh guidance.
-6. `JarvisSpeechService` speaks the response when speech output is enabled.
-7. `JarvisMemoryStore` persists allowed notes, settings, and history locally.
+4. In-app actions open native screens such as Jarvis Vision, Settings, Help, or Diagnostics.
+5. Vision commands route to a typed `VisionMode` and `JarvisVisionCommand` through the active camera experience.
+6. Supported external routes use public URLs, App Intents, or Control Mesh guidance.
+7. `JarvisSpeechService` speaks non-vision responses when output is enabled.
+8. `JarvisMemoryStore` persists allowed notes, settings, and history locally.
 
 ## Vision Flow
 
-1. AVFoundation provides the rear-camera preview and photo capture.
-2. Apple Vision analyzes the captured image for text, barcodes, and image classification.
-3. A compatible bundled Core ML model can add object detection.
-4. Results are rendered and optionally spoken.
+1. `CameraSessionService` owns camera permission, preview, sample and still capture, camera choice, focus, exposure, white balance, torch, interruptions, and foreground lifecycle.
+2. `VisionPipelineCoordinator` owns the active mode and session generation. Frame backpressure and generation checks prevent unbounded queues and stale completion delivery.
+3. `ObjectDetectionService`, `TextRecognitionService`, `BarcodeRecognitionService`, `FaceAndPersonService`, `CameraQualityAnalyzer`, and `ColorAnalysisService` return typed observations. The `VisionDetecting` interface keeps the detector replaceable without changing downstream features.
+4. `TemporalObjectTracker` stabilizes object identity and movement. `SceneFusionEngine` combines bounded evidence into a `SceneSnapshot`.
+5. `VisionSafetyPolicy` applies confidence, stability, age, supported-class, and prohibited-language rules. `VisionNarrationService` describes only grounded evidence and qualifies absence.
+6. `VisionSpeechPriorityQueue` orders warnings and requested targets above changes and ambient detail. Session tokens cancel stale or stopped-session speech.
+7. `VisionHapticsService` maps broad direction and status into a small documented vocabulary, with spoken guidance as fallback.
+8. `VisionSessionMemory` keeps temporary observations in memory and clears them when the session stops. `VisionDiagnosticsStore` retains bounded operational metrics without frames or recognized content.
+9. Runtime conditions select full, balanced, reduced-power, target-only, or stopped processing profiles. Serious or critical thermal state selects reduced processing.
+
+## Model Supply Chain
+
+`JarvisObjectDetector.manifest.json` is the source of truth for the selected Apple-hosted `YOLOv3TinyInt8LUT` artifact, exact digest, size, Core ML interface, 80 classes, known unsupported targets, and upstream license. `tools/fetch_vision_model.py` obtains the exact binary before project generation. Xcode compiles it into `JarvisObjectDetector.mlmodelc`, while the manifest and notice remain visible in the app bundle and IPA audit.
+
+The model binary is fetched rather than committed. Changing the URL, digest, schema, class list, or license requires an intentional manifest update, fixture review, build, simulator inference, audit, and physical-device validation.
+
+## Privacy Boundary
+
+Camera frames flow from AVFoundation directly into on-device analyzers. Normal settings cannot enable frame storage, video storage, recognized-text persistence, or network vision processing. OCR, barcode values, and scene observations remain session-scoped. This boundary is distinct from the app's explicit local notes and history features and from Apple's separate Speech framework behavior.
 
 ## Supporting Python Core
 
-`core/`, `tests/`, and `tools/` contain tested registry, adapter, routing, device-profile, daemon-contract, asset, IPA-audit, and CI support code. These modules support validation and future integration; they are not a root daemon installed by the shipping iOS app.
+`core/`, `tests/`, and `tools/` contain tested registry, adapter, routing, device-profile, daemon-contract, model-fetch, fixture-evaluation, privacy, safety, asset, IPA-audit, and CI support code. These modules validate the shipping target; they are not a root daemon installed by the app.
 
 ## Legacy Prototypes
 

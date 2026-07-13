@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "fixture_id": "desk-chair-public-domain",
+  "coordinate_system": "top_left_normalized_xywh",
+  "expected_objects": [
+    {
+      "label": "chair",
+      "required": true,
+      "spatial_region": "center",
+      "vertical_region": "middle",
+      "relative_size": "large",
+      "approximate_bounding_box": {
+        "x": 0.18,
+        "y": 0.04,
+        "width": 0.81,
+        "height": 0.94
+      },
+      "minimum_iou_for_fixture_evaluation": 0.3,
+      "minimum_confidence_for_fixture_evaluation": 0.2
+    }
+  ],
+  "expected_absent_objects": [
+    "person"
+  ],
+  "allowed_additional_labels": [],
+  "maximum_false_positives": 1,
+  "notes": "The chair dominates the center of the portrait frame. The broad box and low IoU gate account for model-specific localization variance; thresholds must not be tuned from a single fixture."
+}

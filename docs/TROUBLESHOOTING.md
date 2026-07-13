@@ -12,12 +12,20 @@
 Run:
 
 ```bash
+python3 tools/fetch_vision_model.py
+python3 tools/audit_vision_model.py --require-model
 cd ios/JarvisXR
 xcodegen generate
 xcodebuild -list -project JarvisXR.xcodeproj
 ```
 
 The scheme must be named `JarvisXR`.
+
+## Object Model Is Missing or Invalid
+
+Do not replace the model with a similarly named file. From the repository root, run the pinned fetch and audit commands above, then regenerate the Xcode project. In CI, inspect `model-fetch.json`, `vision-model-audit.json`, the unit-test result bundle, and `ipa-audit.json` in the uploaded artifacts. The exact expected digest and interface are recorded in `ios/JarvisXR/JarvisXR/Models/JarvisObjectDetector.manifest.json`.
+
+Read Text, Barcode, and Color can remain available when object-model validation fails. Describe, Live Guide, and Find must report the failure rather than silently substitute unverified object results.
 
 ## IPA Is Missing
 

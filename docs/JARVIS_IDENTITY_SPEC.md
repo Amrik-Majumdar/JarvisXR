@@ -34,4 +34,4 @@ JARVIS is not:
 - Quiet: speech output reduced or disabled
 - Blocked: a clear permission or platform boundary
 
-The app should always distinguish listening from speaking and should state when a feature depends on permission, device support, or an external model.
+The app should always distinguish listening from speaking and should state when a feature depends on permission, device support, or successful validation of the bundled detector.

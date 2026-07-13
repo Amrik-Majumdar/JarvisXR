@@ -18,7 +18,7 @@ def test_xr_capability_matrix_generation_writes_json():
     path = ROOT / "core" / "registry" / "xr_capability_matrix.json"
     assert path.exists()
     saved = json.loads(path.read_text(encoding="utf-8"))
-    assert saved["target_device"] == "iPhone XR"
+    assert saved["target_device"] == "compatible iPhone with an iPhone XR capability baseline"
     assert len(saved["capabilities"]) == 400
 
 

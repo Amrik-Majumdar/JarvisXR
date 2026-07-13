@@ -1,0 +1,22 @@
+JARVIS Object Detector third-party notice
+
+Artifact used by the build:
+  Apple YOLOv3TinyInt8LUT Core ML model
+  https://developer.apple.com/machine-learning/models/
+  https://ml-assets.apple.com/coreml/models/Image/ObjectDetection/YOLOv3Tiny/YOLOv3TinyInt8LUT.mlmodel
+
+Upstream model and implementation authors:
+  Joseph Redmon and Ali Farhadi
+  https://github.com/pjreddie/darknet
+
+License recorded in the Core ML model metadata:
+  YOLO License
+  https://github.com/pjreddie/darknet/blob/master/LICENSE
+
+The upstream license states that Darknet is public domain and may be used for
+any purpose. This notice preserves provenance and does not change the license
+of JARVIS XR software or its separately licensed visual identity assets.
+
+Pinned source artifact:
+  Size: 8913366 bytes
+  SHA-256: cde8af2528d6eca1d1580fdd0f0147cb6613d40ba962656b5f683c65f571870e

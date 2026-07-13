@@ -3,6 +3,8 @@ name: Build JarvisXR iOS IPA
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
       - "ios/JarvisXR/**"
       - "core/**"
@@ -50,6 +52,14 @@ jobs:
       - name: Run Windows preview self-test
         run: python preview/windows_jarvis_preview/jarvis_preview.py --self-test
 
+      - name: Upload Windows validation reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: JarvisXR-windows-validation-reports
+          if-no-files-found: warn
+          path: ios/JarvisXR/build/reports/**
+
   build-ios:
     needs: validate-python
     runs-on: macos-26
@@ -59,6 +69,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      - name: Fetch and verify pinned Core ML detector
+        run: |
+          set -euo pipefail
+          mkdir -p ios/JarvisXR/build/reports
+          python3 tools/fetch_vision_model.py \
+            --report ios/JarvisXR/build/reports/model-fetch.json
+          python3 tools/audit_vision_model.py \
+            --require-model \
+            --output ios/JarvisXR/build/reports/vision-model-audit.json
 
       - name: Inspect runner and repository
         run: |
@@ -102,6 +122,8 @@ jobs:
 
       - name: Run JarvisXR unit tests on simulator
         working-directory: ios/JarvisXR
+        env:
+          VISION_EVALUATION_OUTPUT: ${{ github.workspace }}/ios/JarvisXR/build/reports/native-vision-observations.json
         run: |
           set -o pipefail
           SIM_ID="$(python3 ../../tools/select_ios_simulator.py || true)"
@@ -129,6 +151,73 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             -only-testing:JarvisXRTests \
             test | tee -a build/logs/xcodebuild-unit-test.log
+          python3 - <<'PY'
+          import base64
+          import json
+          from pathlib import Path
+
+          log = Path("build/logs/xcodebuild-unit-test.log").read_text(encoding="utf-8", errors="replace")
+          marker = "VISION_NATIVE_OBSERVATIONS_BASE64:"
+          records = [line.split(marker, 1)[1].strip() for line in log.splitlines() if marker in line]
+          if not records:
+              raise SystemExit("Real native inference completed but did not emit its observation record.")
+          data = base64.b64decode(records[-1], validate=True)
+          payload = json.loads(data)
+          fixtures = payload.get("fixtures")
+          if not isinstance(fixtures, list) or not fixtures or fixtures[0].get("inference_completed") is not True:
+              raise SystemExit("Native inference observation record has an invalid execution contract.")
+          output = Path("build/reports/native-vision-observations.json")
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_bytes(data)
+          print(f"Exported native inference observations to {output}")
+          PY
+
+      - name: Run focused JarvisXR UI behavior tests
+        timeout-minutes: 20
+        working-directory: ios/JarvisXR
+        run: |
+          set -o pipefail
+          mkdir -p build/logs build/visual-proof
+          SIM_ID="$(python3 ../../tools/select_ios_simulator.py || true)"
+          DESTINATION="$(python3 ../../tools/select_ios_simulator.py --destination || true)"
+          python3 ../../tools/select_ios_simulator.py --details | tee build/logs/selected-ui-simulator.txt || true
+          if [ -z "$SIM_ID" ]; then
+            echo "No available iPhone simulator found. Failing because UI verification is required." | tee build/logs/xcodebuild-ui-test.log
+            exit 1
+          fi
+          echo "Using simulator id: $SIM_ID" | tee build/logs/xcodebuild-ui-test.log
+          echo "Using xcodebuild destination: $DESTINATION" | tee -a build/logs/xcodebuild-ui-test.log
+          xcrun simctl boot "$SIM_ID" || true
+          xcrun simctl bootstatus "$SIM_ID" -b
+          xcodebuild \
+            -project JarvisXR.xcodeproj \
+            -scheme JarvisXR \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination "$DESTINATION" \
+            -derivedDataPath build/TestDerivedData \
+            -resultBundlePath build/logs/JarvisXRUITests.xcresult \
+            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofHelp \
+            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionDescribeResult \
+            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionLiveActive \
+            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionReading \
+            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testProofVisionPermissionDenied \
+            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testVisionAccessibilityMetadataAndTouchTargets \
+            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testVisionCompactLargeTypeKeepsStopVisible \
+            -only-testing:JarvisXRUITests/JarvisXRVisualProofTests/testVisionRepeatedStartStopFixtureCycles \
+            test | tee -a build/logs/xcodebuild-ui-test.log
+
+      - name: Run vision fixture and policy evaluation
+        run: |
+          set -euo pipefail
+          mkdir -p ios/JarvisXR/build/reports
+          python3 tools/evaluate_vision_fixtures.py \
+            --observations ios/JarvisXR/build/reports/native-vision-observations.json \
+            --output ios/JarvisXR/build/reports/vision-fixture-native.json
+          python3 tools/audit_vision_safety.py \
+            --output ios/JarvisXR/build/reports/vision-safety-audit.json
+          python3 tools/audit_vision_privacy.py \
+            --output ios/JarvisXR/build/reports/vision-privacy-audit.json
 
       - name: Package unsigned IPA
         working-directory: ios/JarvisXR
@@ -159,8 +248,10 @@ jobs:
       - name: Audit unsigned IPA
         run: |
           set -o pipefail
-          mkdir -p ios/JarvisXR/build/logs
-          python3 tools/audit_ipa.py ios/JarvisXR/build/JarvisXR-unsigned.ipa | tee ios/JarvisXR/build/logs/ipa-audit.log
+          mkdir -p ios/JarvisXR/build/logs ios/JarvisXR/build/reports
+          python3 tools/audit_ipa.py ios/JarvisXR/build/JarvisXR-unsigned.ipa \
+            --json-output ios/JarvisXR/build/reports/ipa-audit.json \
+            | tee ios/JarvisXR/build/logs/ipa-audit.log
 
       - name: Capture required iOS screenshots
         timeout-minutes: 10
@@ -235,6 +326,21 @@ jobs:
           capture_state object_model_missing object-model-missing.png 5
           capture_state settings settings.png 4
           capture_state diagnostics diagnostics.png 4
+          capture_state vision_idle vision-idle.png 3
+          capture_state vision_describe_listening vision-describe-listening.png 3
+          capture_state vision_describe_analyzing vision-describe-analyzing.png 3
+          capture_state vision_describe_result vision-describe-result.png 3
+          capture_state vision_live_active vision-live-active.png 3
+          capture_state vision_find_searching vision-find-searching.png 3
+          capture_state vision_find_centered vision-find-centered.png 3
+          capture_state vision_reading vision-reading.png 3
+          capture_state vision_scan_result vision-scan-result.png 3
+          capture_state vision_permission_denied vision-permission-denied.png 3
+          capture_state vision_model_unavailable vision-model-unavailable.png 3
+          capture_state vision_settings vision-settings.png 3
+          capture_state vision_help vision-help.png 3
+          capture_state vision_self_test vision-self-test.png 3
+          capture_state vision_onboarding vision-onboarding.png 3
 
           python3 ../../tools/verify_visual_proof.py "$VISUAL_PROOF_DIR" | tee -a build/logs/xcodebuild-visual-proof.log
           ls -lh "$VISUAL_PROOF_DIR" | tee -a build/logs/xcodebuild-visual-proof.log
@@ -271,12 +377,28 @@ jobs:
           path: ios/JarvisXR/build/JarvisXR-unsigned.ipa
 
       - name: Upload iOS screenshot proof
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v7
         with:
           name: JarvisXR-ios-screenshot-proof
           if-no-files-found: error
           path: ios/JarvisXR/build/visual-proof/*.png
+
+      - name: Upload vision evaluation reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: JarvisXR-vision-evaluation
+          if-no-files-found: error
+          path: ios/JarvisXR/build/reports/**
+
+      - name: Upload XCTest result bundles
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: JarvisXR-xcresults
+          if-no-files-found: warn
+          path: ios/JarvisXR/build/logs/*.xcresult
 
       - name: Upload build logs
         if: always()
@@ -294,4 +416,5 @@ jobs:
             ios/JarvisXR/build/TestDerivedData/Logs/**
             ios/JarvisXR/build/VisualProofDerivedData/Logs/**
             ios/JarvisXR/build/visual-proof/**
+            ios/JarvisXR/build/reports/**
             ios/JarvisXR/BUILD_REAL_APP_STATUS.md

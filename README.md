@@ -3,10 +3,10 @@
 
   # JARVIS XR
 
-  **A native, offline-first assistant interface for iPhone XR**
+  **A native, offline-first assistant interface for compatible iPhones**
 
-  Voice and typed commands, visual inspection, local memory, configurable speech,
-  and public-API iOS automation guidance in one focused UIKit experience.
+  Voice and typed commands, six on-device vision modes, local memory, accessible
+  speech and haptics, and public-API iOS automation guidance in one UIKit experience.
 
   [![iOS 18+](https://img.shields.io/badge/iOS-18%2B-111827?style=for-the-badge&logo=apple)](ios/JarvisXR/project.yml)
   [![Swift 5.9](https://img.shields.io/badge/Swift-5.9-F05138?style=for-the-badge&logo=swift&logoColor=white)](ios/JarvisXR/JarvisXR)
@@ -25,12 +25,12 @@
 
 ## Product Overview
 
-JARVIS XR turns a dedicated iPhone into a focused assistant surface without relying on a browser UI or paid cloud APIs. The app centers interaction on a reactive orb, push-to-talk speech recognition, typed commands, local speech output, and camera-based visual inspection.
+JARVIS XR turns a dedicated iPhone into a focused assistant surface without relying on a browser UI or paid cloud APIs. The app centers interaction on a reactive orb, push-to-talk speech recognition, typed commands, local speech output, and an accessibility-first camera assistant that performs vision analysis on the device.
 
 | Native interaction | Local intelligence | Device integration |
 |---|---|---|
 | Distinct standby, listening, processing, speaking, and inspection states | Local command routing, notes, history, and configurable responses | Camera, microphone, speech, Vision, App Intents, deep links, and Guided Access guidance |
-| Voice-first interface with dependable typed fallback | OCR, barcode recognition, and built-in Vision image classification | Control Mesh routes supported actions through public iOS mechanisms |
+| Voice-first interface with dependable typed fallback | Core ML object detection, OCR, barcode scanning, color analysis, tracking, and scene fusion | Control Mesh routes supported actions through public iOS mechanisms |
 
 ## Interface
 
@@ -57,11 +57,25 @@ Portrait-first UIKit layout, full-screen dark interface, accessible labels, loca
 | Area | Current implementation | Boundary |
 |---|---|---|
 | Voice input | In-app push-to-talk using Apple's Speech framework | Recognition availability and on-device processing vary by device, language, and Apple service state |
-| Voice output | `AVSpeechSynthesizer` with persistent voice profiles | Installed system voices determine final sound |
-| Visual inspection | AVFoundation capture, Vision OCR, QR/barcode recognition, and image classification | External object detection requires a compatible bundled Core ML model |
+| Voice output | `AVSpeechSynthesizer` with persistent voice profiles and a priority queue for vision warnings, targets, and scene changes | Installed system voices and the selected audio route determine final sound |
+| Jarvis Vision | Describe, Live Guide, Find, Read Text, Barcode, and Color modes with object tracking, scene fusion, safe narration, camera-quality guidance, and directional haptics | Results can be incomplete or wrong and are never permission to cross or proceed |
+| Messages | Accessible system contact picker, private in-memory draft readback, explicit confirmation, and the standard iOS message composer | The user sends or cancels in Apple's composer; Jarvis never claims a silent send |
 | Memory | Local notes, command history, search, and clear controls | Stored in the app container; removing the app can remove local data |
 | Control Mesh | Deep links, App Intents, Shortcuts guidance, Voice Control phrases, and public app URL routes | No injected taps, hidden screen reading, global overlay, or private system hooks |
 | Appliance use | Guided Access setup and dedicated-device workflow | iOS remains the operating system and security authority |
+
+### Jarvis Vision
+
+| Mode | On-device behavior |
+|---|---|
+| Describe | Captures and narrates grounded objects, people, text, and scene position |
+| Live Guide | Tracks stable objects and announces meaningful changes while the app remains in the foreground |
+| Find | Searches the detector's supported classes and provides broad left, center, and right guidance |
+| Read Text | Recognizes printed text with reading-order and line controls |
+| Barcode | Reports deduplicated QR and barcode values without opening links automatically |
+| Color | Names an approximate center color and reports uncertainty when lighting limits confidence |
+
+The detector boundary is model-agnostic. The release build fetches Apple's 8.9 MB `YOLOv3TinyInt8LUT.mlmodel`, verifies its pinned SHA-256, compiles it as `JarvisObjectDetector.mlmodelc`, and bundles its manifest and notice. The detector recognizes 80 documented classes. Door, stairs, curb, step, and exit-sign requests are reported as unsupported rather than guessed. See [Vision Pipeline](docs/VISION.md) and [Model Decision](docs/JARVIS_VISION_MODEL_DECISION.md).
 
 ## Start Here
 
@@ -76,8 +90,11 @@ Portrait-first UIKit layout, full-screen dark interface, accessible labels, loca
 
 ```bash
 git clone https://github.com/Amrik-Majumdar/JarvisXR.git
-cd JarvisXR/ios/JarvisXR
+cd JarvisXR
 brew install xcodegen
+python3 tools/fetch_vision_model.py
+python3 tools/audit_vision_model.py --require-model
+cd ios/JarvisXR
 xcodegen generate
 xcodebuild -project JarvisXR.xcodeproj \
   -scheme JarvisXR \
@@ -88,28 +105,35 @@ xcodebuild -project JarvisXR.xcodeproj \
 
 Native builds require macOS and Xcode. Windows and Linux can run the Python validation suite, while the included GitHub Actions workflow performs the macOS build, simulator tests, visual proof capture, IPA audit, and unsigned IPA packaging.
 
+The iPhone XR is the minimum hardware capability baseline, not a model allowlist. The app targets the iPhone device family and uses runtime camera, torch, haptic, thermal, accessibility, and API-availability checks. Any standard, mini, Plus, Pro, Pro Max, SE, or “e” iPhone that can run the preserved iOS 18 deployment target is supported without matching a hard-coded device name.
+
 See [Building](docs/BUILDING.md) for the complete reproducible path.
 
 ## Verification
 
-Every app-affecting push runs the following gates:
+The workflow defines the following gates for app-affecting pull requests, main-branch pushes, and manual runs. Run-specific evidence for this rewrite is recorded separately in the [Vision Completion Ledger](docs/JARVIS_VISION_COMPLETION_LEDGER.md).
 
 ```text
-Registry validation -> Python tests -> XcodeGen -> iPhoneOS build
--> Swift unit tests -> simulator visual proof -> IPA audit -> artifacts
+Registry and policy validation -> pinned model fetch and checksum audit
+-> XcodeGen -> unsigned iPhoneOS build -> Swift unit tests
+-> real Core ML simulator execution and output-contract validation
+-> UI tests and 28 screenshots -> privacy, safety, and IPA audits -> artifacts
 ```
 
 The workflow uploads:
 
 - `JarvisXR-unsigned-ipa`
 - `JarvisXR-ios-screenshot-proof`
+- `JarvisXR-vision-evaluation`
+- `JarvisXR-xcresults`
 - `JarvisXR-build-output`
+- `JarvisXR-windows-validation-reports`
 
 The build is reproducible from source through a documented CI process. It is not claimed to be bit-for-bit deterministic across changing Xcode or macOS toolchains.
 
 ## Privacy and Safety
 
-JARVIS XR has no developer-operated analytics, advertising, account, or cloud backend. Notes and command history remain in the app container. Camera analysis runs through Apple frameworks in the app. Speech recognition may be processed on-device or by Apple depending on device and language support.
+JARVIS XR has no developer-operated analytics, advertising, account, or cloud backend. Vision frames, recognized text, barcode values, message recipients, and message bodies are not automatically persisted or sent to a developer service. Message commands are excluded from general command history; drafts stay in memory and are handed to Apple's standard composer only after confirmation. Temporary scene memory is bounded to the active session and is cleared when the session stops. Notes and non-sensitive command history remain in the app container. Speech recognition may be processed on-device or by Apple depending on device and language support.
 
 Read the full [Privacy Policy](PRIVACY.md), [Terms](TERMS.md), [Security Policy](SECURITY.md), and [Disclaimer](DISCLAIMER.md) before installation.
 
@@ -152,10 +176,13 @@ The app under `ios/JarvisXR` is the current product. Files under `native/` are p
 | [Install on iPhone](docs/INSTALLING_ON_IPHONE.md) | [Features and limits](docs/FEATURES_AND_LIMITS.md) | [Security](SECURITY.md) |
 | [First run](docs/FIRST_RUN_CHECKLIST.md) | [Vision pipeline](docs/VISION.md) | [Support](SUPPORT.md) |
 | [Troubleshooting](docs/TROUBLESHOOTING.md) | [Control Mesh](docs/CONTROL_MESH.md) | [Contributing](CONTRIBUTING.md) |
+| [Vision completion ledger](docs/JARVIS_VISION_COMPLETION_LEDGER.md) | [Vision model decision](docs/JARVIS_VISION_MODEL_DECISION.md) | [Disclaimer](DISCLAIMER.md) |
 
 ## License
 
 Current software is licensed under [GNU GPLv3 or later](LICENSE), with permitted attribution and origin terms under [GPLv3 section 7](ADDITIONAL_TERMS.md). Distributed modifications must remain under the GPL, preserve copyright and legal notices, identify changes, and provide corresponding source as the license requires.
+
+The downloaded detector retains separate upstream provenance and license notices in [`MODEL_LICENSE.md`](ios/JarvisXR/JarvisXR/Models/MODEL_LICENSE.md), [`JarvisObjectDetector.manifest.json`](ios/JarvisXR/JarvisXR/Models/JarvisObjectDetector.manifest.json), and `JarvisObjectDetector.NOTICE.txt`. Those terms do not change the license of JARVIS XR software or visual identity assets.
 
 Original branding, logo artwork, screenshots, and visual reference assets use separate [CC BY-NC-SA 4.0 terms](ASSET_LICENSE.md). Commercial use of those assets requires written permission. See [Attribution](ATTRIBUTION.md) and [CITATION.cff](CITATION.cff).
 

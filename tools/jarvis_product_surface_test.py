@@ -35,6 +35,11 @@ def main() -> int:
     mesh_view = read(IOS_ROOT / "JarvisControlMeshViewController.swift")
     camera = read(IOS_ROOT / "JarvisCameraViewController.swift")
     vision = read(IOS_ROOT / "JarvisVisionInterfaces.swift")
+    pipeline = read(IOS_ROOT / "VisionPipelineCoordinator.swift")
+    detector = read(IOS_ROOT / "ObjectDetectionService.swift")
+    speech_queue = read(IOS_ROOT / "VisionSpeechPriorityQueue.swift")
+    settings = read(IOS_ROOT / "JarvisSettingsViewController.swift")
+    speech = read(IOS_ROOT / "JarvisSpeechService.swift")
     app_intents = read(IOS_ROOT / "JarvisAppIntents.swift")
     preview_text = read(PREVIEW)
     voice = read(IOS_ROOT / "JarvisVoiceInputService.swift")
@@ -44,10 +49,12 @@ def main() -> int:
     project_yml = read(ROOT / "ios" / "JarvisXR" / "project.yml")
     workflow_yml = read(ROOT / ".github" / "workflows" / "ios-build.yml")
     ui_test = read(ROOT / "ios" / "JarvisXR" / "JarvisXRUITests" / "JarvisXRVisualProofTests.swift")
-    run_tests_bat = read(ROOT / "dist" / "jarvis_local_approval_bundle" / "run_tests.bat")
+    validation_runner = read(ROOT / "tests" / "run_all_tests.py")
     launch_screen = read(IOS_ROOT / "LaunchScreen.storyboard")
     orb_imageset = IOS_ROOT / "Assets.xcassets" / "JarvisOrb.imageset"
     app_icon_set = IOS_ROOT / "Assets.xcassets" / "AppIcon.appiconset"
+    production_swift = "\n".join(read(path) for path in IOS_ROOT.glob("*.swift"))
+    simulator_selector = read(ROOT / "tools" / "select_ios_simulator.py")
 
     failures: list[str] = []
 
@@ -64,7 +71,12 @@ def main() -> int:
     mesh_surface = "\n".join(model.product_surface_texts())
 
     check("Swift help button exists", 'setTitle("?",' in root)
-    check("Swift Mesh button exists", 'setTitle("Mesh"' in root)
+    check(
+        "Swift Vision menu exposes Vision and Control Mesh",
+        'accessibilityIdentifier = "jarvis.meshMenu"' in root
+        and 'UIAction(title: "Open Jarvis Vision")' in root
+        and 'UIAction(title: "Control Mesh")' in root,
+    )
     check("Preview exposes product-only mode", "--product-only" in preview_text and "Product-only view" in preview_text)
     check("Preview has Mesh sheet", "Control Mesh" in mesh_surface and "Voice Control" in mesh_surface)
     check("Help includes scan read detect Mesh", all(term in help_swift for term in ["scan this", "read this", "detect objects", "Control Mesh"]))
@@ -83,17 +95,28 @@ def main() -> int:
     check("Go home routes to Control Mesh", preview.InteractionModel().process("go home").action == "control_mesh")
     check("Tap routes to grid", "show grid" in preview.InteractionModel().process("tap that").display.lower())
     check("Return route exists", "jarvis://standby" in mesh and "return to jarvis" in mesh.lower())
-    check("Vision fallback is real and not model-dead-ended", "VNClassifyImageRequest" in camera and "Visual scan ready" in vision and "Object model not installed" not in vision + router + camera)
-    check("Inspection speaks scan results when enabled", "speakInspectionSummary" in camera and "JarvisSpeechService.shared.isEnabled" in camera and "JarvisSpeechService.shared.speak" in camera)
-    settings = read(IOS_ROOT / "JarvisSettingsViewController.swift")
-    speech = read(IOS_ROOT / "JarvisSpeechService.swift")
+    check(
+        "Vision pipeline uses the verified model-agnostic detector",
+        "VisionPipelineCoordinator" in camera
+        and "ObjectDetectionService" in pipeline
+        and "protocol VisionDetecting" in detector
+        and "VNCoreMLRequest" in detector
+        and "Object model not installed" not in vision + router + camera,
+    )
+    check(
+        "Vision narration uses a session-scoped priority queue",
+        "beginVisionNarrationSession" in camera
+        and "enqueueVisionNarration" in camera
+        and "VisionSpeechPriorityQueue" in speech
+        and "rejectedStaleSession" in speech_queue,
+    )
     check("Settings buttons route to real actions", all(term in settings for term in [
-        "clearNotesButton.addTarget",
-        "clearHistoryButton.addTarget",
-        "voiceTestButton.addTarget",
-        "profilePreviewButton.addTarget",
-        "personalVoiceButton.addTarget",
-        "aboutButton.addTarget",
+        'identifier: "jarvis.settings.clearNotes", action: #selector(clearNotesTapped)',
+        'identifier: "jarvis.settings.clearHistory", action: #selector(clearHistoryTapped)',
+        'identifier: "jarvis.settings.voiceTest", action: #selector(voiceTestTapped)',
+        'identifier: "jarvis.settings.profilePreview", action: #selector(profilePreviewTapped)',
+        'identifier: "jarvis.settings.personalVoice", action: #selector(personalVoiceTapped)',
+        'identifier: "jarvis.settings.about", action: #selector(aboutTapped)',
     ]))
     check("Control Mesh buttons route through real deep links", all(term in mesh_view for term in [
         "inspectButton.addTarget",
@@ -130,6 +153,20 @@ def main() -> int:
     check("Ready state label matches UI proof", 'case ready = "Ready"' in state and 'waitForState("Ready")' in ui_test)
     check("Real UIKit layout uses keyboardLayoutGuide", "keyboardLayoutGuide.topAnchor" in root and "keyboardWillChangeFrameNotification" not in root)
     check("Real UIKit source avoids copied preview layout model", "JarvisXRLayoutModel" not in root + state)
+    check(
+        "iPhone support is capability based without hardware model gates",
+        all(marker not in production_swift for marker in ["hw.machine", "utsname(", "machineIdentifier", "deviceModelAllowlist"])
+        and "TARGETED_DEVICE_FAMILY: \"1\"" in project_yml
+        and 'iOS: "18.0"' in project_yml,
+    )
+    check(
+        "CI simulator discovery has no fixed iPhone model allowlist",
+        "PREFERRED_NAMES" not in simulator_selector
+        and "DEFAULT_NAMES" not in simulator_selector
+        and "COMPACT_NAMES" not in simulator_selector
+        and "LARGE_NAMES" not in simulator_selector
+        and ".SimDeviceType.iPhone-" in simulator_selector,
+    )
     check("Launch screen configured", "UILaunchStoryboardName" in info_plist and "LaunchScreen" in info_plist and "path: JarvisXR" in project_yml and "LaunchScreen.storyboard" not in project_yml)
     check("Markdown model notes excluded from app bundle", "Models/README.md" in project_yml)
     check("No primary Spotify music example", "Try: open Spotify" not in root + help_swift + preview_text and "play music" not in help_swift)
@@ -162,6 +199,21 @@ def main() -> int:
         "object-model-missing",
         "settings",
         "diagnostics",
+        "vision-idle",
+        "vision-describe-listening",
+        "vision-describe-analyzing",
+        "vision-describe-result",
+        "vision-live-active",
+        "vision-find-searching",
+        "vision-find-centered",
+        "vision-reading",
+        "vision-scan-result",
+        "vision-permission-denied",
+        "vision-model-unavailable",
+        "vision-settings",
+        "vision-help",
+        "vision-self-test",
+        "vision-onboarding",
     ]))
     check("Workflow captures required iOS screenshots", "Capture required iOS screenshots" in workflow_yml and "VISUAL_PROOF_DIR" in workflow_yml and "verify_visual_proof.py" in workflow_yml)
     check("Workflow uploads screenshot artifact", "JarvisXR-ios-screenshot-proof" in workflow_yml and "if-no-files-found: error" in workflow_yml)
@@ -184,7 +236,13 @@ def main() -> int:
         "ipa-audit.log",
         "artifact-tree.txt",
     ]))
-    check("Local run_tests compiles helper scripts", "python -m py_compile" in run_tests_bat and "tools\\audit_ipa.py" in run_tests_bat and "tools\\verify_visual_proof.py" in run_tests_bat)
+    check("Repository validation includes Vision supply-chain gates", all(name in validation_runner for name in [
+        "audit_vision_model.py",
+        "evaluate_vision_fixtures.py",
+        "audit_vision_safety.py",
+        "audit_vision_privacy.py",
+        "tests/vision",
+    ]))
 
     if failures:
         print("JARVIS product surface test failed:")
@@ -193,7 +251,7 @@ def main() -> int:
         return 1
 
     print("JARVIS product surface test passed:")
-    print("- Swift help and Mesh controls exist")
+    print("- Swift help, Vision, and Control Mesh controls exist")
     print("- Help, Mesh, preview, planner, vision, and routing checks passed")
     print("- Product surface avoids forbidden debug/report UI")
     return 0
