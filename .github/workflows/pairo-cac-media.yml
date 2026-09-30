@@ -1,0 +1,49 @@
+name: PAIRO CAC native media capture
+on:
+  push:
+    branches: [codex/pairo-cac-media-20260929]
+    paths: ['.github/workflows/pairo-cac-media.yml', 'ios/JarvisXR/JarvisXRUITests/PAIROCACMediaTests.swift']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and record the existing native app
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p media
+          xcodebuild -version > media/xcode.txt
+          git rev-parse HEAD > media/source-sha.txt
+          brew install xcodegen
+          cd ios/JarvisXR
+          xcodegen generate
+          SIM_ID="$(python3 ../../tools/select_ios_simulator.py)"
+          DESTINATION="$(python3 ../../tools/select_ios_simulator.py --destination)"
+          python3 ../../tools/select_ios_simulator.py --details > ../../media/simulator.txt
+          xcrun simctl boot "$SIM_ID" || true
+          xcrun simctl bootstatus "$SIM_ID" -b
+          xcrun simctl status_bar "$SIM_ID" override --time '9:41' --dataNetwork wifi --wifiMode active --wifiBars 3 --batteryState charged --batteryLevel 100
+          xcodebuild -project JarvisXR.xcodeproj -scheme JarvisXR -configuration Debug -sdk iphonesimulator -destination "$DESTINATION" -derivedDataPath build/CAC -only-testing:JarvisXRUITests/PAIROCACMediaTests CODE_SIGNING_ALLOWED=NO build-for-testing > ../../media/build.log 2>&1
+          python3 -c 'import time; print(time.time())' > ../../media/record-start.txt
+          xcrun simctl io "$SIM_ID" recordVideo --codec=h264 ../../media/native-walkthrough.mp4 > ../../media/record.log 2>&1 &
+          REC_PID=$!
+          sleep 2
+          set +e
+          xcodebuild -project JarvisXR.xcodeproj -scheme JarvisXR -configuration Debug -sdk iphonesimulator -destination "$DESTINATION" -derivedDataPath build/CAC -resultBundlePath ../../media/Walkthrough.xcresult -only-testing:JarvisXRUITests/PAIROCACMediaTests CODE_SIGNING_ALLOWED=NO test-without-building > ../../media/walkthrough.log 2>&1
+          TEST_EXIT=$?
+          kill -INT "$REC_PID"
+          wait "$REC_PID" || true
+          xcrun simctl io "$SIM_ID" screenshot ../../media/final-screen.png
+          echo "$TEST_EXIT" > ../../media/test-exit.txt
+          exit "$TEST_EXIT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PAIRO-CAC-native-media
+          path: media
+          retention-days: 30
